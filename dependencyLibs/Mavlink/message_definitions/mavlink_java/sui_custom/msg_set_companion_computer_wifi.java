@@ -5,7 +5,7 @@
  */
 
 // MESSAGE SET_COMPANION_COMPUTER_WIFI PACKING
-package com.MAVLink.common;
+package com.MAVLink.sui_custom;
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
