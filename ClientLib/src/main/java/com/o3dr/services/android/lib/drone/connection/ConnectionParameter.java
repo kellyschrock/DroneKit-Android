@@ -163,11 +163,11 @@ public class ConnectionParameter implements Parcelable {
         return new ConnectionParameter(ConnectionType.TYPE_BLUETOOTH, paramsBundle, tlogLoggingUri, null);
     }
 
-    public static ConnectionParameter newCustomConnection(AndroidMavLinkConnection connection, String connectionId) {
+    public static ConnectionParameter newCustomConnection(AndroidMavLinkConnection connection, String connectionId, Uri tlogUri) {
         Bundle paramsBundle = new Bundle(1);
         paramsBundle.putString(ConnectionType.EXTRA_CUSTOM_CONNECTION_ID, connectionId);
 
-        return new ConnectionParameter(ConnectionType.TYPE_CUSTOM, paramsBundle, null, connection);
+        return new ConnectionParameter(ConnectionType.TYPE_CUSTOM, paramsBundle, tlogUri, connection);
     }
 
     /**
