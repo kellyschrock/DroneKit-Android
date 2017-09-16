@@ -9,6 +9,8 @@ public class DataLink {
 
         void sendMessage(T message, ICommandListener listener);
 
+        void sendMessage(T message, int sysId, int compId, ICommandListener listener);
+
         boolean isConnected();
 
         void openConnection();

@@ -27,7 +27,7 @@ public class MockMAVLinkClient extends MAVLinkClient {
     }
 
     @Override
-    protected void sendMavMessage(MAVLinkMessage message, int sysId, int compId, ICommandListener listener){
+    public void sendMavMessage(MAVLinkMessage message, int sysId, int compId, ICommandListener listener){
         data = message.pack();
     }
 }

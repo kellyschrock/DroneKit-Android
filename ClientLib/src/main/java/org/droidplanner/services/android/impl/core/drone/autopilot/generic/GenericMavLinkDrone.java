@@ -397,7 +397,16 @@ public class GenericMavLinkDrone implements MavLinkDrone {
             case ExperimentalActions.ACTION_SEND_MAVLINK_MESSAGE:
                 data.setClassLoader(MavlinkMessageWrapper.class.getClassLoader());
                 MavlinkMessageWrapper messageWrapper = data.getParcelable(ExperimentalActions.EXTRA_MAVLINK_MESSAGE);
-                CommonApiUtils.sendMavlinkMessage(this, messageWrapper);
+
+                int sysid = data.getInt(ExperimentalActions.EXTRA_SYSID, -999);
+                int compid = data.getInt(ExperimentalActions.EXTRA_COMPID, -999);
+
+                if(sysid == -999 || compid == -999) {
+                    CommonApiUtils.sendMavlinkMessage(this, messageWrapper);
+                } else {
+                    CommonApiUtils.sendMavlinkMessage(this, messageWrapper, sysid, compid);
+                }
+
                 return true;
 
             // INTERNAL DRONE ACTIONS

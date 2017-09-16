@@ -10,4 +10,4 @@ fi
 
 echo "Generating Java code"
 # mavgen.py --lang=Java --wire-protocol=1.0 --output=$mavdir/src/com/MAVLink $mavdir/message_definitions/ardupilotmega.xml
-mavgen.py --lang=Java --output=$mavdir/src/com/MAVLink $mavdir/message_definitions/ardupilotmega.xml
+mavgen.py --lang=Java --output=$mavdir/src/com/MAVLink $mavdir/message_definitions/sui_custom.xml

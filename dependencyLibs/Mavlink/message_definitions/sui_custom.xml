@@ -3,16 +3,20 @@
      <version>3</version>
      <enums></enums>
      <messages>
-        <message id="8" name="SET_COMPANION_COMPUTER_WIFI">
-            <description>Setup the companion computers wifi as an access point or a client.  If the ssid or pass fields are empty strings, the previous values will be used.</description>
-            <field type="uint8_t" name="cmd">cmd, 1-access point mode, 2-client mode</field>
-            <field type="char[64]" name="ssid">ssid</field>
-            <field type="char[64]" name="pass">pass</field>
-        </message>
+         <message id="8" name="SET_COMPANION_COMPUTER_WIFI">
+             <description>Setup the companion computers wifi as an access point or a client.  If the ssid or pass fields are empty strings, the previous values will be used.</description>
+             <field type="uint8_t" name="cmd">cmd, 1-access point mode, 2-client mode</field>
+             <field type="char[64]" name="ssid">ssid</field>
+             <field type="char[64]" name="pass">pass</field>
+             <field type="uint8_t" name="target_system">System ID</field>
+             <field type="uint8_t" name="target_component">Component ID</field>
+         </message>
 
-        <message id="13" name="SET_COMPANION_COMPUTER_USB">
-            <description>Setup the companion computers USB connection to the camera.</description>
-            <field type="uint8_t" name="cmd">cmd, 1-command mode, 2-mountable mode</field>
-        </message>
+         <message id="13" name="SET_COMPANION_COMPUTER_USB">
+             <description>Setup the companion computers USB connection to the camera.</description>
+             <field type="uint8_t" name="cmd">cmd, 1-command mode, 2-mountable mode</field>
+             <field type="uint8_t" name="target_system">System ID</field>
+             <field type="uint8_t" name="target_component">Component ID</field>
+         </message>
      </messages>
 </mavlink>

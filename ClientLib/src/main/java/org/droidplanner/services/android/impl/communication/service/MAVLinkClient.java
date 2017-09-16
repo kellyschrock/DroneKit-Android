@@ -213,7 +213,14 @@ public class MAVLinkClient implements DataLink.DataLinkProvider<MAVLinkMessage> 
         sendMavMessage(message, DEFAULT_SYS_ID, DEFAULT_COMP_ID, listener);
     }
 
-    protected void sendMavMessage(MAVLinkMessage message, int sysId, int compId, ICommandListener listener){
+    @Override
+    public void sendMessage(MAVLinkMessage message, int sysId, int compId, ICommandListener listener) {
+        sendMavMessage(message, sysId, compId, listener);
+    }
+
+    public void sendMavMessage(MAVLinkMessage message, int sysId, int compId, ICommandListener listener){
+//        Timber.d("sendMavMessage(%s, %d, %d)", message, sysId, compId);
+
         if (isDisconnected() || message == null) {
             Timber.d("Not connected || message is null");
             return;

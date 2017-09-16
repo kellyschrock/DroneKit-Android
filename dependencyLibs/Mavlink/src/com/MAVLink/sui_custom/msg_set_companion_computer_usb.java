@@ -16,7 +16,7 @@ import com.MAVLink.Messages.MAVLinkPayload;
 public class msg_set_companion_computer_usb extends MAVLinkMessage{
 
     public static final int MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_USB = 13;
-    public static final int MAVLINK_MSG_LENGTH = 1;
+    public static final int MAVLINK_MSG_LENGTH = 3;
     private static final long serialVersionUID = MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_USB;
 
 
@@ -25,6 +25,16 @@ public class msg_set_companion_computer_usb extends MAVLinkMessage{
     * cmd, 1-command mode, 2-mountable mode
     */
     public short cmd;
+      
+    /**
+    * System ID
+    */
+    public short target_system;
+      
+    /**
+    * Component ID
+    */
+    public short target_component;
     
 
     /**
@@ -38,6 +48,10 @@ public class msg_set_companion_computer_usb extends MAVLinkMessage{
         packet.msgid = MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_USB;
               
         packet.payload.putUnsignedByte(cmd);
+              
+        packet.payload.putUnsignedByte(target_system);
+              
+        packet.payload.putUnsignedByte(target_component);
         
         return packet;
     }
@@ -51,6 +65,10 @@ public class msg_set_companion_computer_usb extends MAVLinkMessage{
         payload.resetIndex();
               
         this.cmd = payload.getUnsignedByte();
+              
+        this.target_system = payload.getUnsignedByte();
+              
+        this.target_component = payload.getUnsignedByte();
         
     }
 
@@ -73,12 +91,12 @@ public class msg_set_companion_computer_usb extends MAVLinkMessage{
         unpack(mavLinkPacket.payload);        
     }
 
-      
+          
     /**
     * Returns a string with the MSG name and data
     */
     public String toString(){
-        return "MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_USB - sysid:"+sysid+" compid:"+compid+" cmd:"+cmd+"";
+        return "MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_USB - sysid:"+sysid+" compid:"+compid+" cmd:"+cmd+" target_system:"+target_system+" target_component:"+target_component+"";
     }
 }
         

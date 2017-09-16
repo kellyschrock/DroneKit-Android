@@ -9,7 +9,6 @@ import com.MAVLink.common.msg_set_position_target_local_ned;
 import com.MAVLink.enums.MAV_CMD;
 import com.MAVLink.enums.MAV_FRAME;
 import com.MAVLink.enums.MAV_GOTO;
-import com.MAVLink.sui_custom.msg_set_companion_computer_wifi;
 import com.o3dr.services.android.lib.model.ICommandListener;
 
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
@@ -114,15 +113,6 @@ public class MavLinkCommands {
         msg.target_system = drone.getSysid();
         msg.base_mode = 1; // TODO use meaningful constant
         msg.custom_mode = mode.getNumber();
-        drone.getMavClient().sendMessage(msg, listener);
-    }
-
-    public static void sendSetCompanionComputerWifiApMessage(
-            MavLinkDrone drone, short cmd, String ssid, String pass, ICommandListener listener) {
-        msg_set_companion_computer_wifi msg = new msg_set_companion_computer_wifi();
-        msg.cmd = cmd;
-        msg.setSsid(ssid);
-        msg.setPass(pass);
         drone.getMavClient().sendMessage(msg, listener);
     }
 

@@ -16,7 +16,7 @@ import com.MAVLink.Messages.MAVLinkPayload;
 public class msg_set_companion_computer_wifi extends MAVLinkMessage{
 
     public static final int MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_WIFI = 8;
-    public static final int MAVLINK_MSG_LENGTH = 129;
+    public static final int MAVLINK_MSG_LENGTH = 131;
     private static final long serialVersionUID = MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_WIFI;
 
 
@@ -35,6 +35,16 @@ public class msg_set_companion_computer_wifi extends MAVLinkMessage{
     * pass
     */
     public byte pass[] = new byte[64];
+      
+    /**
+    * System ID
+    */
+    public short target_system;
+      
+    /**
+    * Component ID
+    */
+    public short target_component;
     
 
     /**
@@ -60,6 +70,10 @@ public class msg_set_companion_computer_wifi extends MAVLinkMessage{
             packet.payload.putByte(pass[i]);
         }
                     
+              
+        packet.payload.putUnsignedByte(target_system);
+              
+        packet.payload.putUnsignedByte(target_component);
         
         return packet;
     }
@@ -85,6 +99,10 @@ public class msg_set_companion_computer_wifi extends MAVLinkMessage{
             this.pass[i] = payload.getByte();
         }
                 
+              
+        this.target_system = payload.getUnsignedByte();
+              
+        this.target_component = payload.getUnsignedByte();
         
     }
 
@@ -165,12 +183,12 @@ public class msg_set_companion_computer_wifi extends MAVLinkMessage{
         return buf.toString();
 
     }
-                         
+                             
     /**
     * Returns a string with the MSG name and data
     */
     public String toString(){
-        return "MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_WIFI - sysid:"+sysid+" compid:"+compid+" cmd:"+cmd+" ssid:"+ssid+" pass:"+pass+"";
+        return "MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_WIFI - sysid:"+sysid+" compid:"+compid+" cmd:"+cmd+" ssid:"+ssid+" pass:"+pass+" target_system:"+target_system+" target_component:"+target_component+"";
     }
 }
         
