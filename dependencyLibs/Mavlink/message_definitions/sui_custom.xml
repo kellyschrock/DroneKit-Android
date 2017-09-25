@@ -18,5 +18,12 @@
              <field type="uint8_t" name="target_system">System ID</field>
              <field type="uint8_t" name="target_component">Component ID</field>
          </message>
+
+         <message id="14" name="SET_COMPANION_COMPUTER_CAMTYPE">
+             <description>Select the camera type in the companion computer.</description>
+             <field type="uint8_t" name="type">camType, a value in the CamType enum in sui-camera</field>
+             <field type="uint8_t" name="target_system">System ID</field>
+             <field type="uint8_t" name="target_component">Component ID</field>
+         </message>
      </messages>
 </mavlink>
