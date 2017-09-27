@@ -11,7 +11,7 @@ import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
         
 /**
-* Set the vehicle attitude and body angular rates.
+* Reports the current commanded attitude of the vehicle as specified by the autopilot. This should match the commands sent in a SET_ATTITUDE_TARGET message if the vehicle is being controlled this way.
 */
 public class msg_attitude_target extends MAVLinkMessage{
 
@@ -37,12 +37,12 @@ public class msg_attitude_target extends MAVLinkMessage{
     public float body_roll_rate;
       
     /**
-    * Body roll rate in radians per second
+    * Body pitch rate in radians per second
     */
     public float body_pitch_rate;
       
     /**
-    * Body roll rate in radians per second
+    * Body yaw rate in radians per second
     */
     public float body_yaw_rate;
       

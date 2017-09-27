@@ -32,12 +32,12 @@ public class msg_raw_pressure extends MAVLinkMessage{
     public short press_abs;
       
     /**
-    * Differential pressure 1 (raw)
+    * Differential pressure 1 (raw, 0 if nonexistant)
     */
     public short press_diff1;
       
     /**
-    * Differential pressure 2 (raw)
+    * Differential pressure 2 (raw, 0 if nonexistant)
     */
     public short press_diff2;
       

@@ -213,4 +213,8 @@ public class AttributeEvent {
      */
     public static final String RETURN_TO_ME_STATE_UPDATE = PACKAGE_NAME + ".RETURN_TO_ME_STATE_UPDATE";
 
+    /**
+     * Signals the presence of an ADSB vehicle.
+     */
+    public static final String ADSB_VEHICLE = PACKAGE_NAME + ".ADSB_VEHICLE";
 }

@@ -28,12 +28,12 @@ public class msg_gps_raw_int extends MAVLinkMessage{
     public long time_usec;
       
     /**
-    * Latitude (WGS84), in degrees * 1E7
+    * Latitude (WGS84, EGM96 ellipsoid), in degrees * 1E7
     */
     public int lat;
       
     /**
-    * Longitude (WGS84), in degrees * 1E7
+    * Longitude (WGS84, EGM96 ellipsoid), in degrees * 1E7
     */
     public int lon;
       
@@ -43,12 +43,12 @@ public class msg_gps_raw_int extends MAVLinkMessage{
     public int alt;
       
     /**
-    * GPS HDOP horizontal dilution of position in cm (m*100). If unknown, set to: UINT16_MAX
+    * GPS HDOP horizontal dilution of position (unitless). If unknown, set to: UINT16_MAX
     */
     public int eph;
       
     /**
-    * GPS VDOP vertical dilution of position in cm (m*100). If unknown, set to: UINT16_MAX
+    * GPS VDOP vertical dilution of position (unitless). If unknown, set to: UINT16_MAX
     */
     public int epv;
       
@@ -63,7 +63,7 @@ public class msg_gps_raw_int extends MAVLinkMessage{
     public int cog;
       
     /**
-    * 0-1: no fix, 2: 2D fix, 3: 3D fix, 4: DGPS, 5: RTK. Some applications will not use the value of this field unless it is at least two, so always correctly fill in the fix.
+    * See the GPS_FIX_TYPE enum.
     */
     public short fix_type;
       

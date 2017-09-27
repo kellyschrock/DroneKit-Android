@@ -16,20 +16,15 @@ import com.MAVLink.Messages.MAVLinkPayload;
 public class msg_global_position_int_cov extends MAVLinkMessage{
 
     public static final int MAVLINK_MSG_ID_GLOBAL_POSITION_INT_COV = 63;
-    public static final int MAVLINK_MSG_LENGTH = 185;
+    public static final int MAVLINK_MSG_LENGTH = 181;
     private static final long serialVersionUID = MAVLINK_MSG_ID_GLOBAL_POSITION_INT_COV;
 
 
       
     /**
-    * Timestamp (microseconds since UNIX epoch) in UTC. 0 for unknown. Commonly filled by the precision time source of a GPS receiver.
+    * Timestamp (microseconds since system boot or since UNIX epoch)
     */
-    public long time_utc;
-      
-    /**
-    * Timestamp (milliseconds since system boot)
-    */
-    public long time_boot_ms;
+    public long time_usec;
       
     /**
     * Latitude, expressed as degrees * 1E7
@@ -87,9 +82,7 @@ public class msg_global_position_int_cov extends MAVLinkMessage{
         packet.compid = 190;
         packet.msgid = MAVLINK_MSG_ID_GLOBAL_POSITION_INT_COV;
               
-        packet.payload.putUnsignedLong(time_utc);
-              
-        packet.payload.putUnsignedInt(time_boot_ms);
+        packet.payload.putUnsignedLong(time_usec);
               
         packet.payload.putInt(lat);
               
@@ -124,9 +117,7 @@ public class msg_global_position_int_cov extends MAVLinkMessage{
     public void unpack(MAVLinkPayload payload) {
         payload.resetIndex();
               
-        this.time_utc = payload.getUnsignedLong();
-              
-        this.time_boot_ms = payload.getUnsignedInt();
+        this.time_usec = payload.getUnsignedLong();
               
         this.lat = payload.getInt();
               
@@ -171,12 +162,12 @@ public class msg_global_position_int_cov extends MAVLinkMessage{
         unpack(mavLinkPacket.payload);        
     }
 
-                          
+                        
     /**
     * Returns a string with the MSG name and data
     */
     public String toString(){
-        return "MAVLINK_MSG_ID_GLOBAL_POSITION_INT_COV - sysid:"+sysid+" compid:"+compid+" time_utc:"+time_utc+" time_boot_ms:"+time_boot_ms+" lat:"+lat+" lon:"+lon+" alt:"+alt+" relative_alt:"+relative_alt+" vx:"+vx+" vy:"+vy+" vz:"+vz+" covariance:"+covariance+" estimator_type:"+estimator_type+"";
+        return "MAVLINK_MSG_ID_GLOBAL_POSITION_INT_COV - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" lat:"+lat+" lon:"+lon+" alt:"+alt+" relative_alt:"+relative_alt+" vx:"+vx+" vy:"+vy+" vz:"+vz+" covariance:"+covariance+" estimator_type:"+estimator_type+"";
     }
 }
         

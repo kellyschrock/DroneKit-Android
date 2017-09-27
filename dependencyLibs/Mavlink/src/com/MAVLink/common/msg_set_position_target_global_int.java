@@ -11,7 +11,7 @@ import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
         
 /**
-* Set vehicle position, velocity and acceleration setpoint in the WGS84 coordinate system.
+* Sets a desired vehicle position, velocity, and/or acceleration in a global coordinate system (WGS84). Used by an external controller to command the vehicle (manual controller or other system).
 */
 public class msg_set_position_target_global_int extends MAVLinkMessage{
 

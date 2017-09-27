@@ -27,7 +27,7 @@ public class msg_battery_status extends MAVLinkMessage{
     public int current_consumed;
       
     /**
-    * Consumed energy, in 100*Joules (intergrated U*I*dt)  (1 = 100 Joule), -1: autopilot does not provide energy consumption estimate
+    * Consumed energy, in HectoJoules (intergrated U*I*dt)  (1 = 100 Joule), -1: autopilot does not provide energy consumption estimate
     */
     public int energy_consumed;
       
@@ -37,7 +37,7 @@ public class msg_battery_status extends MAVLinkMessage{
     public short temperature;
       
     /**
-    * Battery voltage of cells, in millivolts (1 = 1 millivolt)
+    * Battery voltage of cells, in millivolts (1 = 1 millivolt). Cells above the valid cell count for this battery should have the UINT16_MAX value.
     */
     public int voltages[] = new int[10];
       

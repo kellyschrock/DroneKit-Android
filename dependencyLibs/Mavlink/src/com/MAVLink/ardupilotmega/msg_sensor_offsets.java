@@ -11,8 +11,7 @@ import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
         
 /**
-* Offsets and calibrations values for hardware
-        sensors. This makes it easier to debug the calibration process.
+* Offsets and calibrations values for hardware sensors. This makes it easier to debug the calibration process.
 */
 public class msg_sensor_offsets extends MAVLinkMessage{
 

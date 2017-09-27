@@ -16,15 +16,15 @@ import com.MAVLink.Messages.MAVLinkPayload;
 public class msg_attitude_quaternion_cov extends MAVLinkMessage{
 
     public static final int MAVLINK_MSG_ID_ATTITUDE_QUATERNION_COV = 61;
-    public static final int MAVLINK_MSG_LENGTH = 68;
+    public static final int MAVLINK_MSG_LENGTH = 72;
     private static final long serialVersionUID = MAVLINK_MSG_ID_ATTITUDE_QUATERNION_COV;
 
 
       
     /**
-    * Timestamp (milliseconds since system boot)
+    * Timestamp (microseconds since system boot or since UNIX epoch)
     */
-    public long time_boot_ms;
+    public long time_usec;
       
     /**
     * Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation)
@@ -62,7 +62,7 @@ public class msg_attitude_quaternion_cov extends MAVLinkMessage{
         packet.compid = 190;
         packet.msgid = MAVLINK_MSG_ID_ATTITUDE_QUATERNION_COV;
               
-        packet.payload.putUnsignedInt(time_boot_ms);
+        packet.payload.putUnsignedLong(time_usec);
               
         
         for (int i = 0; i < q.length; i++) {
@@ -93,7 +93,7 @@ public class msg_attitude_quaternion_cov extends MAVLinkMessage{
     public void unpack(MAVLinkPayload payload) {
         payload.resetIndex();
               
-        this.time_boot_ms = payload.getUnsignedInt();
+        this.time_usec = payload.getUnsignedLong();
               
          
         for (int i = 0; i < this.q.length; i++) {
@@ -139,7 +139,7 @@ public class msg_attitude_quaternion_cov extends MAVLinkMessage{
     * Returns a string with the MSG name and data
     */
     public String toString(){
-        return "MAVLINK_MSG_ID_ATTITUDE_QUATERNION_COV - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" q:"+q+" rollspeed:"+rollspeed+" pitchspeed:"+pitchspeed+" yawspeed:"+yawspeed+" covariance:"+covariance+"";
+        return "MAVLINK_MSG_ID_ATTITUDE_QUATERNION_COV - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" q:"+q+" rollspeed:"+rollspeed+" pitchspeed:"+pitchspeed+" yawspeed:"+yawspeed+" covariance:"+covariance+"";
     }
 }
         

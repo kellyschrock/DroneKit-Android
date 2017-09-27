@@ -16,10 +16,15 @@ import com.MAVLink.Messages.MAVLinkPayload;
 public class msg_altitude extends MAVLinkMessage{
 
     public static final int MAVLINK_MSG_ID_ALTITUDE = 141;
-    public static final int MAVLINK_MSG_LENGTH = 24;
+    public static final int MAVLINK_MSG_LENGTH = 32;
     private static final long serialVersionUID = MAVLINK_MSG_ID_ALTITUDE;
 
 
+      
+    /**
+    * Timestamp (micros since boot or Unix epoch)
+    */
+    public long time_usec;
       
     /**
     * This altitude measure is initialized on system boot and monotonic (it is never reset, but represents the local altitude change). The only guarantee on this field is that it will never be reset and is consistent within a flight. The recommended value for this field is the uncorrected barometric altitude at boot time. This altitude will also drift and vary between flights.
@@ -62,6 +67,8 @@ public class msg_altitude extends MAVLinkMessage{
         packet.compid = 190;
         packet.msgid = MAVLINK_MSG_ID_ALTITUDE;
               
+        packet.payload.putUnsignedLong(time_usec);
+              
         packet.payload.putFloat(altitude_monotonic);
               
         packet.payload.putFloat(altitude_amsl);
@@ -84,6 +91,8 @@ public class msg_altitude extends MAVLinkMessage{
     */
     public void unpack(MAVLinkPayload payload) {
         payload.resetIndex();
+              
+        this.time_usec = payload.getUnsignedLong();
               
         this.altitude_monotonic = payload.getFloat();
               
@@ -118,12 +127,12 @@ public class msg_altitude extends MAVLinkMessage{
         unpack(mavLinkPacket.payload);        
     }
 
-                
+                  
     /**
     * Returns a string with the MSG name and data
     */
     public String toString(){
-        return "MAVLINK_MSG_ID_ALTITUDE - sysid:"+sysid+" compid:"+compid+" altitude_monotonic:"+altitude_monotonic+" altitude_amsl:"+altitude_amsl+" altitude_local:"+altitude_local+" altitude_relative:"+altitude_relative+" altitude_terrain:"+altitude_terrain+" bottom_clearance:"+bottom_clearance+"";
+        return "MAVLINK_MSG_ID_ALTITUDE - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" altitude_monotonic:"+altitude_monotonic+" altitude_amsl:"+altitude_amsl+" altitude_local:"+altitude_local+" altitude_relative:"+altitude_relative+" altitude_terrain:"+altitude_terrain+" bottom_clearance:"+bottom_clearance+"";
     }
 }
         

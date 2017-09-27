@@ -11,7 +11,7 @@ import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
         
 /**
-* Set the vehicle attitude and body angular rates.
+* Sets a desired vehicle attitude. Used by an external controller to command the vehicle (manual controller or other system).
 */
 public class msg_set_attitude_target extends MAVLinkMessage{
 

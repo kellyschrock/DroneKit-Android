@@ -8,6 +8,7 @@ import android.view.Surface;
 
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.ardupilotmega.msg_ekf_status_report;
+import com.MAVLink.common.msg_adsb_vehicle;
 import com.MAVLink.common.msg_attitude;
 import com.MAVLink.common.msg_global_position_int;
 import com.MAVLink.common.msg_gps_raw_int;
@@ -32,6 +33,7 @@ import com.o3dr.services.android.lib.drone.attribute.AttributeEventExtra;
 import com.o3dr.services.android.lib.drone.attribute.AttributeType;
 import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
 import com.o3dr.services.android.lib.drone.mission.action.MissionActions;
+import com.o3dr.services.android.lib.drone.property.ADSBVehicle;
 import com.o3dr.services.android.lib.drone.property.Altitude;
 import com.o3dr.services.android.lib.drone.property.Attitude;
 import com.o3dr.services.android.lib.drone.property.Battery;
@@ -75,6 +77,8 @@ import org.droidplanner.services.android.impl.core.model.AutopilotWarningParser;
 import org.droidplanner.services.android.impl.utils.CommonApiUtils;
 import org.droidplanner.services.android.impl.utils.prefs.DroidPlannerPrefs;
 import org.droidplanner.services.android.impl.utils.video.VideoManager;
+
+import timber.log.Timber;
 
 /**
  * Base drone implementation.
@@ -626,6 +630,7 @@ public class GenericMavLinkDrone implements MavLinkDrone {
                 processGpsState((msg_gps_raw_int) message);
                 break;
 
+            // Mission items
             case msg_mission_item.MAVLINK_MSG_ID_MISSION_ITEM:
                 processHomeUpdate((msg_mission_item) message);
                 break;
@@ -638,11 +643,25 @@ public class GenericMavLinkDrone implements MavLinkDrone {
                 missionStats.setLastReachedWaypointNumber(((msg_mission_item_reached) message).seq);
                 break;
 
+            // ADSB
+            case msg_adsb_vehicle.MAVLINK_MSG_ID_ADSB_VEHICLE:
+                processADSBVehicle((msg_adsb_vehicle)message);
+                break;
+
+            // Nav controller output
             case msg_nav_controller_output.MAVLINK_MSG_ID_NAV_CONTROLLER_OUTPUT:
                 msg_nav_controller_output m_nav = (msg_nav_controller_output) message;
                 setDisttowpAndSpeedAltErrors(m_nav.wp_dist, m_nav.alt_error, m_nav.aspd_error);
                 break;
         }
+    }
+
+    protected void processADSBVehicle(msg_adsb_vehicle msg) {
+        Timber.d("processADSBVehicle(%s)", msg);
+
+        final Bundle extras = new Bundle();
+        extras.putParcelable(AttributeEventExtra.EXTRA_ADSB_VEHICLE, ADSBVehicle.populate(new ADSBVehicle(), msg));
+        notifyAttributeListener(AttributeEvent.ADSB_VEHICLE, extras);
     }
 
     protected void processSysStatus(msg_sys_status m_sys) {

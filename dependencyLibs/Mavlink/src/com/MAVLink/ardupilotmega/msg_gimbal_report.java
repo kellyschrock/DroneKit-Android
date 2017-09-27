@@ -57,17 +57,17 @@ public class msg_gimbal_report extends MAVLinkMessage{
     public float delta_velocity_z;
       
     /**
-    *  Joint ROLL (radians)
+    * Joint ROLL (radians)
     */
     public float joint_roll;
       
     /**
-    *  Joint EL (radians)
+    * Joint EL (radians)
     */
     public float joint_el;
       
     /**
-    *  Joint AZ (radians)
+    * Joint AZ (radians)
     */
     public float joint_az;
       

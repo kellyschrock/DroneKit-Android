@@ -11,9 +11,7 @@ import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
         
 /**
-* 
-            100 Hz gimbal torque command telemetry
-        
+* 100 Hz gimbal torque command telemetry
 */
 public class msg_gimbal_torque_cmd_report extends MAVLinkMessage{
 

@@ -11,7 +11,7 @@ import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
         
 /**
-* Outputs of the APM navigation controller. The primary use of this message is to check the response and signs of the controller before actual flight and to assist with tuning controller parameters.
+* The state of the fixed wing navigation and position controller.
 */
 public class msg_nav_controller_output extends MAVLinkMessage{
 

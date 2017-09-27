@@ -121,4 +121,7 @@ public class AttributeEventExtra {
      */
     public static final String EXTRA_RETURN_TO_ME_STATE = PACKAGE_NAME + ".EXTRA_RETURN_TO_ME_STATE";
 
+    /** Extras used for ADSB Vehicle messages */
+    public static final String EXTRA_ADSB_VEHICLE = PACKAGE_NAME + ".EXTRA_ADSB_VEHICLE";
+
 }

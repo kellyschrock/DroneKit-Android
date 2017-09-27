@@ -22,7 +22,7 @@ public class msg_compassmot_status extends MAVLinkMessage{
 
       
     /**
-    * current (amps)
+    * current (Ampere)
     */
     public float current;
       

@@ -28,6 +28,7 @@ public class MAV_AUTOPILOT {
    public static final int MAV_AUTOPILOT_ARMAZILA = 15; /* Armazila -- http://armazila.com | */
    public static final int MAV_AUTOPILOT_AEROB = 16; /* Aerob -- http://aerob.ru | */
    public static final int MAV_AUTOPILOT_ASLUAV = 17; /* ASLUAV autopilot -- http://www.asl.ethz.ch | */
-   public static final int MAV_AUTOPILOT_ENUM_END = 18; /*  | */
+   public static final int MAV_AUTOPILOT_SMARTAP = 18; /* SmartAP Autopilot - http://sky-drones.com | */
+   public static final int MAV_AUTOPILOT_ENUM_END = 19; /*  | */
 }
             

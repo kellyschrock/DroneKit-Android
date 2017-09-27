@@ -28,12 +28,12 @@ public class msg_global_position_int extends MAVLinkMessage{
     public long time_boot_ms;
       
     /**
-    * Latitude, expressed as * 1E7
+    * Latitude, expressed as degrees * 1E7
     */
     public int lat;
       
     /**
-    * Longitude, expressed as * 1E7
+    * Longitude, expressed as degrees * 1E7
     */
     public int lon;
       
@@ -48,22 +48,22 @@ public class msg_global_position_int extends MAVLinkMessage{
     public int relative_alt;
       
     /**
-    * Ground X Speed (Latitude), expressed as m/s * 100
+    * Ground X Speed (Latitude, positive north), expressed as m/s * 100
     */
     public short vx;
       
     /**
-    * Ground Y Speed (Longitude), expressed as m/s * 100
+    * Ground Y Speed (Longitude, positive east), expressed as m/s * 100
     */
     public short vy;
       
     /**
-    * Ground Z Speed (Altitude), expressed as m/s * 100
+    * Ground Z Speed (Altitude, positive down), expressed as m/s * 100
     */
     public short vz;
       
     /**
-    * Compass heading in degrees * 100, 0.0..359.99 degrees. If unknown, set to: UINT16_MAX
+    * Vehicle heading (yaw angle) in degrees * 100, 0.0..359.99 degrees. If unknown, set to: UINT16_MAX
     */
     public int hdg;
     

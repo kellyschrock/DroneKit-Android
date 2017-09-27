@@ -11,7 +11,7 @@ import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
         
 /**
-* Set vehicle position, velocity and acceleration setpoint in local frame.
+* Sets a desired vehicle position in a local north-east-down coordinate frame. Used by an external controller to command the vehicle (manual controller or other system).
 */
 public class msg_set_position_target_local_ned extends MAVLinkMessage{
 

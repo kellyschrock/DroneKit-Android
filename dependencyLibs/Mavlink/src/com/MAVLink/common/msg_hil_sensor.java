@@ -92,7 +92,7 @@ public class msg_hil_sensor extends MAVLinkMessage{
     public float temperature;
       
     /**
-    * Bitmask for fields that have updated since last message, bit 0 = xacc, bit 12: temperature
+    * Bitmask for fields that have updated since last message, bit 0 = xacc, bit 12: temperature, bit 31: full reset of attitude/position/velocities/etc was performed in sim.
     */
     public long fields_updated;
     

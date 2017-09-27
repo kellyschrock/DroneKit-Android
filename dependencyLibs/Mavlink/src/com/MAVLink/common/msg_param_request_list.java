@@ -11,7 +11,7 @@ import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
         
 /**
-* Request all parameters of this component. After his request, all parameters are emitted.
+* Request all parameters of this component. After this request, all parameters are emitted.
 */
 public class msg_param_request_list extends MAVLinkMessage{
 
