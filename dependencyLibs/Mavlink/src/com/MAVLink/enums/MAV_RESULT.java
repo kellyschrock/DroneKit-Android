@@ -15,7 +15,6 @@ public class MAV_RESULT {
    public static final int MAV_RESULT_DENIED = 2; /* Command PERMANENTLY DENIED | */
    public static final int MAV_RESULT_UNSUPPORTED = 3; /* Command UNKNOWN/UNSUPPORTED | */
    public static final int MAV_RESULT_FAILED = 4; /* Command executed, but failed | */
-   public static final int MAV_RESULT_IN_PROGRESS = 5; /* WIP: Command being executed | */
-   public static final int MAV_RESULT_ENUM_END = 6; /*  | */
+   public static final int MAV_RESULT_ENUM_END = 5; /*  | */
 }
             

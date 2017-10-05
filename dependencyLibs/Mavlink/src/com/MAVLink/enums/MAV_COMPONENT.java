@@ -11,13 +11,7 @@ package com.MAVLink.enums;
 */
 public class MAV_COMPONENT {
    public static final int MAV_COMP_ID_ALL = 0; /*  | */
-   public static final int MAV_COMP_ID_AUTOPILOT1 = 1; /*  | */
    public static final int MAV_COMP_ID_CAMERA = 100; /*  | */
-   public static final int MAV_COMP_ID_CAMERA2 = 101; /*  | */
-   public static final int MAV_COMP_ID_CAMERA3 = 102; /*  | */
-   public static final int MAV_COMP_ID_CAMERA4 = 103; /*  | */
-   public static final int MAV_COMP_ID_CAMERA5 = 104; /*  | */
-   public static final int MAV_COMP_ID_CAMERA6 = 105; /*  | */
    public static final int MAV_COMP_ID_SERVO1 = 140; /*  | */
    public static final int MAV_COMP_ID_SERVO2 = 141; /*  | */
    public static final int MAV_COMP_ID_SERVO3 = 142; /*  | */
@@ -45,7 +39,6 @@ public class MAV_COMPONENT {
    public static final int MAV_COMP_ID_IMU_2 = 201; /*  | */
    public static final int MAV_COMP_ID_IMU_3 = 202; /*  | */
    public static final int MAV_COMP_ID_GPS = 220; /*  | */
-   public static final int MAV_COMP_ID_GPS2 = 221; /*  | */
    public static final int MAV_COMP_ID_UDP_BRIDGE = 240; /*  | */
    public static final int MAV_COMP_ID_UART_BRIDGE = 241; /*  | */
    public static final int MAV_COMP_ID_SYSTEM_CONTROL = 250; /*  | */

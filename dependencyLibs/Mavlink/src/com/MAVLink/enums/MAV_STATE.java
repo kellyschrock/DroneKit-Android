@@ -18,7 +18,6 @@ public class MAV_STATE {
    public static final int MAV_STATE_CRITICAL = 5; /* System is in a non-normal flight mode. It can however still navigate. | */
    public static final int MAV_STATE_EMERGENCY = 6; /* System is in a non-normal flight mode. It lost control over parts or over the whole airframe. It is in mayday and going down. | */
    public static final int MAV_STATE_POWEROFF = 7; /* System just initialized its power-down sequence, will shut down now. | */
-   public static final int MAV_STATE_FLIGHT_TERMINATION = 8; /* System is terminating itself. | */
-   public static final int MAV_STATE_ENUM_END = 9; /*  | */
+   public static final int MAV_STATE_ENUM_END = 8; /*  | */
 }
             

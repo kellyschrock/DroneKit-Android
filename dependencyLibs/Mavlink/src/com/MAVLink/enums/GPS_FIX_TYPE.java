@@ -18,7 +18,6 @@ public class GPS_FIX_TYPE {
    public static final int GPS_FIX_TYPE_RTK_FLOAT = 5; /* RTK float, 3D position | */
    public static final int GPS_FIX_TYPE_RTK_FIXED = 6; /* RTK Fixed, 3D position | */
    public static final int GPS_FIX_TYPE_STATIC = 7; /* Static fixed, typically used for base stations | */
-   public static final int GPS_FIX_TYPE_PPP = 8; /* PPP, 3D position. | */
-   public static final int GPS_FIX_TYPE_ENUM_END = 9; /*  | */
+   public static final int GPS_FIX_TYPE_ENUM_END = 8; /*  | */
 }
             

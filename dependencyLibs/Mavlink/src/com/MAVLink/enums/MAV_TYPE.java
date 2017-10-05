@@ -38,6 +38,7 @@ public class MAV_TYPE {
    public static final int MAV_TYPE_VTOL_RESERVED5 = 25; /* VTOL reserved 5 | */
    public static final int MAV_TYPE_GIMBAL = 26; /* Onboard gimbal | */
    public static final int MAV_TYPE_ADSB = 27; /* Onboard ADSB peripheral | */
-   public static final int MAV_TYPE_ENUM_END = 28; /*  | */
+   public static final int MAV_TYPE_DODECAROTOR = 28; /* Dodecarotor | */
+   public static final int MAV_TYPE_ENUM_END = 29; /*  | */
 }
             

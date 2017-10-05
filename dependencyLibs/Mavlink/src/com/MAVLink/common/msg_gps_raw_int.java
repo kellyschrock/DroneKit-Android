@@ -28,12 +28,12 @@ public class msg_gps_raw_int extends MAVLinkMessage{
     public long time_usec;
       
     /**
-    * Latitude (WGS84, EGM96 ellipsoid), in degrees * 1E7
+    * Latitude (WGS84), in degrees * 1E7
     */
     public int lat;
       
     /**
-    * Longitude (WGS84, EGM96 ellipsoid), in degrees * 1E7
+    * Longitude (WGS84), in degrees * 1E7
     */
     public int lon;
       

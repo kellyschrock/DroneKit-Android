@@ -11,7 +11,7 @@ import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
         
 /**
-* 2nd Battery status
+* Deprecated. Use BATTERY_STATUS instead. 2nd Battery status
 */
 public class msg_battery2 extends MAVLinkMessage{
 
@@ -27,7 +27,7 @@ public class msg_battery2 extends MAVLinkMessage{
     public int voltage;
       
     /**
-    * Battery current, in 10*milliamperes (1 = 10 milliampere), -1: autopilot does not measure the current
+    * Battery current, in centiamperes (1 = 10 milliampere), -1: autopilot does not measure the current
     */
     public short current_battery;
     

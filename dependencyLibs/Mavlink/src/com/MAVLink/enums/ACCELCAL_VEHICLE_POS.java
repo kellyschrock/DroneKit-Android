@@ -16,6 +16,8 @@ public class ACCELCAL_VEHICLE_POS {
    public static final int ACCELCAL_VEHICLE_POS_NOSEDOWN = 4; /*  | */
    public static final int ACCELCAL_VEHICLE_POS_NOSEUP = 5; /*  | */
    public static final int ACCELCAL_VEHICLE_POS_BACK = 6; /*  | */
-   public static final int ACCELCAL_VEHICLE_POS_ENUM_END = 7; /*  | */
+   public static final int ACCELCAL_VEHICLE_POS_SUCCESS = 16777215; /*  | */
+   public static final int ACCELCAL_VEHICLE_POS_FAILED = 16777216; /*  | */
+   public static final int ACCELCAL_VEHICLE_POS_ENUM_END = 16777217; /*  | */
 }
             
