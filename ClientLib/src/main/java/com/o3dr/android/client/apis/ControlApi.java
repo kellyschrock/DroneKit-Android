@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.o3dr.android.client.Drone;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
+import com.o3dr.services.android.lib.drone.mission.item.command.VTOLTransition;
 import com.o3dr.services.android.lib.mavlink.MavlinkMessageWrapper;
 import com.o3dr.services.android.lib.model.AbstractCommandListener;
 import com.o3dr.services.android.lib.model.action.Action;
@@ -25,6 +26,7 @@ import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_S
 import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_SET_CONDITION_YAW;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_SET_GUIDED_ALTITUDE;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_SET_VELOCITY;
+import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_VTOL_TRANSITION;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_ALTITUDE;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_DO_ENABLE;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_FORCE_GUIDED_POINT;
@@ -33,6 +35,7 @@ import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_LO
 import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_VELOCITY_X;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_VELOCITY_Y;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_VELOCITY_Z;
+import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_VTOL_TARGET_STATE;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_YAW_CHANGE_RATE;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_YAW_IS_RELATIVE;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_YAW_TARGET_ANGLE;
@@ -121,6 +124,19 @@ public class ControlApi extends Api {
         Bundle params = new Bundle();
         params.putParcelable(EXTRA_GUIDED_POINT, point);
         drone.performAsyncActionOnDroneThread(new Action(ACTION_SEND_GUIDED_POINT_DIRECT, params), null);
+    }
+
+    /**
+     * Instructs the vehicle to perform a VTOL state transition.
+     *
+     * @param state
+     */
+    public void setVTOLState(VTOLTransition.TargetState state) {
+        Timber.d("setVTOLState(%s)", state);
+
+        Bundle params = new Bundle();
+        params.putInt(EXTRA_VTOL_TARGET_STATE, state.ordinal());
+        drone.performAsyncActionOnDroneThread(new Action(ACTION_VTOL_TRANSITION, params), null);
     }
 
     /**

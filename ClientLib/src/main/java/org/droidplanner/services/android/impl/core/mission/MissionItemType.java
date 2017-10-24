@@ -12,6 +12,9 @@ import org.droidplanner.services.android.impl.core.mission.commands.ReturnToHome
 import org.droidplanner.services.android.impl.core.mission.commands.SetRelayImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.SetServoImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.TakeoffImpl;
+import org.droidplanner.services.android.impl.core.mission.commands.VTOLLandImpl;
+import org.droidplanner.services.android.impl.core.mission.commands.VTOLTakeoffImpl;
+import org.droidplanner.services.android.impl.core.mission.commands.VTOLTransitionImpl;
 import org.droidplanner.services.android.impl.core.mission.survey.SplineSurveyImpl;
 import org.droidplanner.services.android.impl.core.mission.survey.SurveyImpl;
 import org.droidplanner.services.android.impl.core.mission.waypoints.CircleImpl;
@@ -43,7 +46,10 @@ public enum MissionItemType {
     SET_RELAY("Set Relay"),
     DO_LAND_START("Do Land Start"),
     DO_JUMP("Do Jump"),
-    LOITER_TO_ALT("Loiter to Alt")
+    LOITER_TO_ALT("Loiter to Alt"),
+    VTOL_TRANSITION("VTOL Transition"),
+    VTOL_TAKEOFF("VTOL Takeoff"),
+    VTOL_LAND("VTOL Land")
     ;
 
     private final String name;
@@ -96,6 +102,12 @@ public enum MissionItemType {
                 return new DoLandStartImpl(referenceItem);
             case DO_JUMP:
                 return new DoJumpImpl(referenceItem);
+            case VTOL_TRANSITION:
+                return new VTOLTransitionImpl(referenceItem);
+            case VTOL_TAKEOFF:
+                return new VTOLTakeoffImpl(referenceItem);
+            case VTOL_LAND:
+                return new VTOLLandImpl(referenceItem);
             default:
                 throw new IllegalArgumentException("Unrecognized mission item type (" + name + ")" + "");
         }

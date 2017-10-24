@@ -20,7 +20,7 @@ public class LoiterToAlt extends MissionItem implements MissionItem.Command, and
         super(MissionItemType.LOITER_TO_ALT);
     }
 
-    public LoiterToAlt(LoiterToAlt src){
+    public LoiterToAlt(LoiterToAlt src) {
         super(MissionItemType.LOITER_TO_ALT);
         coordinate = src.coordinate;
     }
