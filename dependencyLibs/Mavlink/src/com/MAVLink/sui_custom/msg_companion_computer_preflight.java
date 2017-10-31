@@ -4,22 +4,27 @@
  * java mavlink generator tool. It should not be modified by hand.
  */
 
-// MESSAGE SET_COMPANION_COMPUTER_CAMTYPE PACKING
+// MESSAGE COMPANION_COMPUTER_PREFLIGHT PACKING
 package com.MAVLink.sui_custom;
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
         
 /**
-* Select the camera type in the companion computer.
+* Tell the companion computer to perform preflight operations, set the camera, and time
 */
-public class msg_set_companion_computer_camtype extends MAVLinkMessage{
+public class msg_companion_computer_preflight extends MAVLinkMessage{
 
-    public static final int MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_CAMTYPE = 14;
-    public static final int MAVLINK_MSG_LENGTH = 3;
-    private static final long serialVersionUID = MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_CAMTYPE;
+    public static final int MAVLINK_MSG_ID_COMPANION_COMPUTER_PREFLIGHT = 14;
+    public static final int MAVLINK_MSG_LENGTH = 11;
+    private static final long serialVersionUID = MAVLINK_MSG_ID_COMPANION_COMPUTER_PREFLIGHT;
 
 
+      
+    /**
+    * current time in milliseconds from EPOCH, in UTC
+    */
+    public long time;
       
     /**
     * camType, a value in the CamType enum in sui-camera
@@ -45,7 +50,9 @@ public class msg_set_companion_computer_camtype extends MAVLinkMessage{
         MAVLinkPacket packet = new MAVLinkPacket(MAVLINK_MSG_LENGTH);
         packet.sysid = 255;
         packet.compid = 190;
-        packet.msgid = MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_CAMTYPE;
+        packet.msgid = MAVLINK_MSG_ID_COMPANION_COMPUTER_PREFLIGHT;
+              
+        packet.payload.putUnsignedLong(time);
               
         packet.payload.putUnsignedByte(type);
               
@@ -57,12 +64,14 @@ public class msg_set_companion_computer_camtype extends MAVLinkMessage{
     }
 
     /**
-    * Decode a set_companion_computer_camtype message into this class fields
+    * Decode a companion_computer_preflight message into this class fields
     *
     * @param payload The message to decode
     */
     public void unpack(MAVLinkPayload payload) {
         payload.resetIndex();
+              
+        this.time = payload.getUnsignedLong();
               
         this.type = payload.getUnsignedByte();
               
@@ -75,8 +84,8 @@ public class msg_set_companion_computer_camtype extends MAVLinkMessage{
     /**
     * Constructor for a new message, just initializes the msgid
     */
-    public msg_set_companion_computer_camtype(){
-        msgid = MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_CAMTYPE;
+    public msg_companion_computer_preflight(){
+        msgid = MAVLINK_MSG_ID_COMPANION_COMPUTER_PREFLIGHT;
     }
 
     /**
@@ -84,19 +93,19 @@ public class msg_set_companion_computer_camtype extends MAVLinkMessage{
     * from a mavlink packet
     *
     */
-    public msg_set_companion_computer_camtype(MAVLinkPacket mavLinkPacket){
+    public msg_companion_computer_preflight(MAVLinkPacket mavLinkPacket){
         this.sysid = mavLinkPacket.sysid;
         this.compid = mavLinkPacket.compid;
-        this.msgid = MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_CAMTYPE;
+        this.msgid = MAVLINK_MSG_ID_COMPANION_COMPUTER_PREFLIGHT;
         unpack(mavLinkPacket.payload);        
     }
 
-          
+            
     /**
     * Returns a string with the MSG name and data
     */
     public String toString(){
-        return "MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_CAMTYPE - sysid:"+sysid+" compid:"+compid+" type:"+type+" target_system:"+target_system+" target_component:"+target_component+"";
+        return "MAVLINK_MSG_ID_COMPANION_COMPUTER_PREFLIGHT - sysid:"+sysid+" compid:"+compid+" time:"+time+" type:"+type+" target_system:"+target_system+" target_component:"+target_component+"";
     }
 }
         

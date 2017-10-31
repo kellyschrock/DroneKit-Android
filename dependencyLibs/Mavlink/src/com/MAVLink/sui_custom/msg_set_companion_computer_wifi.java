@@ -16,7 +16,7 @@ import com.MAVLink.Messages.MAVLinkPayload;
 public class msg_set_companion_computer_wifi extends MAVLinkMessage{
 
     public static final int MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_WIFI = 8;
-    public static final int MAVLINK_MSG_LENGTH = 131;
+    public static final int MAVLINK_MSG_LENGTH = 67;
     private static final long serialVersionUID = MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_WIFI;
 
 
@@ -29,12 +29,12 @@ public class msg_set_companion_computer_wifi extends MAVLinkMessage{
     /**
     * ssid
     */
-    public byte ssid[] = new byte[64];
+    public byte ssid[] = new byte[32];
       
     /**
     * pass
     */
-    public byte pass[] = new byte[64];
+    public byte pass[] = new byte[32];
       
     /**
     * System ID
@@ -130,12 +130,12 @@ public class msg_set_companion_computer_wifi extends MAVLinkMessage{
     * Sets the buffer of this message with a string, adds the necessary padding
     */
     public void setSsid(String str) {
-        int len = Math.min(str.length(), 64);
+        int len = Math.min(str.length(), 32);
         for (int i=0; i<len; i++) {
             ssid[i] = (byte) str.charAt(i);
         }
 
-        for (int i=len; i<64; i++) {            // padding for the rest of the buffer
+        for (int i=len; i<32; i++) {            // padding for the rest of the buffer
             ssid[i] = 0;
         }
     }
@@ -145,7 +145,7 @@ public class msg_set_companion_computer_wifi extends MAVLinkMessage{
     */
     public String getSsid() {
         StringBuffer buf = new StringBuffer();
-        for (int i = 0; i < 64; i++) {
+        for (int i = 0; i < 32; i++) {
             if (ssid[i] != 0)
                 buf.append((char) ssid[i]);
             else
@@ -159,12 +159,12 @@ public class msg_set_companion_computer_wifi extends MAVLinkMessage{
     * Sets the buffer of this message with a string, adds the necessary padding
     */
     public void setPass(String str) {
-        int len = Math.min(str.length(), 64);
+        int len = Math.min(str.length(), 32);
         for (int i=0; i<len; i++) {
             pass[i] = (byte) str.charAt(i);
         }
 
-        for (int i=len; i<64; i++) {            // padding for the rest of the buffer
+        for (int i=len; i<32; i++) {            // padding for the rest of the buffer
             pass[i] = 0;
         }
     }
@@ -174,7 +174,7 @@ public class msg_set_companion_computer_wifi extends MAVLinkMessage{
     */
     public String getPass() {
         StringBuffer buf = new StringBuffer();
-        for (int i = 0; i < 64; i++) {
+        for (int i = 0; i < 32; i++) {
             if (pass[i] != 0)
                 buf.append((char) pass[i]);
             else

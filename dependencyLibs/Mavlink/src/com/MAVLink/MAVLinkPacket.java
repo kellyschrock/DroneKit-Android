@@ -60,7 +60,8 @@ import com.MAVLink.ardupilotmega.msg_set_mag_offsets;
 import com.MAVLink.ardupilotmega.msg_simstate;
 import com.MAVLink.ardupilotmega.msg_wind;
 import com.MAVLink.common.*;
-import com.MAVLink.sui_custom.msg_set_companion_computer_camtype;
+import com.MAVLink.sui_custom.msg_companion_computer_preflight;
+import com.MAVLink.sui_custom.msg_processing_image;
 import com.MAVLink.sui_custom.msg_set_companion_computer_usb;
 import com.MAVLink.sui_custom.msg_set_companion_computer_wifi;
 
@@ -772,8 +773,11 @@ public class MAVLinkPacket implements Serializable {
             case msg_set_companion_computer_usb.MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_USB:
                 return  new msg_set_companion_computer_usb(this);
                  
-            case msg_set_companion_computer_camtype.MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_CAMTYPE:
-                return  new msg_set_companion_computer_camtype(this);
+            case msg_companion_computer_preflight.MAVLINK_MSG_ID_COMPANION_COMPUTER_PREFLIGHT:
+                return  new msg_companion_computer_preflight(this);
+                 
+            case msg_processing_image.MAVLINK_MSG_ID_PROCESSING_IMAGE:
+                return  new msg_processing_image(this);
             
             
             default:
