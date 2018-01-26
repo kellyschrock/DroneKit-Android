@@ -10,6 +10,7 @@ import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.ardupilotmega.msg_ekf_status_report;
 import com.MAVLink.common.msg_adsb_vehicle;
 import com.MAVLink.common.msg_attitude;
+import com.MAVLink.common.msg_battery_status;
 import com.MAVLink.common.msg_global_position_int;
 import com.MAVLink.common.msg_gps_raw_int;
 import com.MAVLink.common.msg_heartbeat;
@@ -109,6 +110,7 @@ public class GenericMavLinkDrone implements MavLinkDrone {
     protected final Altitude altitude = new Altitude();
     protected final Speed speed = new Speed();
     protected final Battery battery = new Battery();
+    protected final Battery battery2 = new Battery();
     protected final Signal signal = new Signal();
     protected final Attitude attitude = new Attitude();
     protected final Vibration vibration = new Vibration();
@@ -548,6 +550,9 @@ public class GenericMavLinkDrone implements MavLinkDrone {
             case AttributeType.BATTERY:
                 return battery;
 
+            case AttributeType.BATTERY2:
+                return battery2;
+
             case AttributeType.SIGNAL:
                 return signal;
 
@@ -610,6 +615,12 @@ public class GenericMavLinkDrone implements MavLinkDrone {
             case msg_vibration.MAVLINK_MSG_ID_VIBRATION:
                 msg_vibration vibrationMsg = (msg_vibration) message;
                 processVibrationMessage(vibrationMsg);
+                break;
+
+            //*************** 2ndary battery handling ******************//
+            case msg_battery_status.MAVLINK_MSG_ID_BATTERY_STATUS:
+                msg_battery_status batt = (msg_battery_status)message;
+                processBattery2Update(batt);
                 break;
 
             //*************** EKF State handling ******************//
@@ -753,6 +764,15 @@ public class GenericMavLinkDrone implements MavLinkDrone {
             battery.setBatteryVoltage(voltage);
             battery.setBatteryRemain(remain);
             battery.setBatteryCurrent(current);
+
+            notifyDroneEvent(DroneInterfaces.DroneEventsType.BATTERY);
+        }
+    }
+
+    protected void processBattery2Update(msg_battery_status batt) {
+        if(batt.battery_remaining != battery2.getBatteryRemain() || batt.current_battery != battery2.getBatteryCurrent()) {
+            battery2.setBatteryCurrent(batt.current_battery);
+            battery2.setBatteryRemain(batt.battery_remaining);
 
             notifyDroneEvent(DroneInterfaces.DroneEventsType.BATTERY);
         }
