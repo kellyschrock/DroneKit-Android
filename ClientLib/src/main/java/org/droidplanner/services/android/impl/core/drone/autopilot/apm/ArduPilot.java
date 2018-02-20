@@ -34,6 +34,7 @@ import com.o3dr.services.android.lib.drone.attribute.AttributeEventExtra;
 import com.o3dr.services.android.lib.drone.attribute.AttributeType;
 import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
 import com.o3dr.services.android.lib.drone.mission.action.MissionActions;
+import com.o3dr.services.android.lib.drone.mission.item.command.VTOLTransition;
 import com.o3dr.services.android.lib.drone.property.DroneAttribute;
 import com.o3dr.services.android.lib.drone.property.Parameter;
 import com.o3dr.services.android.lib.drone.property.VehicleMode;
@@ -277,6 +278,13 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
                 boolean force = data.getBoolean(ControlActions.EXTRA_FORCE_GUIDED_POINT);
                 LatLongAlt lookAtTarget = data.getParcelable(ControlActions.EXTRA_LOOK_AT_TARGET);
                 CommonApiUtils.sendLookAtTarget(this, lookAtTarget, force, listener);
+                return true;
+
+            case ControlActions.ACTION_VTOL_TRANSITION:
+                final VTOLTransition.TargetState state = VTOLTransition.TargetState.fromOrdinal(data.getInt(ControlActions.EXTRA_VTOL_TARGET_STATE));
+                if(state != null && state != VTOLTransition.TargetState.Undefined) {
+                    MavLinkCommands.sendVTOLTransition(this, state, listener);
+                }
                 return true;
 
             case ControlActions.ACTION_RESET_ROI:

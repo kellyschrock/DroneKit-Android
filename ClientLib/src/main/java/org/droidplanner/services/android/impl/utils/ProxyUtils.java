@@ -14,6 +14,9 @@ import com.o3dr.services.android.lib.drone.mission.item.command.ReturnToLaunch;
 import com.o3dr.services.android.lib.drone.mission.item.command.SetRelay;
 import com.o3dr.services.android.lib.drone.mission.item.command.SetServo;
 import com.o3dr.services.android.lib.drone.mission.item.command.Takeoff;
+import com.o3dr.services.android.lib.drone.mission.item.command.VTOLLand;
+import com.o3dr.services.android.lib.drone.mission.item.command.VTOLTakeoff;
+import com.o3dr.services.android.lib.drone.mission.item.command.VTOLTransition;
 import com.o3dr.services.android.lib.drone.mission.item.command.YawCondition;
 import com.o3dr.services.android.lib.drone.mission.item.complex.CameraDetail;
 import com.o3dr.services.android.lib.drone.mission.item.complex.SplineSurvey;
@@ -39,6 +42,9 @@ import org.droidplanner.services.android.impl.core.mission.commands.ReturnToHome
 import org.droidplanner.services.android.impl.core.mission.commands.SetRelayImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.SetServoImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.TakeoffImpl;
+import org.droidplanner.services.android.impl.core.mission.commands.VTOLLandImpl;
+import org.droidplanner.services.android.impl.core.mission.commands.VTOLTakeoffImpl;
+import org.droidplanner.services.android.impl.core.mission.commands.VTOLTransitionImpl;
 import org.droidplanner.services.android.impl.core.mission.survey.SplineSurveyImpl;
 import org.droidplanner.services.android.impl.core.mission.survey.SurveyImpl;
 import org.droidplanner.services.android.impl.core.mission.waypoints.CircleImpl;
@@ -122,6 +128,48 @@ public class ProxyUtils {
                 if(coord != null) {
                     LoiterToAltImpl impl = new LoiterToAltImpl(mission, coord.getLatitude(), coord.getLongitude(), coord.getAltitude());
                     missionItemImpl = impl;
+                } else {
+                    missionItemImpl = null;
+                }
+
+                break;
+            }
+            case VTOL_TRANSITION: {
+                VTOLTransition proxy = (VTOLTransition)proxyItem;
+
+                VTOLTransitionImpl impl = new VTOLTransitionImpl(mission, proxy.getTargetState().getState());
+                missionItemImpl = impl;
+
+                break;
+            }
+            case VTOL_TAKEOFF: {
+                VTOLTakeoff proxy = (VTOLTakeoff)proxyItem;
+                final LatLongAlt coord = proxy.getCoordinate();
+
+                if(coord != null) {
+                    missionItemImpl = new VTOLTakeoffImpl(
+                            mission,
+                            proxy.getTransitionHeading().getValue(),
+                            proxy.getYawAngle(),
+                            coord.getLatitude(), coord.getLongitude(), coord.getAltitude()
+                            );
+                } else {
+                    missionItemImpl = null;
+                }
+
+                break;
+            }
+            case VTOL_LAND: {
+                VTOLLand proxy = (VTOLLand)proxyItem;
+                final LatLongAlt coord = proxy.getCoordinate();
+
+                if(coord != null) {
+                    missionItemImpl = new VTOLLandImpl(
+                            mission,
+                            proxy.getApproachAltitude(),
+                            proxy.getYawAngle(),
+                            coord.getLatitude(), coord.getLongitude(), coord.getAltitude()
+                            );
                 } else {
                     missionItemImpl = null;
                 }
@@ -509,6 +557,37 @@ public class ProxyUtils {
                 break;
             }
 
+            case VTOL_TRANSITION: {
+                VTOLTransitionImpl source = (VTOLTransitionImpl) itemImpl;
+                VTOLTransition temp = new VTOLTransition();
+                temp.setTargetState(VTOLTransition.TargetState.fromOrdinal(source.getTargetState()));
+
+                proxyMissionItem = temp;
+                break;
+            }
+
+            case VTOL_TAKEOFF: {
+                VTOLTakeoffImpl source = (VTOLTakeoffImpl)itemImpl;
+                VTOLTakeoff temp = new VTOLTakeoff();
+                temp.setCoordinate(new LatLongAlt(source.getLat(), source.getLng(), source.getAlt()));
+                temp.setTransitionHeading(VTOLTakeoff.TransitionHeading.fromValue(source.getFrontTransitionHeading()));
+                temp.setYawAngle(source.getYawAngle());
+
+                proxyMissionItem = temp;
+                break;
+            }
+
+            case VTOL_LAND: {
+                VTOLLandImpl source = (VTOLLandImpl)itemImpl;
+                VTOLLand temp = new VTOLLand();
+                temp.setCoordinate(new LatLongAlt(source.getLat(), source.getLng(), source.getAlt()));
+                temp.setYawAngle(source.getYawAngle());
+                temp.setApproachAltitude(source.getApproachAltitude());
+
+                proxyMissionItem = temp;
+                break;
+            }
+
             case CAMERA_TRIGGER: {
                 CameraTriggerImpl source = (CameraTriggerImpl) itemImpl;
 
@@ -518,6 +597,7 @@ public class ProxyUtils {
                 proxyMissionItem = temp;
                 break;
             }
+
             case EPM_GRIPPER: {
                 EpmGripperImpl source = (EpmGripperImpl) itemImpl;
 
