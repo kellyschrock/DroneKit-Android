@@ -18,7 +18,7 @@ public class VTOLLand extends MissionItem implements MissionItem.Command, androi
     private LatLongAlt coordinate;
 
     public VTOLLand(){
-        super(MissionItemType.VTOL_TAKEOFF);
+        super(MissionItemType.VTOL_LAND);
     }
 
     public VTOLLand(VTOLLand src) {

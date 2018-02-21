@@ -48,6 +48,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
+import timber.log.Timber;
+
 /**
  * Created by fhuya on 11/4/14.
  */
@@ -652,7 +654,7 @@ public class Drone {
                     try {
                         listener.onDroneEvent(attributeEvent, extras);
                     } catch (Exception e) {
-                        Log.e(TAG, e.getMessage(), e);
+                        Timber.e(e, e.getMessage());
                     }
                 }
             }
