@@ -44,6 +44,12 @@ public enum ApmModes {
 	ROVER_GUIDED(15, "GUIDED", MAV_TYPE.MAV_TYPE_GROUND_ROVER),
 	ROVER_INITIALIZING(16, "INITIALIZING", MAV_TYPE.MAV_TYPE_GROUND_ROVER),
 
+	VTOL_STABILIZE(17, "QSTABILIZE", MAV_TYPE.MAV_TYPE_VTOL_DUOROTOR),
+	VTOL_HOVER(18, "QHOVER", MAV_TYPE.MAV_TYPE_VTOL_DUOROTOR),
+	VTOL_LOITER(19, "QLOITER", MAV_TYPE.MAV_TYPE_VTOL_DUOROTOR),
+	VTOL_LAND(20, "QLAND", MAV_TYPE.MAV_TYPE_VTOL_DUOROTOR),
+	VTOL_RTL(21, "QRTL", MAV_TYPE.MAV_TYPE_VTOL_DUOROTOR),
+
 	UNKNOWN(-1, "Unknown", MAV_TYPE.MAV_TYPE_GENERIC);
 
 	private final long number;
@@ -71,7 +77,9 @@ public enum ApmModes {
 	public static ApmModes getMode(long i, int type) {
         if (isCopter(type)) {
             type = MAV_TYPE.MAV_TYPE_QUADROTOR;
-        }
+        } else if(isVtol(type)) {
+        	type = MAV_TYPE.MAV_TYPE_VTOL_DUOROTOR;
+		}
 
 		for (ApmModes mode : ApmModes.values()) {
 			if (i == mode.getNumber() && type == mode.getType()) {
@@ -81,10 +89,21 @@ public enum ApmModes {
 		return UNKNOWN;
 	}
 
+	public static ApmModes getModeNoType(long i) {
+		for (ApmModes mode : ApmModes.values()) {
+			if (i == mode.getNumber()) {
+				return mode;
+			}
+		}
+		return UNKNOWN;
+	}
+
 	public static ApmModes getMode(String str, int type) {
         if (isCopter(type)) {
             type = MAV_TYPE.MAV_TYPE_QUADROTOR;
-        }
+        } else if(isVtol(type)) {
+        	type = MAV_TYPE.MAV_TYPE_VTOL_DUOROTOR;
+		}
 
 		for (ApmModes mode : ApmModes.values()) {
 			if (str.equals(mode.getName()) && type == mode.getType()) {
@@ -99,6 +118,8 @@ public enum ApmModes {
 
 		if (isCopter(type)) {
 			type = MAV_TYPE.MAV_TYPE_QUADROTOR;
+		} else if(isVtol(type)) {
+			type = MAV_TYPE.MAV_TYPE_VTOL_DUOROTOR;
 		}
 
 		for (ApmModes mode : ApmModes.values()) {
@@ -127,5 +148,19 @@ public enum ApmModes {
 			return false;
 		}
 	}
-
+	
+	public static boolean isVtol(int type) {
+		switch(type) {
+			case MAV_TYPE.MAV_TYPE_VTOL_DUOROTOR:
+			case MAV_TYPE.MAV_TYPE_VTOL_QUADROTOR:
+			case MAV_TYPE.MAV_TYPE_VTOL_TILTROTOR:
+			case MAV_TYPE.MAV_TYPE_VTOL_RESERVED2:
+			case MAV_TYPE.MAV_TYPE_VTOL_RESERVED3:
+			case MAV_TYPE.MAV_TYPE_VTOL_RESERVED4:
+			case MAV_TYPE.MAV_TYPE_VTOL_RESERVED5:
+				return true;
+			default:
+				return false;
+		}
+	}
 }

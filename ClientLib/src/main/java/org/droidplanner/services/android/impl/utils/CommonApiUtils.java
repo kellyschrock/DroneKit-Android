@@ -217,6 +217,21 @@ public class CommonApiUtils {
             case ROVER_INITIALIZING:
                 return VehicleMode.ROVER_INITIALIZING;
 
+            case VTOL_STABILIZE:
+                return VehicleMode.VTOL_STABILIZE;
+
+            case VTOL_HOVER:
+                return VehicleMode.VTOL_HOVER;
+
+            case VTOL_LOITER:
+                return VehicleMode.VTOL_LOITER;
+
+            case VTOL_LAND:
+                return VehicleMode.VTOL_LAND;
+
+            case VTOL_RTL:
+                return VehicleMode.VTOL_RTL;
+
             default:
             case UNKNOWN:
                 return null;
@@ -232,6 +247,15 @@ public class CommonApiUtils {
             case MAV_TYPE.MAV_TYPE_OCTOROTOR:
             case MAV_TYPE.MAV_TYPE_HELICOPTER:
                 return Type.TYPE_COPTER;
+
+            case MAV_TYPE.MAV_TYPE_VTOL_DUOROTOR:
+            case MAV_TYPE.MAV_TYPE_VTOL_QUADROTOR:
+            case MAV_TYPE.MAV_TYPE_VTOL_TILTROTOR:
+            case MAV_TYPE.MAV_TYPE_VTOL_RESERVED2:
+            case MAV_TYPE.MAV_TYPE_VTOL_RESERVED3:
+            case MAV_TYPE.MAV_TYPE_VTOL_RESERVED4:
+            case MAV_TYPE.MAV_TYPE_VTOL_RESERVED5:
+                return Type.TYPE_VTOL;
 
             case MAV_TYPE.MAV_TYPE_FIXED_WING:
                 return Type.TYPE_PLANE;
@@ -383,8 +407,10 @@ public class CommonApiUtils {
         String calibrationMessage = accelCalibration != null && accelCalibration.isCalibrating()
                 ? accelCalibration.getMessage()
                 : null;
+        final VehicleMode vehicleMode = CommonApiUtils.getVehicleMode(droneMode);
+//        Timber.d("apmMode=%s vehicleMode=%s", droneMode, vehicleMode);
 
-        return new State(isConnected, CommonApiUtils.getVehicleMode(droneMode), droneState.isArmed(),
+        return new State(isConnected, vehicleMode, droneState.isArmed(),
             droneState.isFlying(), droneState.getErrorId(), drone.getMavlinkVersion(), calibrationMessage,
             droneState.getFlightStartTime(), generateEkfStatus(droneState.getEkfStatus()),
             isConnected && drone.isConnectionAlive(), vibration);
@@ -475,6 +501,10 @@ public class CommonApiUtils {
 
             case Type.TYPE_ROVER:
                 mavType = MAV_TYPE.MAV_TYPE_GROUND_ROVER;
+                break;
+
+            case Type.TYPE_VTOL:
+                mavType = MAV_TYPE.MAV_TYPE_VTOL_DUOROTOR;
                 break;
         }
 

@@ -49,8 +49,13 @@ public enum VehicleMode implements DroneAttribute {
     ROVER_GUIDED(15, Type.TYPE_ROVER, "Guided"),
     ROVER_INITIALIZING(16, Type.TYPE_ROVER, "Initializing"),
 
-    UNKNOWN(-1, Type.TYPE_UNKNOWN, "Unknown");
+    VTOL_STABILIZE(17, Type.TYPE_VTOL, "VTOL Stabilize"),
+    VTOL_HOVER(18, Type.TYPE_VTOL, "VTOL Hover"),
+    VTOL_LOITER(19, Type.TYPE_VTOL, "VTOL Loiter"),
+    VTOL_LAND(20, Type.TYPE_VTOL, "VTOL Land"),
+    VTOL_RTL(21, Type.TYPE_VTOL, "VTOL RTL"),
 
+    UNKNOWN(-1, Type.TYPE_UNKNOWN, "Unknown");
 
     private final int mode;
     private final int droneType;
