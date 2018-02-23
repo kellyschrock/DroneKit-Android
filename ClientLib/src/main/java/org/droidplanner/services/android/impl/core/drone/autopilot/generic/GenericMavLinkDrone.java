@@ -681,6 +681,7 @@ public class GenericMavLinkDrone implements MavLinkDrone {
     }
 
     private void processHeartbeat(msg_heartbeat msg_heart) {
+//        Timber.d("processHeartbeat(): type=%d", msg_heart.type);
         setType(msg_heart.type);
         checkIfFlying(msg_heart);
         processState(msg_heart);
@@ -690,7 +691,7 @@ public class GenericMavLinkDrone implements MavLinkDrone {
     private void processVehicleMode(msg_heartbeat msg_heart) {
 //        Timber.d("processVehicleMode(): type=%d msg_heart.base_mode=%d msg_heart.custom_mode=%d",
 //                getType(), msg_heart.base_mode, msg_heart.custom_mode);
-        ApmModes newMode = ApmModes.getMode(msg_heart.custom_mode, getType());
+        ApmModes newMode = ApmModes.getMode(msg_heart.custom_mode, msg_heart.type);
         if(newMode == ApmModes.UNKNOWN) {
             newMode = ApmModes.getModeNoType(msg_heart.custom_mode);
         }

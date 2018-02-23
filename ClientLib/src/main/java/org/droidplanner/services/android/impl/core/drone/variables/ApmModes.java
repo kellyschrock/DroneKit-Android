@@ -5,6 +5,8 @@ import com.MAVLink.enums.MAV_TYPE;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 public enum ApmModes {
 	FIXED_WING_MANUAL (0,"Manual",MAV_TYPE.MAV_TYPE_FIXED_WING),
 	FIXED_WING_CIRCLE (1,"Circle",MAV_TYPE.MAV_TYPE_FIXED_WING),
@@ -150,6 +152,8 @@ public enum ApmModes {
 	}
 	
 	public static boolean isVtol(int type) {
+		Timber.d("isVtol(%d)", type);
+
 		switch(type) {
 			case MAV_TYPE.MAV_TYPE_VTOL_DUOROTOR:
 			case MAV_TYPE.MAV_TYPE_VTOL_QUADROTOR:
