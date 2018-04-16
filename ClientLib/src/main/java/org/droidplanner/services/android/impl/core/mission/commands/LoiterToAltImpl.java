@@ -55,7 +55,7 @@ public class LoiterToAltImpl extends MissionCMD {
 
 	@Override
 	public MissionItemType getType() {
-		return MissionItemType.CHANGE_SPEED;
+		return MissionItemType.LOITER_TO_ALT;
 	}
 
     public double getLat() {

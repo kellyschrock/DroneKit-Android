@@ -44,7 +44,7 @@ public class VTOLTransitionImpl extends MissionCMD {
 
 	@Override
 	public MissionItemType getType() {
-		return MissionItemType.CHANGE_SPEED;
+		return MissionItemType.VTOL_TRANSITION;
 	}
 
     public int getTargetState() { return targetState; }

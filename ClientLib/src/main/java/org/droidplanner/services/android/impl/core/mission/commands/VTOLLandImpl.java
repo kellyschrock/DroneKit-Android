@@ -67,7 +67,7 @@ public class VTOLLandImpl extends MissionCMD {
 
     @Override
     public MissionItemType getType() {
-        return MissionItemType.VTOL_TAKEOFF;
+        return MissionItemType.VTOL_LAND;
     }
 
     public double getApproachAltitude() { return approachAltitude; }
