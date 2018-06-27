@@ -11,6 +11,7 @@ public class Battery implements DroneAttribute {
     private double batteryRemain;
     private double batteryCurrent;
     private Double batteryDischarge;
+    private short batteryFunction;
 
     public Battery(){}
 
@@ -53,6 +54,9 @@ public class Battery implements DroneAttribute {
     public Double getBatteryDischarge() {
         return batteryDischarge;
     }
+
+    public short getBatteryFunction() { return batteryFunction; }
+    public void setBatteryFunction(short func) { batteryFunction = func; }
 
     @Override
     public int describeContents() {

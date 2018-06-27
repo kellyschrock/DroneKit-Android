@@ -780,6 +780,7 @@ public class GenericMavLinkDrone implements MavLinkDrone {
         if(batt.battery_remaining != battery2.getBatteryRemain() || batt.current_battery != battery2.getBatteryCurrent()) {
             battery2.setBatteryCurrent(batt.current_battery);
             battery2.setBatteryRemain(batt.battery_remaining);
+            battery2.setBatteryFunction(batt.battery_function);
 
             notifyDroneEvent(DroneInterfaces.DroneEventsType.BATTERY);
         }
