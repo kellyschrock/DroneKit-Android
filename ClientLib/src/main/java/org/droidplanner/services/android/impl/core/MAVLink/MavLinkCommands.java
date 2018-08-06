@@ -14,6 +14,7 @@ import com.o3dr.services.android.lib.model.ICommandListener;
 
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
 import org.droidplanner.services.android.impl.core.drone.variables.ApmModes;
+import org.droidplanner.services.android.impl.core.drone.variables.Px4Modes;
 
 import timber.log.Timber;
 
@@ -124,6 +125,18 @@ public class MavLinkCommands {
         msg.target_system = drone.getSysid();
         msg.base_mode = 1; // TODO use meaningful constant
         msg.custom_mode = mode.getNumber();
+        drone.getMavClient().sendMessage(msg, listener);
+    }
+
+    public static void changePx4FlightMode(MavLinkDrone drone, Px4Modes mode, ICommandListener listener) {
+        msg_command_long msg = new msg_command_long();
+        msg.target_system = drone.getSysid();
+        msg.target_component = drone.getCompid();
+
+        msg.command = MAV_CMD.MAV_CMD_DO_SET_MODE;
+        msg.param1 = mode.getMainMode();
+        msg.param2 = mode.getCustomMode();
+        msg.param3 = mode.getCustomSubMode();
         drone.getMavClient().sendMessage(msg, listener);
     }
 

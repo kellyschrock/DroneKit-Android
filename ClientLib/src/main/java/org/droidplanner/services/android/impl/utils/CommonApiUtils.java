@@ -45,12 +45,12 @@ import org.droidplanner.services.android.impl.core.MAVLink.MavLinkCommands;
 import org.droidplanner.services.android.impl.core.MAVLink.command.doCmd.MavLinkDoCmds;
 import org.droidplanner.services.android.impl.core.drone.autopilot.Drone;
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
-import org.droidplanner.services.android.impl.core.drone.autopilot.apm.ArduPilot;
 import org.droidplanner.services.android.impl.core.drone.autopilot.generic.GenericMavLinkDrone;
 import org.droidplanner.services.android.impl.core.drone.profiles.ParameterManager;
 import org.droidplanner.services.android.impl.core.drone.variables.ApmModes;
 import org.droidplanner.services.android.impl.core.drone.variables.Camera;
 import org.droidplanner.services.android.impl.core.drone.variables.GuidedPoint;
+import org.droidplanner.services.android.impl.core.drone.variables.Px4Modes;
 import org.droidplanner.services.android.impl.core.drone.variables.calibration.AccelCalibration;
 import org.droidplanner.services.android.impl.core.drone.variables.calibration.MagnetometerCalibrationImpl;
 import org.droidplanner.services.android.impl.core.firmware.FirmwareType;
@@ -511,6 +511,29 @@ public class CommonApiUtils {
         drone.getState().changeFlightMode(ApmModes.getMode(newMode.getMode(), mavType), listener);
     }
 
+    public static void changePx4VehicleMode(MavLinkDrone drone, VehicleMode newMode, ICommandListener listener) {
+        if (drone == null)
+            return;
+
+        int mavType;
+        switch (newMode.getDroneType()) {
+            default:
+            case Type.TYPE_COPTER:
+                mavType = MAV_TYPE.MAV_TYPE_QUADROTOR;
+                break;
+
+            case Type.TYPE_PLANE:
+                mavType = MAV_TYPE.MAV_TYPE_FIXED_WING;
+                break;
+
+            case Type.TYPE_ROVER:
+                mavType = MAV_TYPE.MAV_TYPE_GROUND_ROVER;
+                break;
+        }
+
+        drone.getState().changePx4FlightMode(Px4Modes.getMode(newMode, mavType), listener);
+    }
+
     public static FollowState getFollowState(Follow followMe) {
         if (followMe == null)
             return new FollowState();
@@ -610,7 +633,7 @@ public class CommonApiUtils {
         }
     }
 
-    public static void setMission(MavLinkDrone drone, Mission mission, boolean pushToDrone) {
+    public static void setAPMMission(MavLinkDrone drone, Mission mission, boolean pushToDrone) {
         if (drone == null)
             return;
 
@@ -626,7 +649,23 @@ public class CommonApiUtils {
             droneMission.sendMissionToAPM();
     }
 
-    public static void startMission(final ArduPilot drone, final boolean forceModeChange, boolean forceArm, final ICommandListener listener) {
+    public static void setPX4Mission(MavLinkDrone drone, Mission mission, boolean pushToDrone) {
+        if (drone == null)
+            return;
+
+        org.droidplanner.services.android.impl.core.mission.Mission droneMission = drone.getMission();
+        droneMission.clearMissionItems();
+
+        List<MissionItem> itemsList = mission.getMissionItems();
+        for (MissionItem item : itemsList) {
+            droneMission.addMissionItem(ProxyUtils.getMissionItemImpl(droneMission, item));
+        }
+
+        if (pushToDrone)
+            droneMission.sendMissionToPX4();
+    }
+
+    public static void startMission(final GenericMavLinkDrone drone, final boolean forceModeChange, boolean forceArm, final ICommandListener listener) {
         if (drone == null) {
             return;
         }
@@ -703,11 +742,11 @@ public class CommonApiUtils {
         return (float) drone.getMission().makeAndUploadDronie();
     }
 
-    public static void arm(ArduPilot drone, boolean arm, ICommandListener listener) {
+    public static void arm(GenericMavLinkDrone drone, boolean arm, ICommandListener listener) {
         arm(drone, arm, false, listener);
     }
 
-    public static void arm(final ArduPilot drone, final boolean arm, final boolean emergencyDisarm, final ICommandListener listener) {
+    public static void arm(final GenericMavLinkDrone drone, final boolean arm, final boolean emergencyDisarm, final ICommandListener listener) {
         if (drone == null)
             return;
 

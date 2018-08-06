@@ -489,28 +489,34 @@ public class GenericMavLinkDrone implements MavLinkDrone {
     }
 
     protected boolean setVehicleMode(Bundle data, ICommandListener listener) {
+        boolean result = false;
         data.setClassLoader(VehicleMode.class.getClassLoader());
         VehicleMode newMode = data.getParcelable(StateActions.EXTRA_VEHICLE_MODE);
         if (newMode != null) {
             switch (newMode) {
                 case COPTER_LAND:
                     MavLinkCommands.sendNavLand(this, listener);
+                    result = true;
                     break;
 
                 case COPTER_RTL:
                     MavLinkCommands.sendNavRTL(this, listener);
+                    result = true;
                     break;
 
                 case COPTER_GUIDED:
                     MavLinkCommands.sendPause(this, listener);
+                    result = true;
                     break;
 
                 case COPTER_AUTO:
                     MavLinkCommands.startMission(this, listener);
+                    result = true;
                     break;
             }
         }
-        return true;
+
+        return result;
     }
 
     protected boolean setVelocity(Bundle data, ICommandListener listener) {
@@ -594,6 +600,8 @@ public class GenericMavLinkDrone implements MavLinkDrone {
     public void onMavLinkMessageReceived(MAVLinkMessage message) {
 
         onHeartbeat(message);
+
+        Timber.d("onMavlinkMessageReceived(): %s", message.getClass().getSimpleName());
 
         switch (message.msgid) {
             case msg_radio_status.MAVLINK_MSG_ID_RADIO_STATUS:

@@ -26,15 +26,31 @@
                 android:layout_height="wrap_content"
                 android:padding="10dp">
 
-                <Button
-                    android:id="@+id/btnConnect"
-                    android:layout_width="150dp"
+                <LinearLayout
+                    android:id="@+id/layout_buttons"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_below="@+id/connectionTypeLabel"
-                    android:onClick="onBtnConnectTap"
-                    android:text="Connect" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    >
+                    <Button
+                        android:id="@+id/btnConnect"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="onBtnConnectTap"
+                        android:text="Connect" />
+
+                    <Button
+                        android:id="@+id/btnTest"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="onBtnTestTap"
+                        android:text="Test" />
+
+                </LinearLayout>
 
                 <Spinner
                     android:id="@+id/selectConnectionType"
@@ -43,7 +59,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_below="@+id/connectionTypeLabel"
-                    android:layout_toLeftOf="@+id/btnConnect"
+                    android:layout_toLeftOf="@+id/layout_buttons"
                     android:entries="@array/drone_connection_types"
                     android:spinnerMode="dropdown" />
 

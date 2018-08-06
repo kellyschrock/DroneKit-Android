@@ -22,6 +22,7 @@ import com.o3dr.android.client.ControlTower;
 import com.o3dr.android.client.Drone;
 import com.o3dr.android.client.apis.ControlApi;
 import com.o3dr.android.client.apis.ExperimentalApi;
+import com.o3dr.android.client.apis.MissionApi;
 import com.o3dr.android.client.apis.VehicleApi;
 import com.o3dr.android.client.apis.solo.SoloCameraApi;
 import com.o3dr.android.client.interfaces.DroneListener;
@@ -32,11 +33,16 @@ import com.o3dr.android.client.utils.video.MediaCodecManager;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEvent;
+import com.o3dr.services.android.lib.drone.attribute.AttributeEventExtra;
 import com.o3dr.services.android.lib.drone.attribute.AttributeType;
 import com.o3dr.services.android.lib.drone.companion.solo.SoloAttributes;
 import com.o3dr.services.android.lib.drone.companion.solo.SoloState;
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
 import com.o3dr.services.android.lib.drone.connection.ConnectionType;
+import com.o3dr.services.android.lib.drone.mission.Mission;
+import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
+import com.o3dr.services.android.lib.drone.mission.item.command.ReturnToLaunch;
+import com.o3dr.services.android.lib.drone.mission.item.spatial.Waypoint;
 import com.o3dr.services.android.lib.drone.property.Altitude;
 import com.o3dr.services.android.lib.drone.property.Gps;
 import com.o3dr.services.android.lib.drone.property.Home;
@@ -47,8 +53,10 @@ import com.o3dr.services.android.lib.drone.property.VehicleMode;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 import com.o3dr.services.android.lib.model.AbstractCommandListener;
 import com.o3dr.services.android.lib.model.SimpleCommandListener;
+import com.o3dr.services.android.lib.util.MathUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.o3dr.android.client.apis.ExperimentalApi.getApi;
@@ -247,6 +255,16 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
                 updateArmButton();
                 break;
 
+            case AttributeEvent.PARAMETER_RECEIVED: {
+                final String name = extras.getString(AttributeEventExtra.EXTRA_PARAMETER_NAME);
+                final double value = extras.getDouble(AttributeEventExtra.EXTRA_PARAMETER_VALUE);
+                final int index = extras.getInt(AttributeEventExtra.EXTRA_PARAMETER_INDEX);
+                final int count = extras.getInt(AttributeEventExtra.EXTRA_PARAMETERS_COUNT);
+
+                Log.v(TAG, String.format("name=%s value=%.2f index=%d count=%d", name, value, index, count));
+                break;
+            }
+
             case AttributeEvent.STATE_UPDATED:
             case AttributeEvent.STATE_ARMING:
                 updateArmButton();
@@ -275,6 +293,17 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
             case AttributeEvent.HOME_UPDATED:
                 updateDistanceFromHome();
                 break;
+
+            case AttributeEvent.MISSION_SENT: {
+                Log.v(TAG, "mission sent");
+                break;
+            }
+
+            case AttributeEvent.MISSION_RECEIVED: {
+                Log.v(TAG, "mission received");
+                onMissionReceived();
+                break;
+            }
 
             default:
                 // Log.i("DRONE_EVENT", event); //Uncomment to see events from the drone
@@ -314,6 +343,11 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
             this.drone.connect(connectionParams);
         }
 
+    }
+
+    public void onBtnTestTap(View v) {
+//        doSendMission();
+        doGetMission();
     }
 
     public void onFlightModeSelected(View view) {
@@ -729,6 +763,58 @@ public class MainActivity extends AppCompatActivity implements DroneListener, To
                 }
                 alertUser("Connection Failed:" + msg);
                 break;
+        }
+    }
+
+    void doRefreshParams() {
+        final Drone drone = this.drone;
+        if(drone.isConnected()) {
+            // Do stuff here for testing.
+            VehicleApi.getApi(drone).refreshParameters();
+        }
+    }
+
+    void doGetMission() {
+        final Drone drone = this.drone;
+        MissionApi.getApi(drone).loadWaypoints();
+    }
+
+    void doSendMission() {
+        final Drone drone = this.drone;
+
+        final LatLong home = new LatLong(38.640975, -94.342881);
+
+        final ArrayList<MissionItem> items = new ArrayList<>();
+//        Takeoff takeoff = new Takeoff();
+//        takeoff.setTakeoffAltitude(20);
+//        items.add(takeoff);
+
+        for(double dir: new double[] { 0, 90, 180, 270 }) {
+            LatLongAlt pos = new LatLongAlt(MathUtils.newCoordFromBearingAndDistance(home, dir, 100), 20);
+            Waypoint wp = new Waypoint();
+            wp.setCoordinate(pos);
+            items.add(wp);
+        }
+
+        final ReturnToLaunch rtl = new ReturnToLaunch();
+        rtl.setReturnAltitude(20);
+        items.add(rtl);
+
+        final Mission mission = new Mission();
+        for(MissionItem item: items) {
+            mission.addMissionItem(item);
+        }
+
+        MissionApi.getApi(drone).setMission(mission, true);
+    }
+
+    void onMissionReceived() {
+        final Mission mission = this.drone.getAttribute(AttributeType.MISSION);
+        if(mission != null) {
+            final List<MissionItem> items = mission.getMissionItems();
+            Log.v(TAG, "mission.items=" + items);
+        } else {
+            Log.v(TAG, "No mission");
         }
     }
 }

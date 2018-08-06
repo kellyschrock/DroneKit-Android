@@ -313,6 +313,16 @@ public class Mission extends DroneVariable<GenericMavLinkDrone> {
         updateComponentItems(msgMissionItems);
     }
 
+    /** Sends the mission to the PX4 drone via mavlink. */
+    public void sendMissionToPX4() {
+        List<msg_mission_item> msgMissionItems = getMsgMissionItems();
+
+        massagePX4CommandFrames(msgMissionItems);
+
+        myDrone.getWaypointManager().writeWaypoints(msgMissionItems);
+        updateComponentItems(msgMissionItems);
+    }
+
     private void updateComponentItems(){
         List<msg_mission_item> msgMissionItems = getMsgMissionItems();
         updateComponentItems(msgMissionItems);
@@ -445,5 +455,34 @@ public class Mission extends DroneVariable<GenericMavLinkDrone> {
 
         MissionItemImpl last = items.get(items.size() - 1);
         return (last instanceof ReturnToHomeImpl) || (last instanceof LandImpl);
+    }
+
+    void massagePX4CommandFrames(List<msg_mission_item> items) {
+        for(msg_mission_item item: items) {
+            switch(item.command) {
+                case MAV_CMD.MAV_CMD_DO_JUMP:
+                case MAV_CMD.MAV_CMD_NAV_ROI:
+                case MAV_CMD.MAV_CMD_DO_SET_ROI: 
+                case MAV_CMD.MAV_CMD_DO_CHANGE_SPEED:
+                case MAV_CMD.MAV_CMD_DO_SET_HOME:
+                case MAV_CMD.MAV_CMD_DO_SET_SERVO:
+                case MAV_CMD.MAV_CMD_DO_LAND_START:
+                case MAV_CMD.MAV_CMD_DO_TRIGGER_CONTROL:
+                case MAV_CMD.MAV_CMD_DO_DIGICAM_CONTROL:
+                case MAV_CMD.MAV_CMD_DO_MOUNT_CONFIGURE:
+                case MAV_CMD.MAV_CMD_DO_MOUNT_CONTROL:
+                case MAV_CMD.MAV_CMD_IMAGE_START_CAPTURE:
+                case MAV_CMD.MAV_CMD_IMAGE_STOP_CAPTURE:
+                case MAV_CMD.MAV_CMD_VIDEO_START_CAPTURE:
+                case MAV_CMD.MAV_CMD_VIDEO_STOP_CAPTURE:
+                case MAV_CMD.MAV_CMD_DO_SET_CAM_TRIGG_DIST:
+                case MAV_CMD.MAV_CMD_DO_VTOL_TRANSITION:
+                case MAV_CMD.MAV_CMD_CONDITION_DELAY:
+                case MAV_CMD.MAV_CMD_NAV_RETURN_TO_LAUNCH: {
+                    item.frame = MAV_FRAME.MAV_FRAME_MISSION;
+                    break;
+                }
+            }
+        }
     }
 }

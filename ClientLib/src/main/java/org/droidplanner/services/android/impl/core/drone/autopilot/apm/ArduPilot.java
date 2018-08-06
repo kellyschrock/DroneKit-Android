@@ -13,7 +13,6 @@ import com.MAVLink.ardupilotmega.msg_mag_cal_report;
 import com.MAVLink.ardupilotmega.msg_mount_configure;
 import com.MAVLink.ardupilotmega.msg_mount_status;
 import com.MAVLink.ardupilotmega.msg_radio;
-import com.MAVLink.common.msg_global_position_int;
 import com.MAVLink.common.msg_named_value_int;
 import com.MAVLink.common.msg_raw_imu;
 import com.MAVLink.common.msg_rc_channels_raw;
@@ -102,7 +101,7 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
 
         this.waypointManager = new WaypointManager(this, handler);
 
-        rc = new RC(this);
+        this.rc = new RC(this);
         this.mission = new Mission(this);
         this.guidedPoint = new GuidedPoint(this, handler);
         this.accelCalibrationSetup = new AccelCalibration(this, handler);
@@ -214,7 +213,7 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
                 data.setClassLoader(com.o3dr.services.android.lib.drone.mission.Mission.class.getClassLoader());
                 com.o3dr.services.android.lib.drone.mission.Mission mission = data.getParcelable(MissionActions.EXTRA_MISSION);
                 boolean pushToDrone = data.getBoolean(MissionActions.EXTRA_PUSH_TO_DRONE);
-                CommonApiUtils.setMission(this, mission, pushToDrone);
+                CommonApiUtils.setAPMMission(this, mission, pushToDrone);
                 return true;
 
             case MissionActions.ACTION_START_MISSION:

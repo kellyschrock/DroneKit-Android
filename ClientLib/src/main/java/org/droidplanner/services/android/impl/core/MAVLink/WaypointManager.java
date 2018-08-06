@@ -1,6 +1,7 @@
 package org.droidplanner.services.android.impl.core.MAVLink;
 
 import android.os.Handler;
+import android.util.Log;
 
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.common.msg_mission_ack;
@@ -25,6 +26,8 @@ import java.util.List;
  * MAV Message.
  */
 public class WaypointManager extends DroneVariable {
+    static final String TAG = WaypointManager.class.getSimpleName();
+
     enum WaypointStates {
         IDLE, READ_REQUEST, READING_WP, WRITING_WP_COUNT, WRITING_WP, WAITING_WRITE_ACK
     }
@@ -165,12 +168,15 @@ public class WaypointManager extends DroneVariable {
      * @return Returns true if the message has been processed
      */
     public boolean processMessage(MAVLinkMessage msg) {
+
         switch (state) {
             default:
             case IDLE:
                 break;
 
             case READ_REQUEST:
+                Log.v(TAG, String.format("msg.msgid=%d", msg.msgid));
+
                 if (msg.msgid == msg_mission_count.MAVLINK_MSG_ID_MISSION_COUNT) {
                     waypointCount = ((msg_mission_count) msg).count;
                     mission.clear();
@@ -294,13 +300,16 @@ public class WaypointManager extends DroneVariable {
     }
 
     private void processReceivedWaypoint(msg_mission_item msg) {
+        Log.v(TAG,String.format("processReceivedWaypoint(%s)", msg));
 		/*
 		 * Log.d("TIMEOUT", "Read Last/Curr: " + String.valueOf(readIndex) + "/"
 		 * + String.valueOf(msg.seq));
 		 */
         // in case of we receive the same WP again after retry
-        if (msg.seq <= readIndex)
+        if (msg.seq <= readIndex) {
+            Log.w(TAG, String.format("msg.seq=%d readIndex=%d", msg.seq, readIndex));
             return;
+        }
 
         readIndex = msg.seq;
 
