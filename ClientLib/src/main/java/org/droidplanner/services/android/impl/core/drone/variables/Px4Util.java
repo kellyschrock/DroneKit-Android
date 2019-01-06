@@ -48,7 +48,7 @@ public class Px4Util {
         sModeMap.put(VehicleMode.COPTER_AUTO, Px4Modes.MISSION);
         sModeMap.put(VehicleMode.COPTER_LOITER, Px4Modes.POSCTL);
         sModeMap.put(VehicleMode.COPTER_RTL, Px4Modes.RTL);
-        sModeMap.put(VehicleMode.COPTER_SMART_RTL, Px4Modes.RTL);
+//        sModeMap.put(VehicleMode.COPTER_SMART_RTL, Px4Modes.RTL);
         sModeMap.put(VehicleMode.COPTER_CIRCLE, Px4Modes.POSCTL);
         sModeMap.put(VehicleMode.COPTER_GUIDED, Px4Modes.OFFBOARD);
 
@@ -67,12 +67,12 @@ public class Px4Util {
 
         // Rover
         sModeMap.put(VehicleMode.ROVER_MANUAL, Px4Modes.MANUAL);
-        sModeMap.put(VehicleMode.ROVER_ACRO, Px4Modes.ACRO);
+//        sModeMap.put(VehicleMode.ROVER_ACRO, Px4Modes.ACRO);
         sModeMap.put(VehicleMode.ROVER_LEARNING, Px4Modes.STABILIZED);
         sModeMap.put(VehicleMode.ROVER_STEERING, Px4Modes.STABILIZED);
         sModeMap.put(VehicleMode.ROVER_AUTO, Px4Modes.MISSION);
         sModeMap.put(VehicleMode.ROVER_RTL, Px4Modes.RTL);
-        sModeMap.put(VehicleMode.ROVER_SMART_RTL, Px4Modes.RTL);
+//        sModeMap.put(VehicleMode.ROVER_SMART_RTL, Px4Modes.RTL);
         sModeMap.put(VehicleMode.ROVER_GUIDED, Px4Modes.OFFBOARD);
     }
 

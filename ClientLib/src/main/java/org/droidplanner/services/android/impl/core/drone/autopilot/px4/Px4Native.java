@@ -195,9 +195,9 @@ public class Px4Native extends GenericMavLinkDrone {
                 data.setClassLoader(com.o3dr.services.android.lib.drone.property.Parameters.class.getClassLoader());
                 com.o3dr.services.android.lib.drone.property.Parameters parameters = data.getParcelable(ParameterActions.EXTRA_PARAMETERS);
                 CommonApiUtils.writeParameters(this, parameters);
-                if(!updateParametersFrom(parameters)) {
-                    Timber.w("Unable to update from passed parameters");
-                }
+//                if(!updateParametersFrom(parameters)) {
+//                    Timber.w("Unable to update from passed parameters");
+//                }
                 return true;
 
             // DRONE STATE ACTIONS
