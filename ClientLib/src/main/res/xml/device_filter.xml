@@ -16,4 +16,5 @@
     <usb-device vendor-id="1118" product-id="688"/>
     <usb-device vendor-id="1659" product-id="8963" /><!-- PL2303 -->
     <usb-device vendor-id="6991" product-id="8" /> <!-- IOIO board -->
+    <usb-device vendor-id="0483" product-id="5740" /> <!-- STM32 thing -->
 </resources>
