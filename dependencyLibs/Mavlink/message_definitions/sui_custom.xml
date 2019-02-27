@@ -1,13 +1,13 @@
 <?xml version='1.0'?>
 <mavlink>
-     <version>3</version>
-     <enums></enums>
+     <enums>
+     </enums>
      <messages>
          <message id="8" name="SET_COMPANION_COMPUTER_WIFI">
              <description>Setup the companion computers wifi as an access point or a client.  If the ssid or pass fields are empty strings, the previous values will be used.</description>
              <field type="uint8_t" name="cmd">cmd, 1-access point mode, 2-client mode</field>
-             <field type="char[64]" name="ssid">ssid</field>
-             <field type="char[64]" name="pass">pass</field>
+             <field type="char[32]" name="ssid">ssid</field>
+             <field type="char[32]" name="pass">pass</field>
              <field type="uint8_t" name="target_system">System ID</field>
              <field type="uint8_t" name="target_component">Component ID</field>
          </message>
@@ -19,9 +19,18 @@
              <field type="uint8_t" name="target_component">Component ID</field>
          </message>
 
-         <message id="14" name="SET_COMPANION_COMPUTER_CAMTYPE">
-             <description>Select the camera type in the companion computer.</description>
+         <message id="14" name="COMPANION_COMPUTER_PREFLIGHT">
+             <description>Tell the companion computer to perform preflight operations, set the camera, and time</description>
+             <field type="uint64_t" name="time">current time in milliseconds from EPOCH, in UTC</field>
+             <field type="char[32]" name="mission_id">Mission ID</field>
              <field type="uint8_t" name="type">camType, a value in the CamType enum in sui-camera</field>
+             <field type="uint8_t" name="target_system">System ID</field>
+             <field type="uint8_t" name="target_component">Component ID</field>
+         </message>
+         <message id="15" name="PROCESSING_IMAGE">
+             <description>Identify the image being processed, by index.</description>
+             <field type="uint16_t" name="index">index of image being processed</field>
+             <field type="uint16_t" name="total">total number of images</field>
              <field type="uint8_t" name="target_system">System ID</field>
              <field type="uint8_t" name="target_component">Component ID</field>
          </message>
