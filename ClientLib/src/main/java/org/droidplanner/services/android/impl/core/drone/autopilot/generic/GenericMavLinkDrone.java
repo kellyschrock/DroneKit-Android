@@ -601,7 +601,7 @@ public class GenericMavLinkDrone implements MavLinkDrone {
 
         onHeartbeat(message);
 
-        Timber.d("onMavlinkMessageReceived(): %s", message.getClass().getSimpleName());
+        // Timber.d("onMavlinkMessageReceived(): %s", message.getClass().getSimpleName());
 
         switch (message.msgid) {
             case msg_radio_status.MAVLINK_MSG_ID_RADIO_STATUS:
