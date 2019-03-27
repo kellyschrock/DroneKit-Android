@@ -898,8 +898,8 @@ public class CommonApiUtils {
             return;
         }
 
-        message.compid = sysid;
-        message.sysid = compid;
+        message.compid = drone.getSysid();
+        message.sysid = drone.getCompid();
 
         Timber.d("message.compid=" + message.compid + " message.sysid=" + message.sysid);
 
