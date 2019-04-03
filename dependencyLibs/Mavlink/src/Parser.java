@@ -72,6 +72,15 @@ public class Parser {
             break;
 
         case MAVLINK_PARSE_STATE_GOT_COMPID:
+            switch(c) {
+                case 54:
+                case 172: {
+                    System.out.println("HURR_DURR MSGID: " + c);
+                    m.msgid = c; // just to be sure
+                    break;
+                }
+            }
+
             m.msgid = c;
             if (m.len == 0) {
                 state = MAV_states.MAVLINK_PARSE_STATE_GOT_PAYLOAD;
@@ -81,6 +90,7 @@ public class Parser {
             break;
 
         case MAVLINK_PARSE_STATE_GOT_MSGID:
+
             m.payload.add((byte) c);
             if (m.payloadIsFilled()) {
                 state = MAV_states.MAVLINK_PARSE_STATE_GOT_PAYLOAD;

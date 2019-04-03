@@ -4,9 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Surface;
 
 import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.ardupilotmega.msg_data96;
 import com.MAVLink.ardupilotmega.msg_ekf_status_report;
 import com.MAVLink.common.msg_adsb_vehicle;
 import com.MAVLink.common.msg_attitude;
@@ -19,6 +21,7 @@ import com.MAVLink.common.msg_mission_item;
 import com.MAVLink.common.msg_mission_item_reached;
 import com.MAVLink.common.msg_nav_controller_output;
 import com.MAVLink.common.msg_radio_status;
+import com.MAVLink.common.msg_safety_set_allowed_area;
 import com.MAVLink.common.msg_sys_status;
 import com.MAVLink.common.msg_vibration;
 import com.MAVLink.enums.MAV_MODE_FLAG;
@@ -601,9 +604,19 @@ public class GenericMavLinkDrone implements MavLinkDrone {
 
         onHeartbeat(message);
 
-        // Timber.d("onMavlinkMessageReceived(): %s", message.getClass().getSimpleName());
+//         Timber.d("onMavlinkMessageReceived(): %s", message.getClass().getSimpleName());
 
         switch (message.msgid) {
+            case msg_safety_set_allowed_area.MAVLINK_MSG_ID_SAFETY_SET_ALLOWED_AREA: {
+                Timber.d("GOT THE SAFETY MESSAGE");
+                break;
+            }
+
+            case msg_data96.MAVLINK_MSG_ID_DATA96: {
+                Timber.d("GOT DATA96");
+                break;
+            }
+
             case msg_radio_status.MAVLINK_MSG_ID_RADIO_STATUS:
                 msg_radio_status m_radio_status = (msg_radio_status) message;
                 processSignalUpdate(m_radio_status.rxerrors, m_radio_status.fixed, m_radio_status.rssi,

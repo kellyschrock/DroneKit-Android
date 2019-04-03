@@ -898,8 +898,10 @@ public class CommonApiUtils {
             return;
         }
 
-        message.compid = drone.getSysid();
-        message.sysid = drone.getCompid();
+        // message.compid = drone.getSysid();
+        // message.sysid = drone.getCompid();
+        message.compid = 255;
+        message.sysid = 190;
 
         Timber.d("message.compid=" + message.compid + " message.sysid=" + message.sysid);
 
@@ -910,13 +912,13 @@ public class CommonApiUtils {
             Field target_system = tempMessage.getDeclaredField("target_system");
             Field target_component = tempMessage.getDeclaredField("target_component");
 
-            target_system.setShort(message, (short)message.sysid);
-            target_component.setShort(message, (short)message.compid);
+            target_system.setShort(message, (short)sysid);
+            target_component.setShort(message, (short)compid);
         } catch (NoSuchFieldException | SecurityException | IllegalAccessException | IllegalArgumentException | ExceptionInInitializerError e) {
             Timber.e(e, e.getMessage());
         }
 
-        drone.getMavClient().sendMessage(message, sysid, compid, null);
+        drone.getMavClient().sendMessage(message, null);
     }
 
     public static void sendGuidedPoint(MavLinkDrone drone, LatLongAlt point, boolean force, ICommandListener listener) {

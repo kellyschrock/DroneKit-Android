@@ -66,6 +66,7 @@ public class HeartBeat extends DroneVariable implements OnDroneListener<MavLinkD
         if(heartBeatMsg != null){
             sysid = validateToUnsignedByteRange(msg.sysid);
             compid = validateToUnsignedByteRange(msg.compid);
+
             mMavlinkVersion = heartBeatMsg.mavlink_version;
         }
 
