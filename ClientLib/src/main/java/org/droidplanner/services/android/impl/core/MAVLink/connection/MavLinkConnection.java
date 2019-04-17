@@ -163,21 +163,12 @@ public abstract class MavLinkConnection {
 
         private void handleData(Parser parser, int bufferSize, byte[] buffer) {
             if (bufferSize < 1) {
-//                System.out.println("HURR_DURR: No buffer size");
                 return;
             }
 
             for (int i = 0; i < bufferSize; i++) {
                 MAVLinkPacket receivedPacket = parser.mavlink_parse_char(buffer[i] & 0x00ff);
                 if (receivedPacket != null) {
-                    switch(receivedPacket.msgid) {
-                        case 54:
-                        case 172: {
-                            System.out.println("GOT THE HURR_DURR MESSAGE: " + receivedPacket.msgid);
-                            break;
-                        }
-                    }
-
                     queueToLog(receivedPacket);
                     reportReceivedPacket(receivedPacket);
                 }
