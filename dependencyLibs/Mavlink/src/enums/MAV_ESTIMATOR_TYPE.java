@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* Enumeration of estimator types
-*/
+ * Enumeration of estimator types
+ */
 public class MAV_ESTIMATOR_TYPE {
    public static final int MAV_ESTIMATOR_TYPE_NAIVE = 1; /* This is a naive estimator without any real covariance feedback. | */
    public static final int MAV_ESTIMATOR_TYPE_VISION = 2; /* Computer vision based estimate. Might be up to scale. | */

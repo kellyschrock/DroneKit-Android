@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* 
-*/
+ * 
+ */
 public class GOPRO_CHARGING {
    public static final int GOPRO_CHARGING_DISABLED = 0; /* Charging disabled | */
    public static final int GOPRO_CHARGING_ENABLED = 1; /* Charging enabled | */

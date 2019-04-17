@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* Enumeration of sensor orientation, according to its rotations
-*/
+ * Enumeration of sensor orientation, according to its rotations
+ */
 public class MAV_SENSOR_ORIENTATION {
    public static final int MAV_SENSOR_ROTATION_NONE = 0; /* Roll: 0, Pitch: 0, Yaw: 0 | */
    public static final int MAV_SENSOR_ROTATION_YAW_45 = 1; /* Roll: 0, Pitch: 0, Yaw: 45 | */

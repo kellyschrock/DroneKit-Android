@@ -11,9 +11,9 @@ import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
         
 /**
-* Emit an encrypted signature / key identifying this system. PLEASE NOTE: This protocol has been kept simple, so transmitting the key requires an encrypted channel for true safety.
-*/
-public class msg_auth_key extends MAVLinkMessage{
+ * Emit an encrypted signature / key identifying this system. PLEASE NOTE: This protocol has been kept simple, so transmitting the key requires an encrypted channel for true safety.
+ */
+public class msg_auth_key extends MAVLinkMessage {
 
     public static final int MAVLINK_MSG_ID_AUTH_KEY = 7;
     public static final int MAVLINK_MSG_LENGTH = 32;
@@ -22,62 +22,70 @@ public class msg_auth_key extends MAVLinkMessage{
 
       
     /**
-    * key
-    */
+     * key
+     */
     public byte key[] = new byte[32];
     
 
     /**
-    * Generates the payload for a mavlink message for a message of this type
-    * @return
-    */
-    public MAVLinkPacket pack(){
+     * Generates the payload for a mavlink message for a message of this type
+     * @return
+     */
+    public MAVLinkPacket pack() {
         MAVLinkPacket packet = new MAVLinkPacket(MAVLINK_MSG_LENGTH);
         packet.sysid = 255;
         packet.compid = 190;
         packet.msgid = MAVLINK_MSG_ID_AUTH_KEY;
-              
+        
         
         for (int i = 0; i < key.length; i++) {
             packet.payload.putByte(key[i]);
         }
                     
         
+        if(isMavlink2) {
+            
+        }
         return packet;
     }
 
     /**
-    * Decode a auth_key message into this class fields
-    *
-    * @param payload The message to decode
-    */
+     * Decode a auth_key message into this class fields
+     *
+     * @param payload The message to decode
+     */
     public void unpack(MAVLinkPayload payload) {
         payload.resetIndex();
-              
+        
          
         for (int i = 0; i < this.key.length; i++) {
+            if(!payload.hasRemaining()) break;
             this.key[i] = payload.getByte();
         }
                 
         
+        if(isMavlink2) {
+            
+        }
     }
 
     /**
-    * Constructor for a new message, just initializes the msgid
-    */
-    public msg_auth_key(){
+     * Constructor for a new message, just initializes the msgid
+     */
+    public msg_auth_key() {
         msgid = MAVLINK_MSG_ID_AUTH_KEY;
     }
 
     /**
-    * Constructor for a new message, initializes the message with the payload
-    * from a mavlink packet
-    *
-    */
-    public msg_auth_key(MAVLinkPacket mavLinkPacket){
+     * Constructor for a new message, initializes the message with the payload
+     * from a mavlink packet
+     *
+     */
+    public msg_auth_key(MAVLinkPacket mavLinkPacket) {
         this.sysid = mavLinkPacket.sysid;
         this.compid = mavLinkPacket.compid;
         this.msgid = MAVLINK_MSG_ID_AUTH_KEY;
+        this.isMavlink2 = mavLinkPacket.isMavlink2;
         unpack(mavLinkPacket.payload);        
     }
 
@@ -112,9 +120,9 @@ public class msg_auth_key extends MAVLinkMessage{
     }
                          
     /**
-    * Returns a string with the MSG name and data
-    */
-    public String toString(){
+     * Returns a string with the MSG name and data
+     */
+    public String toString() {
         return "MAVLINK_MSG_ID_AUTH_KEY - sysid:"+sysid+" compid:"+compid+" key:"+key+"";
     }
 }

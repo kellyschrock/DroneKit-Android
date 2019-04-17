@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* 
-*/
+ * 
+ */
 public class GOPRO_CAPTURE_MODE {
    public static final int GOPRO_CAPTURE_MODE_VIDEO = 0; /* Video mode | */
    public static final int GOPRO_CAPTURE_MODE_PHOTO = 1; /* Photo mode | */

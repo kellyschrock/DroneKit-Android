@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* 
-*/
+ * 
+ */
 public class MAV_MODE_GIMBAL {
    public static final int MAV_MODE_GIMBAL_UNINITIALIZED = 0; /* Gimbal is powered on but has not started initializing yet | */
    public static final int MAV_MODE_GIMBAL_CALIBRATING_PITCH = 1; /* Gimbal is currently running calibration on the pitch axis | */

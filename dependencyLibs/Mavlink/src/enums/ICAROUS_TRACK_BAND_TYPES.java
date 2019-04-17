@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* 
-*/
+ * 
+ */
 public class ICAROUS_TRACK_BAND_TYPES {
    public static final int ICAROUS_TRACK_BAND_TYPE_NONE = 0; /*  | */
    public static final int ICAROUS_TRACK_BAND_TYPE_NEAR = 1; /*  | */

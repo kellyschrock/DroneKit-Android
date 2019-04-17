@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* 
-*/
+ * 
+ */
 public class GOPRO_COMMAND {
    public static final int GOPRO_COMMAND_POWER = 0; /* (Get/Set) | */
    public static final int GOPRO_COMMAND_CAPTURE_MODE = 1; /* (Get/Set) | */

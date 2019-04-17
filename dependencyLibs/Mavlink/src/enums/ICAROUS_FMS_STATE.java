@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* 
-*/
+ * 
+ */
 public class ICAROUS_FMS_STATE {
    public static final int ICAROUS_FMS_STATE_IDLE = 0; /*  | */
    public static final int ICAROUS_FMS_STATE_TAKEOFF = 1; /*  | */

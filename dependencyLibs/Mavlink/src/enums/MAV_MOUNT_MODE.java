@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* Enumeration of possible mount operation modes
-*/
+ * Enumeration of possible mount operation modes
+ */
 public class MAV_MOUNT_MODE {
    public static final int MAV_MOUNT_MODE_RETRACT = 0; /* Load and keep safe position (Roll,Pitch,Yaw) from permant memory and stop stabilization | */
    public static final int MAV_MOUNT_MODE_NEUTRAL = 1; /* Load and keep neutral position (Roll,Pitch,Yaw) from permanent memory. | */

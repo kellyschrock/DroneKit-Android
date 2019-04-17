@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* Winch actions
-*/
+ * Winch actions
+ */
 public class WINCH_ACTIONS {
    public static final int WINCH_RELAXED = 0; /* relax winch | */
    public static final int WINCH_RELATIVE_LENGTH_CONTROL = 1; /* winch unwinds or winds specified length of cable optionally using specified rate | */

@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* These flags encode the MAV mode.
-*/
+ * These flags encode the MAV mode.
+ */
 public class MAV_MODE_FLAG {
    public static final int MAV_MODE_FLAG_CUSTOM_MODE_ENABLED = 1; /* 0b00000001 Reserved for future use. | */
    public static final int MAV_MODE_FLAG_TEST_ENABLED = 2; /* 0b00000010 system has a test mode enabled. This flag is intended for temporary system tests and should not be used for stable implementations. | */

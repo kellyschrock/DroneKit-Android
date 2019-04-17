@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* 
-*/
+ * 
+ */
 public class PARACHUTE_ACTION {
    public static final int PARACHUTE_DISABLE = 0; /* Disable parachute release | */
    public static final int PARACHUTE_ENABLE = 1; /* Enable parachute release | */

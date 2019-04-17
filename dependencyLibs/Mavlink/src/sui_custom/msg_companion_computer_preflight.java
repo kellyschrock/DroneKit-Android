@@ -11,9 +11,9 @@ import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
         
 /**
-* Tell the companion computer to perform preflight operations, set the camera, and time
-*/
-public class msg_companion_computer_preflight extends MAVLinkMessage{
+ * Tell the companion computer to perform preflight operations, set the camera, and time
+ */
+public class msg_companion_computer_preflight extends MAVLinkMessage {
 
     public static final int MAVLINK_MSG_ID_COMPANION_COMPUTER_PREFLIGHT = 14;
     public static final int MAVLINK_MSG_LENGTH = 43;
@@ -22,98 +22,106 @@ public class msg_companion_computer_preflight extends MAVLinkMessage{
 
       
     /**
-    * current time in milliseconds from EPOCH, in UTC
-    */
+     * current time in milliseconds from EPOCH, in UTC
+     */
     public long time;
       
     /**
-    * Mission ID
-    */
+     * Mission ID
+     */
     public byte mission_id[] = new byte[32];
       
     /**
-    * camType, a value in the CamType enum in sui-camera
-    */
+     * camType, a value in the CamType enum in sui-camera
+     */
     public short type;
       
     /**
-    * System ID
-    */
+     * System ID
+     */
     public short target_system;
       
     /**
-    * Component ID
-    */
+     * Component ID
+     */
     public short target_component;
     
 
     /**
-    * Generates the payload for a mavlink message for a message of this type
-    * @return
-    */
-    public MAVLinkPacket pack(){
+     * Generates the payload for a mavlink message for a message of this type
+     * @return
+     */
+    public MAVLinkPacket pack() {
         MAVLinkPacket packet = new MAVLinkPacket(MAVLINK_MSG_LENGTH);
         packet.sysid = 255;
         packet.compid = 190;
         packet.msgid = MAVLINK_MSG_ID_COMPANION_COMPUTER_PREFLIGHT;
-              
+        
         packet.payload.putUnsignedLong(time);
-              
+        
         
         for (int i = 0; i < mission_id.length; i++) {
             packet.payload.putByte(mission_id[i]);
         }
                     
-              
+        
         packet.payload.putUnsignedByte(type);
-              
+        
         packet.payload.putUnsignedByte(target_system);
-              
+        
         packet.payload.putUnsignedByte(target_component);
         
+        if(isMavlink2) {
+            
+        }
         return packet;
     }
 
     /**
-    * Decode a companion_computer_preflight message into this class fields
-    *
-    * @param payload The message to decode
-    */
+     * Decode a companion_computer_preflight message into this class fields
+     *
+     * @param payload The message to decode
+     */
     public void unpack(MAVLinkPayload payload) {
         payload.resetIndex();
-              
+        
         this.time = payload.getUnsignedLong();
-              
+        
          
         for (int i = 0; i < this.mission_id.length; i++) {
+            if(!payload.hasRemaining()) break;
             this.mission_id[i] = payload.getByte();
         }
                 
-              
+        
         this.type = payload.getUnsignedByte();
-              
+        
         this.target_system = payload.getUnsignedByte();
-              
+        
         this.target_component = payload.getUnsignedByte();
         
+        if(isMavlink2) {
+            
+        }
     }
 
     /**
-    * Constructor for a new message, just initializes the msgid
-    */
-    public msg_companion_computer_preflight(){
+     * Constructor for a new message, just initializes the msgid
+     */
+    public msg_companion_computer_preflight() {
         msgid = MAVLINK_MSG_ID_COMPANION_COMPUTER_PREFLIGHT;
     }
 
     /**
-    * Constructor for a new message, initializes the message with the payload
-    * from a mavlink packet
-    *
-    */
-    public msg_companion_computer_preflight(MAVLinkPacket mavLinkPacket){
+     * Constructor for a new message, initializes the message with the payload
+     * from a mavlink packet
+     *
+     */
+    public msg_companion_computer_preflight(MAVLinkPacket mavLinkPacket) {
         this.sysid = mavLinkPacket.sysid;
         this.compid = mavLinkPacket.compid;
         this.msgid = MAVLINK_MSG_ID_COMPANION_COMPUTER_PREFLIGHT;
+        this.isMavlink2 = mavLinkPacket.isMavlink2;
         unpack(mavLinkPacket.payload);        
     }
 
@@ -148,9 +156,9 @@ public class msg_companion_computer_preflight extends MAVLinkMessage{
     }
                                
     /**
-    * Returns a string with the MSG name and data
-    */
-    public String toString(){
+     * Returns a string with the MSG name and data
+     */
+    public String toString() {
         return "MAVLINK_MSG_ID_COMPANION_COMPUTER_PREFLIGHT - sysid:"+sysid+" compid:"+compid+" time:"+time+" mission_id:"+mission_id+" type:"+type+" target_system:"+target_system+" target_component:"+target_component+"";
     }
 }

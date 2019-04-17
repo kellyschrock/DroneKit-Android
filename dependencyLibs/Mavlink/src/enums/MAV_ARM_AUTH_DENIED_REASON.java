@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* 
-*/
+ * 
+ */
 public class MAV_ARM_AUTH_DENIED_REASON {
    public static final int MAV_ARM_AUTH_DENIED_REASON_GENERIC = 0; /* Not a specific reason | */
    public static final int MAV_ARM_AUTH_DENIED_REASON_NONE = 1; /* Authorizer will send the error as string to GCS | */

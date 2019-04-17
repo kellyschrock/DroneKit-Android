@@ -11,9 +11,9 @@ import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
         
 /**
-* The filtered local position (e.g. fused computer vision and accelerometers). Coordinate frame is right-handed, Z-axis down (aeronautical frame, NED / north-east-down convention)
-*/
-public class msg_local_position_ned extends MAVLinkMessage{
+ * The filtered local position (e.g. fused computer vision and accelerometers). Coordinate frame is right-handed, Z-axis down (aeronautical frame, NED / north-east-down convention)
+ */
+public class msg_local_position_ned extends MAVLinkMessage {
 
     public static final int MAVLINK_MSG_ID_LOCAL_POSITION_NED = 32;
     public static final int MAVLINK_MSG_LENGTH = 28;
@@ -22,116 +22,123 @@ public class msg_local_position_ned extends MAVLinkMessage{
 
       
     /**
-    * Timestamp (milliseconds since system boot)
-    */
+     * Timestamp (milliseconds since system boot)
+     */
     public long time_boot_ms;
       
     /**
-    * X Position
-    */
+     * X Position
+     */
     public float x;
       
     /**
-    * Y Position
-    */
+     * Y Position
+     */
     public float y;
       
     /**
-    * Z Position
-    */
+     * Z Position
+     */
     public float z;
       
     /**
-    * X Speed
-    */
+     * X Speed
+     */
     public float vx;
       
     /**
-    * Y Speed
-    */
+     * Y Speed
+     */
     public float vy;
       
     /**
-    * Z Speed
-    */
+     * Z Speed
+     */
     public float vz;
     
 
     /**
-    * Generates the payload for a mavlink message for a message of this type
-    * @return
-    */
-    public MAVLinkPacket pack(){
+     * Generates the payload for a mavlink message for a message of this type
+     * @return
+     */
+    public MAVLinkPacket pack() {
         MAVLinkPacket packet = new MAVLinkPacket(MAVLINK_MSG_LENGTH);
         packet.sysid = 255;
         packet.compid = 190;
         packet.msgid = MAVLINK_MSG_ID_LOCAL_POSITION_NED;
-              
+        
         packet.payload.putUnsignedInt(time_boot_ms);
-              
+        
         packet.payload.putFloat(x);
-              
+        
         packet.payload.putFloat(y);
-              
+        
         packet.payload.putFloat(z);
-              
+        
         packet.payload.putFloat(vx);
-              
+        
         packet.payload.putFloat(vy);
-              
+        
         packet.payload.putFloat(vz);
         
+        if(isMavlink2) {
+            
+        }
         return packet;
     }
 
     /**
-    * Decode a local_position_ned message into this class fields
-    *
-    * @param payload The message to decode
-    */
+     * Decode a local_position_ned message into this class fields
+     *
+     * @param payload The message to decode
+     */
     public void unpack(MAVLinkPayload payload) {
         payload.resetIndex();
-              
+        
         this.time_boot_ms = payload.getUnsignedInt();
-              
+        
         this.x = payload.getFloat();
-              
+        
         this.y = payload.getFloat();
-              
+        
         this.z = payload.getFloat();
-              
+        
         this.vx = payload.getFloat();
-              
+        
         this.vy = payload.getFloat();
-              
+        
         this.vz = payload.getFloat();
         
+        if(isMavlink2) {
+            
+        }
     }
 
     /**
-    * Constructor for a new message, just initializes the msgid
-    */
-    public msg_local_position_ned(){
+     * Constructor for a new message, just initializes the msgid
+     */
+    public msg_local_position_ned() {
         msgid = MAVLINK_MSG_ID_LOCAL_POSITION_NED;
     }
 
     /**
-    * Constructor for a new message, initializes the message with the payload
-    * from a mavlink packet
-    *
-    */
-    public msg_local_position_ned(MAVLinkPacket mavLinkPacket){
+     * Constructor for a new message, initializes the message with the payload
+     * from a mavlink packet
+     *
+     */
+    public msg_local_position_ned(MAVLinkPacket mavLinkPacket) {
         this.sysid = mavLinkPacket.sysid;
         this.compid = mavLinkPacket.compid;
         this.msgid = MAVLINK_MSG_ID_LOCAL_POSITION_NED;
+        this.isMavlink2 = mavLinkPacket.isMavlink2;
         unpack(mavLinkPacket.payload);        
     }
 
                   
     /**
-    * Returns a string with the MSG name and data
-    */
-    public String toString(){
+     * Returns a string with the MSG name and data
+     */
+    public String toString() {
         return "MAVLINK_MSG_ID_LOCAL_POSITION_NED - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" x:"+x+" y:"+y+" z:"+z+" vx:"+vx+" vy:"+vy+" vz:"+vz+"";
     }
 }

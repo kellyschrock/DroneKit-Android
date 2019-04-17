@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* 
-*/
+ * 
+ */
 public class GOPRO_MODEL {
    public static final int GOPRO_MODEL_UNKNOWN = 0; /* Unknown gopro model | */
    public static final int GOPRO_MODEL_HERO_3_PLUS_SILVER = 1; /* Hero 3+ Silver (HeroBus not supported by GoPro) | */

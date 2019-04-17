@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* 
-*/
+ * 
+ */
 public class MAV_COMPONENT {
    public static final int MAV_COMP_ID_ALL = 0; /*  | */
    public static final int MAV_COMP_ID_AUTOPILOT1 = 1; /*  | */

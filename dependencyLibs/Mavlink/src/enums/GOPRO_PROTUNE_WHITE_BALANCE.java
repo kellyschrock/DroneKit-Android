@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* 
-*/
+ * 
+ */
 public class GOPRO_PROTUNE_WHITE_BALANCE {
    public static final int GOPRO_PROTUNE_WHITE_BALANCE_AUTO = 0; /* Auto | */
    public static final int GOPRO_PROTUNE_WHITE_BALANCE_3000K = 1; /* 3000K | */

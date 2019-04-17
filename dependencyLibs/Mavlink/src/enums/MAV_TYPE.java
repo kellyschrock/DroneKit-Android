@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* 
-*/
+ * 
+ */
 public class MAV_TYPE {
    public static final int MAV_TYPE_GENERIC = 0; /* Generic micro air vehicle. | */
    public static final int MAV_TYPE_FIXED_WING = 1; /* Fixed wing aircraft. | */

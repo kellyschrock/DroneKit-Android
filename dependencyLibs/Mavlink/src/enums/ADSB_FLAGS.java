@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* These flags indicate status such as data validity of each data source. Set = data valid
-*/
+ * These flags indicate status such as data validity of each data source. Set = data valid
+ */
 public class ADSB_FLAGS {
    public static final int ADSB_FLAGS_VALID_COORDS = 1; /*  | */
    public static final int ADSB_FLAGS_VALID_ALTITUDE = 2; /*  | */

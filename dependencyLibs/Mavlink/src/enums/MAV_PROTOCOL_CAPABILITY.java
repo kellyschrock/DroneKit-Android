@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* Bitmask of (optional) autopilot capabilities (64 bit). If a bit is set, the autopilot supports this capability.
-*/
+ * Bitmask of (optional) autopilot capabilities (64 bit). If a bit is set, the autopilot supports this capability.
+ */
 public class MAV_PROTOCOL_CAPABILITY {
    public static final int MAV_PROTOCOL_CAPABILITY_MISSION_FLOAT = 1; /* Autopilot supports MISSION float message type. | */
    public static final int MAV_PROTOCOL_CAPABILITY_PARAM_FLOAT = 2; /* Autopilot supports the new param float message type. | */

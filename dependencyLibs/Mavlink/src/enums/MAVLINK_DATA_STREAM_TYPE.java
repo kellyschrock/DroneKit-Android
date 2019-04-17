@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* 
-*/
+ * 
+ */
 public class MAVLINK_DATA_STREAM_TYPE {
    public static final int MAVLINK_DATA_STREAM_IMG_JPEG = 1; /*  | */
    public static final int MAVLINK_DATA_STREAM_IMG_BMP = 2; /*  | */

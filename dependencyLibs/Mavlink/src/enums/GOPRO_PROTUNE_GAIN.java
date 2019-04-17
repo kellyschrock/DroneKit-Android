@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* 
-*/
+ * 
+ */
 public class GOPRO_PROTUNE_GAIN {
    public static final int GOPRO_PROTUNE_GAIN_400 = 0; /* ISO 400 | */
    public static final int GOPRO_PROTUNE_GAIN_800 = 1; /* ISO 800 (Only Hero 4) | */

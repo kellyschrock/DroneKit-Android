@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* Generalized UAVCAN node health
-*/
+ * Generalized UAVCAN node health
+ */
 public class UAVCAN_NODE_HEALTH {
    public static final int UAVCAN_NODE_HEALTH_OK = 0; /* The node is functioning properly. | */
    public static final int UAVCAN_NODE_HEALTH_WARNING = 1; /* A critical parameter went out of range or the node has encountered a minor failure. | */

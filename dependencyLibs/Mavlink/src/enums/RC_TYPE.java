@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* RC type
-*/
+ * RC type
+ */
 public class RC_TYPE {
    public static final int RC_TYPE_SPEKTRUM_DSM2 = 0; /* Spektrum DSM2 | */
    public static final int RC_TYPE_SPEKTRUM_DSMX = 1; /* Spektrum DSMX | */

@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* Indicates the severity level, generally used for status messages to indicate their relative urgency. Based on RFC-5424 using expanded definitions at: http://www.kiwisyslog.com/kb/info:-syslog-message-levels/.
-*/
+ * Indicates the severity level, generally used for status messages to indicate their relative urgency. Based on RFC-5424 using expanded definitions at: http://www.kiwisyslog.com/kb/info:-syslog-message-levels/.
+ */
 public class MAV_SEVERITY {
    public static final int MAV_SEVERITY_EMERGENCY = 0; /* System is unusable. This is a "panic" condition. | */
    public static final int MAV_SEVERITY_ALERT = 1; /* Action should be taken immediately. Indicates error in non-critical systems. | */

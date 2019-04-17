@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* 
-*/
+ * 
+ */
 public class GOPRO_PROTUNE_EXPOSURE {
    public static final int GOPRO_PROTUNE_EXPOSURE_NEG_5_0 = 0; /* -5.0 EV (Hero 3+ Only) | */
    public static final int GOPRO_PROTUNE_EXPOSURE_NEG_4_5 = 1; /* -4.5 EV (Hero 3+ Only) | */

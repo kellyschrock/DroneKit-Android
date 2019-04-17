@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* Type of landing target
-*/
+ * Type of landing target
+ */
 public class LANDING_TARGET_TYPE {
    public static final int LANDING_TARGET_TYPE_LIGHT_BEACON = 0; /* Landing target signaled by light beacon (ex: IR-LOCK) | */
    public static final int LANDING_TARGET_TYPE_RADIO_BEACON = 1; /* Landing target signaled by radio beacon (ex: ILS, NDB) | */

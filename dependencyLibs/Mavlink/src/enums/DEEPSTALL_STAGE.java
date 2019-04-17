@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* Deepstall flight stage
-*/
+ * Deepstall flight stage
+ */
 public class DEEPSTALL_STAGE {
    public static final int DEEPSTALL_STAGE_FLY_TO_LANDING = 0; /* Flying to the landing point | */
    public static final int DEEPSTALL_STAGE_ESTIMATE_WIND = 1; /* Building an estimate of the wind | */

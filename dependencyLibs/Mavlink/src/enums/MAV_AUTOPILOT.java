@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* Micro air vehicle / autopilot classes. This identifies the individual model.
-*/
+ * Micro air vehicle / autopilot classes. This identifies the individual model.
+ */
 public class MAV_AUTOPILOT {
    public static final int MAV_AUTOPILOT_GENERIC = 0; /* Generic autopilot, full support for everything | */
    public static final int MAV_AUTOPILOT_RESERVED = 1; /* Reserved for future use. | */

@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* These encode the sensors whose status is sent as part of the SYS_STATUS message.
-*/
+ * These encode the sensors whose status is sent as part of the SYS_STATUS message.
+ */
 public class MAV_SYS_STATUS_SENSOR {
    public static final int MAV_SYS_STATUS_SENSOR_3D_GYRO = 1; /* 0x01 3D gyro | */
    public static final int MAV_SYS_STATUS_SENSOR_3D_ACCEL = 2; /* 0x02 3D accelerometer | */

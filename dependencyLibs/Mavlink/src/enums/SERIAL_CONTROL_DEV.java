@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* SERIAL_CONTROL device types
-*/
+ * SERIAL_CONTROL device types
+ */
 public class SERIAL_CONTROL_DEV {
    public static final int SERIAL_CONTROL_DEV_TELEM1 = 0; /* First telemetry port | */
    public static final int SERIAL_CONTROL_DEV_TELEM2 = 1; /* Second telemetry port | */

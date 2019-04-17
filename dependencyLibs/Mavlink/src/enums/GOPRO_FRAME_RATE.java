@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* 
-*/
+ * 
+ */
 public class GOPRO_FRAME_RATE {
    public static final int GOPRO_FRAME_RATE_12 = 0; /* 12 FPS | */
    public static final int GOPRO_FRAME_RATE_15 = 1; /* 15 FPS | */

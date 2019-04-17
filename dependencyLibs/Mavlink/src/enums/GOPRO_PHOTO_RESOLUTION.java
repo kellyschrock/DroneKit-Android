@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* 
-*/
+ * 
+ */
 public class GOPRO_PHOTO_RESOLUTION {
    public static final int GOPRO_PHOTO_RESOLUTION_5MP_MEDIUM = 0; /* 5MP Medium | */
    public static final int GOPRO_PHOTO_RESOLUTION_7MP_MEDIUM = 1; /* 7MP Medium | */

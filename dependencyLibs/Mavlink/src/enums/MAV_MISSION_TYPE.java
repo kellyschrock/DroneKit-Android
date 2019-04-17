@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* Type of mission items being requested/sent in mission protocol.
-*/
+ * Type of mission items being requested/sent in mission protocol.
+ */
 public class MAV_MISSION_TYPE {
    public static final int MAV_MISSION_TYPE_MISSION = 0; /* Items are mission commands for main mission. | */
    public static final int MAV_MISSION_TYPE_FENCE = 1; /* Specifies GeoFence area(s). Items are MAV_CMD_FENCE_ GeoFence items. | */

@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* Direction of VTOL transition
-*/
+ * Direction of VTOL transition
+ */
 public class VTOL_TRANSITION_HEADING {
    public static final int VTOL_TRANSITION_HEADING_VEHICLE_DEFAULT = 0; /* Respect the heading configuration of the vehicle. | */
    public static final int VTOL_TRANSITION_HEADING_NEXT_WAYPOINT = 1; /* Use the heading pointing towards the next waypoint. | */

@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* result in a mavlink mission ack
-*/
+ * result in a mavlink mission ack
+ */
 public class MAV_MISSION_RESULT {
    public static final int MAV_MISSION_ACCEPTED = 0; /* mission accepted OK | */
    public static final int MAV_MISSION_ERROR = 1; /* generic error / not accepting mission commands at all right now | */

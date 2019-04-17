@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* 
-*/
+ * 
+ */
 public class LIMITS_STATE {
    public static final int LIMITS_INIT = 0; /* pre-initialization | */
    public static final int LIMITS_DISABLED = 1; /* disabled | */

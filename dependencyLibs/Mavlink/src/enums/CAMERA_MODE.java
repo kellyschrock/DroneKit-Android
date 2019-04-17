@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* Camera Modes.
-*/
+ * Camera Modes.
+ */
 public class CAMERA_MODE {
    public static final int CAMERA_MODE_IMAGE = 0; /* Camera is in image/photo capture mode. | */
    public static final int CAMERA_MODE_VIDEO = 1; /* Camera is in video capture mode. | */

@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* A mapping of copter flight modes for custom_mode field of heartbeat
-*/
+ * A mapping of copter flight modes for custom_mode field of heartbeat
+ */
 public class COPTER_MODE {
    public static final int COPTER_MODE_STABILIZE = 0; /*  | */
    public static final int COPTER_MODE_ACRO = 1; /*  | */

@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* 
-*/
+ * 
+ */
 public class GOPRO_FIELD_OF_VIEW {
    public static final int GOPRO_FIELD_OF_VIEW_WIDE = 0; /* 0x00: Wide | */
    public static final int GOPRO_FIELD_OF_VIEW_MEDIUM = 1; /* 0x01: Medium | */

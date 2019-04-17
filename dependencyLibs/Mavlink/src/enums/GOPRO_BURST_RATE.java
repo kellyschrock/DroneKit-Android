@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* 
-*/
+ * 
+ */
 public class GOPRO_BURST_RATE {
    public static final int GOPRO_BURST_RATE_3_IN_1_SECOND = 0; /* 3 Shots / 1 Second | */
    public static final int GOPRO_BURST_RATE_5_IN_1_SECOND = 1; /* 5 Shots / 1 Second | */

@@ -11,9 +11,9 @@ import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
         
 /**
-* Setup the companion computers USB connection to the camera.
-*/
-public class msg_set_companion_computer_usb extends MAVLinkMessage{
+ * Setup the companion computers USB connection to the camera.
+ */
+public class msg_set_companion_computer_usb extends MAVLinkMessage {
 
     public static final int MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_USB = 13;
     public static final int MAVLINK_MSG_LENGTH = 3;
@@ -22,80 +22,87 @@ public class msg_set_companion_computer_usb extends MAVLinkMessage{
 
       
     /**
-    * cmd, 1-command mode, 2-mountable mode
-    */
+     * cmd, 1-command mode, 2-mountable mode
+     */
     public short cmd;
       
     /**
-    * System ID
-    */
+     * System ID
+     */
     public short target_system;
       
     /**
-    * Component ID
-    */
+     * Component ID
+     */
     public short target_component;
     
 
     /**
-    * Generates the payload for a mavlink message for a message of this type
-    * @return
-    */
-    public MAVLinkPacket pack(){
+     * Generates the payload for a mavlink message for a message of this type
+     * @return
+     */
+    public MAVLinkPacket pack() {
         MAVLinkPacket packet = new MAVLinkPacket(MAVLINK_MSG_LENGTH);
         packet.sysid = 255;
         packet.compid = 190;
         packet.msgid = MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_USB;
-              
+        
         packet.payload.putUnsignedByte(cmd);
-              
+        
         packet.payload.putUnsignedByte(target_system);
-              
+        
         packet.payload.putUnsignedByte(target_component);
         
+        if(isMavlink2) {
+            
+        }
         return packet;
     }
 
     /**
-    * Decode a set_companion_computer_usb message into this class fields
-    *
-    * @param payload The message to decode
-    */
+     * Decode a set_companion_computer_usb message into this class fields
+     *
+     * @param payload The message to decode
+     */
     public void unpack(MAVLinkPayload payload) {
         payload.resetIndex();
-              
+        
         this.cmd = payload.getUnsignedByte();
-              
+        
         this.target_system = payload.getUnsignedByte();
-              
+        
         this.target_component = payload.getUnsignedByte();
         
+        if(isMavlink2) {
+            
+        }
     }
 
     /**
-    * Constructor for a new message, just initializes the msgid
-    */
-    public msg_set_companion_computer_usb(){
+     * Constructor for a new message, just initializes the msgid
+     */
+    public msg_set_companion_computer_usb() {
         msgid = MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_USB;
     }
 
     /**
-    * Constructor for a new message, initializes the message with the payload
-    * from a mavlink packet
-    *
-    */
-    public msg_set_companion_computer_usb(MAVLinkPacket mavLinkPacket){
+     * Constructor for a new message, initializes the message with the payload
+     * from a mavlink packet
+     *
+     */
+    public msg_set_companion_computer_usb(MAVLinkPacket mavLinkPacket) {
         this.sysid = mavLinkPacket.sysid;
         this.compid = mavLinkPacket.compid;
         this.msgid = MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_USB;
+        this.isMavlink2 = mavLinkPacket.isMavlink2;
         unpack(mavLinkPacket.payload);        
     }
 
           
     /**
-    * Returns a string with the MSG name and data
-    */
-    public String toString(){
+     * Returns a string with the MSG name and data
+     */
+    public String toString() {
         return "MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_USB - sysid:"+sysid+" compid:"+compid+" cmd:"+cmd+" target_system:"+target_system+" target_component:"+target_component+"";
     }
 }

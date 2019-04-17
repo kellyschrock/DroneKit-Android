@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* Flags in EKF_STATUS message
-*/
+ * Flags in EKF_STATUS message
+ */
 public class EKF_STATUS_FLAGS {
    public static final int EKF_ATTITUDE = 1; /* set if EKF's attitude estimate is good | */
    public static final int EKF_VELOCITY_HORIZ = 2; /* set if EKF's horizontal velocity estimate is good | */

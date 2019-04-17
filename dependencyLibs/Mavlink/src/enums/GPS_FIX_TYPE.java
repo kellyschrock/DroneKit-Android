@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* Type of GPS fix
-*/
+ * Type of GPS fix
+ */
 public class GPS_FIX_TYPE {
    public static final int GPS_FIX_TYPE_NO_GPS = 0; /* No GPS connected | */
    public static final int GPS_FIX_TYPE_NO_FIX = 1; /* No position information, GPS is connected | */

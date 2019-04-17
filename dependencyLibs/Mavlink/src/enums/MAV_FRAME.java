@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* 
-*/
+ * 
+ */
 public class MAV_FRAME {
    public static final int MAV_FRAME_GLOBAL = 0; /* Global coordinate frame, WGS84 coordinate system. First value / x: latitude, second value / y: longitude, third value / z: positive altitude over mean sea level (MSL). | */
    public static final int MAV_FRAME_LOCAL_NED = 1; /* Local coordinate frame, Z-down (x: north, y: east, z: down). | */

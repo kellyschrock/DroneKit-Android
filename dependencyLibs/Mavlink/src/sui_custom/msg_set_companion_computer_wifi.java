@@ -11,9 +11,9 @@ import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
         
 /**
-* Setup the companion computers wifi as an access point or a client.  If the ssid or pass fields are empty strings, the previous values will be used.
-*/
-public class msg_set_companion_computer_wifi extends MAVLinkMessage{
+ * Setup the companion computers wifi as an access point or a client.  If the ssid or pass fields are empty strings, the previous values will be used.
+ */
+public class msg_set_companion_computer_wifi extends MAVLinkMessage {
 
     public static final int MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_WIFI = 8;
     public static final int MAVLINK_MSG_LENGTH = 67;
@@ -22,106 +22,115 @@ public class msg_set_companion_computer_wifi extends MAVLinkMessage{
 
       
     /**
-    * cmd, 1-access point mode, 2-client mode
-    */
+     * cmd, 1-access point mode, 2-client mode
+     */
     public short cmd;
       
     /**
-    * ssid
-    */
+     * ssid
+     */
     public byte ssid[] = new byte[32];
       
     /**
-    * pass
-    */
+     * pass
+     */
     public byte pass[] = new byte[32];
       
     /**
-    * System ID
-    */
+     * System ID
+     */
     public short target_system;
       
     /**
-    * Component ID
-    */
+     * Component ID
+     */
     public short target_component;
     
 
     /**
-    * Generates the payload for a mavlink message for a message of this type
-    * @return
-    */
-    public MAVLinkPacket pack(){
+     * Generates the payload for a mavlink message for a message of this type
+     * @return
+     */
+    public MAVLinkPacket pack() {
         MAVLinkPacket packet = new MAVLinkPacket(MAVLINK_MSG_LENGTH);
         packet.sysid = 255;
         packet.compid = 190;
         packet.msgid = MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_WIFI;
-              
+        
         packet.payload.putUnsignedByte(cmd);
-              
+        
         
         for (int i = 0; i < ssid.length; i++) {
             packet.payload.putByte(ssid[i]);
         }
                     
-              
+        
         
         for (int i = 0; i < pass.length; i++) {
             packet.payload.putByte(pass[i]);
         }
                     
-              
+        
         packet.payload.putUnsignedByte(target_system);
-              
+        
         packet.payload.putUnsignedByte(target_component);
         
+        if(isMavlink2) {
+            
+        }
         return packet;
     }
 
     /**
-    * Decode a set_companion_computer_wifi message into this class fields
-    *
-    * @param payload The message to decode
-    */
+     * Decode a set_companion_computer_wifi message into this class fields
+     *
+     * @param payload The message to decode
+     */
     public void unpack(MAVLinkPayload payload) {
         payload.resetIndex();
-              
+        
         this.cmd = payload.getUnsignedByte();
-              
+        
          
         for (int i = 0; i < this.ssid.length; i++) {
+            if(!payload.hasRemaining()) break;
             this.ssid[i] = payload.getByte();
         }
                 
-              
+        
          
         for (int i = 0; i < this.pass.length; i++) {
+            if(!payload.hasRemaining()) break;
             this.pass[i] = payload.getByte();
         }
                 
-              
+        
         this.target_system = payload.getUnsignedByte();
-              
+        
         this.target_component = payload.getUnsignedByte();
         
+        if(isMavlink2) {
+            
+        }
     }
 
     /**
-    * Constructor for a new message, just initializes the msgid
-    */
-    public msg_set_companion_computer_wifi(){
+     * Constructor for a new message, just initializes the msgid
+     */
+    public msg_set_companion_computer_wifi() {
         msgid = MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_WIFI;
     }
 
     /**
-    * Constructor for a new message, initializes the message with the payload
-    * from a mavlink packet
-    *
-    */
-    public msg_set_companion_computer_wifi(MAVLinkPacket mavLinkPacket){
+     * Constructor for a new message, initializes the message with the payload
+     * from a mavlink packet
+     *
+     */
+    public msg_set_companion_computer_wifi(MAVLinkPacket mavLinkPacket) {
         this.sysid = mavLinkPacket.sysid;
         this.compid = mavLinkPacket.compid;
         this.msgid = MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_WIFI;
+        this.isMavlink2 = mavLinkPacket.isMavlink2;
         unpack(mavLinkPacket.payload);        
     }
 
@@ -185,9 +194,9 @@ public class msg_set_companion_computer_wifi extends MAVLinkMessage{
     }
                              
     /**
-    * Returns a string with the MSG name and data
-    */
-    public String toString(){
+     * Returns a string with the MSG name and data
+     */
+    public String toString() {
         return "MAVLINK_MSG_ID_SET_COMPANION_COMPUTER_WIFI - sysid:"+sysid+" compid:"+compid+" cmd:"+cmd+" ssid:"+ssid+" pass:"+pass+" target_system:"+target_system+" target_component:"+target_component+"";
     }
 }

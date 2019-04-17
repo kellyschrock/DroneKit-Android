@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* result from a mavlink command
-*/
+ * result from a mavlink command
+ */
 public class MAV_RESULT {
    public static final int MAV_RESULT_ACCEPTED = 0; /* Command ACCEPTED and EXECUTED | */
    public static final int MAV_RESULT_TEMPORARILY_REJECTED = 1; /* Command TEMPORARY REJECTED/DENIED | */

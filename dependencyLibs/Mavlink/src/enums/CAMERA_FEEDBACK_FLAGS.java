@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* 
-*/
+ * 
+ */
 public class CAMERA_FEEDBACK_FLAGS {
    public static final int CAMERA_FEEDBACK_PHOTO = 0; /* Shooting photos, not video | */
    public static final int CAMERA_FEEDBACK_VIDEO = 1; /* Shooting video, not stills | */

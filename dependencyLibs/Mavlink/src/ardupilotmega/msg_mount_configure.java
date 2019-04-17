@@ -11,9 +11,9 @@ import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
         
 /**
-* Message to configure a camera mount, directional antenna, etc.
-*/
-public class msg_mount_configure extends MAVLinkMessage{
+ * Message to configure a camera mount, directional antenna, etc.
+ */
+public class msg_mount_configure extends MAVLinkMessage {
 
     public static final int MAVLINK_MSG_ID_MOUNT_CONFIGURE = 156;
     public static final int MAVLINK_MSG_LENGTH = 6;
@@ -22,107 +22,114 @@ public class msg_mount_configure extends MAVLinkMessage{
 
       
     /**
-    * System ID
-    */
+     * System ID
+     */
     public short target_system;
       
     /**
-    * Component ID
-    */
+     * Component ID
+     */
     public short target_component;
       
     /**
-    * mount operating mode (see MAV_MOUNT_MODE enum)
-    */
+     * mount operating mode (see MAV_MOUNT_MODE enum)
+     */
     public short mount_mode;
       
     /**
-    * (1 = yes, 0 = no)
-    */
+     * (1 = yes, 0 = no)
+     */
     public short stab_roll;
       
     /**
-    * (1 = yes, 0 = no)
-    */
+     * (1 = yes, 0 = no)
+     */
     public short stab_pitch;
       
     /**
-    * (1 = yes, 0 = no)
-    */
+     * (1 = yes, 0 = no)
+     */
     public short stab_yaw;
     
 
     /**
-    * Generates the payload for a mavlink message for a message of this type
-    * @return
-    */
-    public MAVLinkPacket pack(){
+     * Generates the payload for a mavlink message for a message of this type
+     * @return
+     */
+    public MAVLinkPacket pack() {
         MAVLinkPacket packet = new MAVLinkPacket(MAVLINK_MSG_LENGTH);
         packet.sysid = 255;
         packet.compid = 190;
         packet.msgid = MAVLINK_MSG_ID_MOUNT_CONFIGURE;
-              
+        
         packet.payload.putUnsignedByte(target_system);
-              
+        
         packet.payload.putUnsignedByte(target_component);
-              
+        
         packet.payload.putUnsignedByte(mount_mode);
-              
+        
         packet.payload.putUnsignedByte(stab_roll);
-              
+        
         packet.payload.putUnsignedByte(stab_pitch);
-              
+        
         packet.payload.putUnsignedByte(stab_yaw);
         
+        if(isMavlink2) {
+            
+        }
         return packet;
     }
 
     /**
-    * Decode a mount_configure message into this class fields
-    *
-    * @param payload The message to decode
-    */
+     * Decode a mount_configure message into this class fields
+     *
+     * @param payload The message to decode
+     */
     public void unpack(MAVLinkPayload payload) {
         payload.resetIndex();
-              
+        
         this.target_system = payload.getUnsignedByte();
-              
+        
         this.target_component = payload.getUnsignedByte();
-              
+        
         this.mount_mode = payload.getUnsignedByte();
-              
+        
         this.stab_roll = payload.getUnsignedByte();
-              
+        
         this.stab_pitch = payload.getUnsignedByte();
-              
+        
         this.stab_yaw = payload.getUnsignedByte();
         
+        if(isMavlink2) {
+            
+        }
     }
 
     /**
-    * Constructor for a new message, just initializes the msgid
-    */
-    public msg_mount_configure(){
+     * Constructor for a new message, just initializes the msgid
+     */
+    public msg_mount_configure() {
         msgid = MAVLINK_MSG_ID_MOUNT_CONFIGURE;
     }
 
     /**
-    * Constructor for a new message, initializes the message with the payload
-    * from a mavlink packet
-    *
-    */
-    public msg_mount_configure(MAVLinkPacket mavLinkPacket){
+     * Constructor for a new message, initializes the message with the payload
+     * from a mavlink packet
+     *
+     */
+    public msg_mount_configure(MAVLinkPacket mavLinkPacket) {
         this.sysid = mavLinkPacket.sysid;
         this.compid = mavLinkPacket.compid;
         this.msgid = MAVLINK_MSG_ID_MOUNT_CONFIGURE;
+        this.isMavlink2 = mavLinkPacket.isMavlink2;
         unpack(mavLinkPacket.payload);        
     }
 
                 
     /**
-    * Returns a string with the MSG name and data
-    */
-    public String toString(){
+     * Returns a string with the MSG name and data
+     */
+    public String toString() {
         return "MAVLINK_MSG_ID_MOUNT_CONFIGURE - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" target_component:"+target_component+" mount_mode:"+mount_mode+" stab_roll:"+stab_roll+" stab_pitch:"+stab_pitch+" stab_yaw:"+stab_yaw+"";
     }
 }

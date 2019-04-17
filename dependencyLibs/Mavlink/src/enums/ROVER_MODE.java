@@ -7,8 +7,8 @@
 package com.MAVLink.enums;
 
 /** 
-* A mapping of rover flight modes for custom_mode field of heartbeat
-*/
+ * A mapping of rover flight modes for custom_mode field of heartbeat
+ */
 public class ROVER_MODE {
    public static final int ROVER_MODE_MANUAL = 0; /*  | */
    public static final int ROVER_MODE_ACRO = 1; /*  | */
