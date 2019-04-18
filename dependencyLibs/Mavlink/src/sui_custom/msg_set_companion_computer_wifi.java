@@ -93,15 +93,13 @@ public class msg_set_companion_computer_wifi extends MAVLinkMessage {
         
          
         for (int i = 0; i < this.ssid.length; i++) {
-            if(!payload.hasRemaining()) break;
-            this.ssid[i] = payload.getByte();
+            try { this.ssid[i] = payload.getByte(); } catch(IndexOutOfBoundsException ex) { break; }
         }
                 
         
          
         for (int i = 0; i < this.pass.length; i++) {
-            if(!payload.hasRemaining()) break;
-            this.pass[i] = payload.getByte();
+            try { this.pass[i] = payload.getByte(); } catch(IndexOutOfBoundsException ex) { break; }
         }
                 
         

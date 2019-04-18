@@ -89,8 +89,7 @@ public class msg_companion_computer_preflight extends MAVLinkMessage {
         
          
         for (int i = 0; i < this.mission_id.length; i++) {
-            if(!payload.hasRemaining()) break;
-            this.mission_id[i] = payload.getByte();
+            try { this.mission_id[i] = payload.getByte(); } catch(IndexOutOfBoundsException ex) { break; }
         }
                 
         
