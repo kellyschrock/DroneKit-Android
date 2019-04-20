@@ -1,7 +1,6 @@
 package org.droidplanner.services.android.impl.core.MAVLink;
 
 import android.os.Handler;
-import android.util.Log;
 
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.common.msg_mission_ack;
@@ -17,6 +16,7 @@ import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
 
 import java.util.ArrayList;
 import java.util.List;
+import android.util.Log;
 
 /**
  * Class to manage the communication of waypoints to the MAV.
@@ -109,6 +109,8 @@ public class WaypointManager extends DroneVariable {
      */
 
     public void writeWaypoints(List<msg_mission_item> data) {
+        Log.v(TAG, "writeWaypoints()");
+
         // ensure that WPManager is not doing anything else
         if (state != WaypointStates.IDLE)
             return;
@@ -119,6 +121,8 @@ public class WaypointManager extends DroneVariable {
             mission.addAll(data);
             writeIndex = 0;
             state = WaypointStates.WRITING_WP_COUNT;
+            Log.v(TAG, "sendWaypointCount()");
+
             MavLinkWaypoint.sendWaypointCount(myDrone, mission.size());
 
             startWatchdog();
@@ -168,15 +172,12 @@ public class WaypointManager extends DroneVariable {
      * @return Returns true if the message has been processed
      */
     public boolean processMessage(MAVLinkMessage msg) {
-
         switch (state) {
             default:
             case IDLE:
                 break;
 
             case READ_REQUEST:
-                Log.v(TAG, String.format("msg.msgid=%d", msg.msgid));
-
                 if (msg.msgid == msg_mission_count.MAVLINK_MSG_ID_MISSION_COUNT) {
                     waypointCount = ((msg_mission_count) msg).count;
                     mission.clear();
@@ -209,6 +210,8 @@ public class WaypointManager extends DroneVariable {
                 state = WaypointStates.WRITING_WP;
             case WRITING_WP:
                 if (msg.msgid == msg_mission_request.MAVLINK_MSG_ID_MISSION_REQUEST) {
+                    Log.v(TAG, "got MISSION_REQUEST");
+
                     startWatchdog();
                     processWaypointToSend((msg_mission_request) msg);
                     doWaypointEvent(WaypointEvent_Type.WP_UPLOAD, writeIndex + 1, mission.size());
@@ -218,6 +221,8 @@ public class WaypointManager extends DroneVariable {
 
             case WAITING_WRITE_ACK:
                 if (msg.msgid == msg_mission_ack.MAVLINK_MSG_ID_MISSION_ACK) {
+                    Log.v(TAG, "got MISSION_ACK");
+
                     stopWatchdog();
                     myDrone.getMission().onWriteWaypoints((msg_mission_ack) msg);
                     state = WaypointStates.IDLE;
@@ -290,6 +295,8 @@ public class WaypointManager extends DroneVariable {
 		 */
         writeIndex = msg.seq;
         msg_mission_item item = mission.get(writeIndex);
+        item.isMavlink2 = true;
+        item.mission_type = 0;
         item.target_system = myDrone.getSysid();
         item.target_component = myDrone.getCompid();
         myDrone.getMavClient().sendMessage(item, null);
@@ -300,16 +307,13 @@ public class WaypointManager extends DroneVariable {
     }
 
     private void processReceivedWaypoint(msg_mission_item msg) {
-        Log.v(TAG,String.format("processReceivedWaypoint(%s)", msg));
 		/*
 		 * Log.d("TIMEOUT", "Read Last/Curr: " + String.valueOf(readIndex) + "/"
 		 * + String.valueOf(msg.seq));
 		 */
         // in case of we receive the same WP again after retry
-        if (msg.seq <= readIndex) {
-            Log.w(TAG, String.format("msg.seq=%d readIndex=%d", msg.seq, readIndex));
+        if (msg.seq <= readIndex)
             return;
-        }
 
         readIndex = msg.seq;
 
