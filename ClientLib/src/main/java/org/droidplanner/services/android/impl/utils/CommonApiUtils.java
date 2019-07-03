@@ -880,7 +880,8 @@ public class CommonApiUtils {
             target_system.setShort(message, (short)message.sysid);
             target_component.setShort(message, (short)message.compid);
         } catch (NoSuchFieldException | SecurityException | IllegalAccessException | IllegalArgumentException | ExceptionInInitializerError e) {
-            Timber.e(e, e.getMessage());
+            // No point in logging these normally, a *lot* of messages don't have these fields. It's not an error.
+            // Timber.e(e, e.getMessage());
         }
 
         drone.getMavClient().sendMessage(message, null);

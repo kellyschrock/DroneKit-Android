@@ -152,8 +152,6 @@ public enum ApmModes {
 	}
 	
 	public static boolean isVtol(int type) {
-		Timber.d("isVtol(%d)", type);
-
 		switch(type) {
 			case MAV_TYPE.MAV_TYPE_VTOL_DUOROTOR:
 			case MAV_TYPE.MAV_TYPE_VTOL_QUADROTOR:
