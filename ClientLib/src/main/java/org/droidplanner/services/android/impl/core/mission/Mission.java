@@ -25,6 +25,7 @@ import org.droidplanner.services.android.impl.core.mission.commands.ConditionYaw
 import org.droidplanner.services.android.impl.core.mission.commands.DoJumpImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.EpmGripperImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.LoiterToAltImpl;
+import org.droidplanner.services.android.impl.core.mission.commands.RawMissionCommandImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.ReturnToHomeImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.SetRelayImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.SetServoImpl;
@@ -298,6 +299,7 @@ public class Mission extends DroneVariable<GenericMavLinkDrone> {
                     break;
 
                 default:
+                    received.add(new RawMissionCommandImpl(msg, this));
                     break;
             }
         }

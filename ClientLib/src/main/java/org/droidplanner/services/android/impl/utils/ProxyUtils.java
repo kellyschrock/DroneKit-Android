@@ -9,6 +9,7 @@ import com.o3dr.services.android.lib.drone.mission.item.command.ChangeSpeed;
 import com.o3dr.services.android.lib.drone.mission.item.command.DoJump;
 import com.o3dr.services.android.lib.drone.mission.item.command.EpmGripper;
 import com.o3dr.services.android.lib.drone.mission.item.command.LoiterToAlt;
+import com.o3dr.services.android.lib.drone.mission.item.command.RawMissionCommand;
 import com.o3dr.services.android.lib.drone.mission.item.command.ResetROI;
 import com.o3dr.services.android.lib.drone.mission.item.command.ReturnToLaunch;
 import com.o3dr.services.android.lib.drone.mission.item.command.SetRelay;
@@ -38,6 +39,7 @@ import org.droidplanner.services.android.impl.core.mission.commands.ConditionYaw
 import org.droidplanner.services.android.impl.core.mission.commands.DoJumpImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.EpmGripperImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.LoiterToAltImpl;
+import org.droidplanner.services.android.impl.core.mission.commands.RawMissionCommandImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.ReturnToHomeImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.SetRelayImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.SetServoImpl;
@@ -174,6 +176,11 @@ public class ProxyUtils {
                     missionItemImpl = null;
                 }
 
+                break;
+            }
+            case RAW_COMMAND: {
+                final RawMissionCommand proxy = (RawMissionCommand)proxyItem;
+                missionItemImpl = new RawMissionCommandImpl(mission).setTo(proxy);
                 break;
             }
             case EPM_GRIPPER: {
@@ -584,6 +591,13 @@ public class ProxyUtils {
                 temp.setYawAngle(source.getYawAngle());
                 temp.setApproachAltitude(source.getApproachAltitude());
 
+                proxyMissionItem = temp;
+                break;
+            }
+
+            case RAW_COMMAND: {
+                final RawMissionCommandImpl source = (RawMissionCommandImpl)itemImpl;
+                final RawMissionCommand temp = new RawMissionCommand().setTo(source);
                 proxyMissionItem = temp;
                 break;
             }
