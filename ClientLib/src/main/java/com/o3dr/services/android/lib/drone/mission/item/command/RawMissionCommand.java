@@ -133,4 +133,20 @@ public class RawMissionCommand extends MissionItem implements MissionItem.Comman
             return new RawMissionCommand[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "RawMissionCommand{" +
+                "param1=" + param1 +
+                ", param2=" + param2 +
+                ", param3=" + param3 +
+                ", param4=" + param4 +
+                ", x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                ", command=" + command +
+                ", target_system=" + target_system +
+                ", target_component=" + target_component +
+                '}';
+    }
 }
