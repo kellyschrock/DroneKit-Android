@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EndpointSorter {
-	private static final int MAX_NUMBER_OF_CAMERAS = 4000;
+	private static final int MAX_NUMBER_OF_CAMERAS = 48000;
 
 	private List<LatLong> gridPoints = new ArrayList<LatLong>();
 	private List<LineLatLong> grid;

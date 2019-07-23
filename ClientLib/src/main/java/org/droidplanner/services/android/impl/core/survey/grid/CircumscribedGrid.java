@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CircumscribedGrid {
-	private static final int MAX_NUMBER_OF_LINES = 600;
+	private static final int MAX_NUMBER_OF_LINES = 7200;
 	List<LineLatLong> grid = new ArrayList<LineLatLong>();
 	private LatLong gridLowerLeft;
 	private double extrapolatedDiag;
