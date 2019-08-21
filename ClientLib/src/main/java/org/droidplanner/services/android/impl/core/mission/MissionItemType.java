@@ -7,6 +7,7 @@ import org.droidplanner.services.android.impl.core.mission.commands.ChangeSpeedI
 import org.droidplanner.services.android.impl.core.mission.commands.ConditionYawImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.DoJumpImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.EpmGripperImpl;
+import org.droidplanner.services.android.impl.core.mission.commands.LoiterTimeImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.LoiterToAltImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.ReturnToHomeImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.SetRelayImpl;
@@ -50,7 +51,8 @@ public enum MissionItemType {
     VTOL_TRANSITION("VTOL Transition"),
     VTOL_TAKEOFF("VTOL Takeoff"),
     VTOL_LAND("VTOL Land"),
-    RAW_COMMAND("Raw command")
+    RAW_COMMAND("Raw command"),
+    LOITER_TIME("Loiter Time"),
     ;
 
     private final String name;
@@ -75,6 +77,8 @@ public enum MissionItemType {
                 return new ChangeSpeedImpl(referenceItem);
             case LOITER_TO_ALT:
                 return new LoiterToAltImpl(referenceItem);
+            case LOITER_TIME:
+                return new LoiterTimeImpl(referenceItem);
             case CAMERA_TRIGGER:
                 return new CameraTriggerImpl(referenceItem);
             case EPM_GRIPPER:

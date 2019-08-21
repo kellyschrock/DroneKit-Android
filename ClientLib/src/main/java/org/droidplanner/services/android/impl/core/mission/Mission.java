@@ -24,6 +24,7 @@ import org.droidplanner.services.android.impl.core.mission.commands.ChangeSpeedI
 import org.droidplanner.services.android.impl.core.mission.commands.ConditionYawImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.DoJumpImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.EpmGripperImpl;
+import org.droidplanner.services.android.impl.core.mission.commands.LoiterTimeImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.LoiterToAltImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.RawMissionCommandImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.ReturnToHomeImpl;
@@ -263,6 +264,9 @@ public class Mission extends DroneVariable<GenericMavLinkDrone> {
                     break;
                 case MAV_CMD.MAV_CMD_NAV_LOITER_TO_ALT:
                     received.add(new LoiterToAltImpl(msg, this));
+                    break;
+                case MAV_CMD.MAV_CMD_NAV_LOITER_TIME:
+                    received.add(new LoiterTimeImpl(msg, this));
                     break;
                 case MAV_CMD.MAV_CMD_DO_SET_CAM_TRIGG_DIST:
                     received.add(new CameraTriggerImpl(msg, this));

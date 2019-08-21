@@ -9,6 +9,7 @@ import com.o3dr.services.android.lib.drone.mission.item.command.CameraTrigger;
 import com.o3dr.services.android.lib.drone.mission.item.command.ChangeSpeed;
 import com.o3dr.services.android.lib.drone.mission.item.command.DoJump;
 import com.o3dr.services.android.lib.drone.mission.item.command.EpmGripper;
+import com.o3dr.services.android.lib.drone.mission.item.command.LoiterTime;
 import com.o3dr.services.android.lib.drone.mission.item.command.LoiterToAlt;
 import com.o3dr.services.android.lib.drone.mission.item.command.RawMissionCommand;
 import com.o3dr.services.android.lib.drone.mission.item.command.ResetROI;
@@ -271,7 +272,6 @@ public enum MissionItemType {
             return ResetROI.CREATOR;
         }
     },
-
     LOITER_TO_ALT("Loiter to Alt") {
         @Override
         public MissionItem getNewItem() {
@@ -281,6 +281,17 @@ public enum MissionItemType {
         @Override
         protected Creator<LoiterToAlt> getMissionItemCreator() {
             return LoiterToAlt.CREATOR;
+        }
+    },
+    LOITER_TIME("Loiter Time") {
+        @Override
+        public MissionItem getNewItem() {
+            return new LoiterTime();
+        }
+
+        @Override
+        protected Creator<LoiterTime> getMissionItemCreator() {
+            return LoiterTime.CREATOR;
         }
     },
     VTOL_TRANSITION("VTOL Transition") {
