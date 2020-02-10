@@ -97,22 +97,26 @@ public class WifiConnectionHandler {
                         : netInfo.getState();
 
                     switch (networkState) {
-                        case CONNECTED:
+                        case CONNECTED: {
                             final WifiInfo wifiInfo = intent.getParcelableExtra(WifiManager.EXTRA_WIFI_INFO);
-                            final String wifiSSID = wifiInfo.getSSID();
-                            Timber.i("Connected to " + wifiSSID);
+                            if(wifiInfo != null) {
+                                final String wifiSSID = wifiInfo.getSSID();
+                                Timber.i("Connected to " + wifiSSID);
 
-                            final DhcpInfo dhcpInfo = wifiMgr.getDhcpInfo();
-                            if (dhcpInfo != null) {
-                                Timber.i("Dhcp info: %s", dhcpInfo.toString());
-                            } else {
-                                Timber.w("Dhcp info is not available.");
+                                final DhcpInfo dhcpInfo = wifiMgr.getDhcpInfo();
+                                if (dhcpInfo != null) {
+                                    Timber.i("Dhcp info: %s", dhcpInfo.toString());
+                                } else {
+                                    Timber.w("Dhcp info is not available.");
+                                }
+
+                                if (wifiSSID != null) {
+                                    setDefaultNetworkIfNecessary(wifiSSID);
+                                }
                             }
 
-                            if (wifiSSID != null) {
-                                setDefaultNetworkIfNecessary(wifiSSID);
-                            }
                             break;
+                        }
 
                         case DISCONNECTED:
                             Timber.i("Disconnected from wifi network.");
