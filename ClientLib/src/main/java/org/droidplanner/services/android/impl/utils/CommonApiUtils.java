@@ -916,7 +916,8 @@ public class CommonApiUtils {
             target_system.setShort(message, (short)sysid);
             target_component.setShort(message, (short)compid);
         } catch (NoSuchFieldException | SecurityException | IllegalAccessException | IllegalArgumentException | ExceptionInInitializerError e) {
-            Timber.e(e, e.getMessage());
+            // Logging this crap is annoying.
+//            Timber.e(e, e.getMessage());
         }
 
         drone.getMavClient().sendMessage(message, null);
