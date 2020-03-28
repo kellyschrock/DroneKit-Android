@@ -13,8 +13,6 @@ import com.MAVLink.ardupilotmega.msg_mag_cal_report;
 import com.MAVLink.ardupilotmega.msg_mount_configure;
 import com.MAVLink.ardupilotmega.msg_mount_status;
 import com.MAVLink.ardupilotmega.msg_radio;
-import com.MAVLink.common.msg_radio_status;
-import com.MAVLink.common.msg_global_position_int;
 import com.MAVLink.common.msg_named_value_int;
 import com.MAVLink.common.msg_raw_imu;
 import com.MAVLink.common.msg_rc_channels_raw;
@@ -45,9 +43,10 @@ import com.o3dr.services.android.lib.model.ICommandListener;
 import com.o3dr.services.android.lib.model.action.Action;
 
 import org.droidplanner.services.android.impl.communication.model.DataLink;
+import org.droidplanner.services.android.impl.core.MAVLink.IWaypointManager;
 import org.droidplanner.services.android.impl.core.MAVLink.MavLinkCommands;
 import org.droidplanner.services.android.impl.core.MAVLink.MavLinkParameters;
-import org.droidplanner.services.android.impl.core.MAVLink.WaypointManager;
+import org.droidplanner.services.android.impl.core.MAVLink.APMWaypointManager;
 import org.droidplanner.services.android.impl.core.MAVLink.command.doCmd.MavLinkDoCmds;
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces;
 import org.droidplanner.services.android.impl.core.drone.LogMessageListener;
@@ -86,7 +85,7 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
     private final Mission mission;
     private final GuidedPoint guidedPoint;
     private final AccelCalibration accelCalibrationSetup;
-    private final WaypointManager waypointManager;
+    private final IWaypointManager waypointManager;
     private final Magnetometer mag;
     private final Camera footprints;
 
@@ -100,7 +99,7 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
 
         super(droneId, context, handler, mavClient, warningParser, logListener);
 
-        this.waypointManager = new WaypointManager(this, handler);
+        this.waypointManager = new APMWaypointManager(this, handler);
 
         rc = new RC(this);
         this.mission = new Mission(this);
@@ -149,7 +148,7 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
     }
 
     @Override
-    public WaypointManager getWaypointManager() {
+    public IWaypointManager getWaypointManager() {
         return waypointManager;
     }
 
@@ -214,7 +213,7 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
                 data.setClassLoader(com.o3dr.services.android.lib.drone.mission.Mission.class.getClassLoader());
                 com.o3dr.services.android.lib.drone.mission.Mission mission = data.getParcelable(MissionActions.EXTRA_MISSION);
                 boolean pushToDrone = data.getBoolean(MissionActions.EXTRA_PUSH_TO_DRONE);
-                CommonApiUtils.setMission(this, mission, pushToDrone);
+                CommonApiUtils.setAPMMission(this, mission, pushToDrone);
                 return true;
 
             case MissionActions.ACTION_START_MISSION:
@@ -410,7 +409,7 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
     protected boolean setVehicleMode(Bundle data, ICommandListener listener) {
         data.setClassLoader(VehicleMode.class.getClassLoader());
         VehicleMode newMode = data.getParcelable(StateActions.EXTRA_VEHICLE_MODE);
-        CommonApiUtils.changeVehicleMode(this, newMode, listener);
+        CommonApiUtils.changeAPMVehicleMode(this, newMode, listener);
         return true;
     }
 
@@ -465,6 +464,8 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
 
                 case msg_radio.MAVLINK_MSG_ID_RADIO:
                     msg_radio m_radio = (msg_radio) message;
+                    Log.v(TAG, String.format("radio=%s", m_radio));
+
                     processSignalUpdate(m_radio.rxerrors, m_radio.fixed, m_radio.rssi,
                             m_radio.remrssi, m_radio.txbuf, m_radio.noise, m_radio.remnoise);
                     break;
@@ -586,7 +587,7 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
         switch (message.getName()) {
             case "ARMMASK":
                 //Give information about the vehicle's ability to arm successfully.
-                ApmModes vehicleMode = getState().getMode();
+                ApmModes vehicleMode = (ApmModes)getState().getMode().getNativeMode();
                 if (ApmModes.isCopter(vehicleMode.getType())) {
                     int value = message.value;
                     boolean isReadyToArm = (value & (1 << vehicleMode.getNumber())) != 0;

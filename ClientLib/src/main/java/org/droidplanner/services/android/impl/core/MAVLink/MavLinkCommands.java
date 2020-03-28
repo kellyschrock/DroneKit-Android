@@ -11,10 +11,12 @@ import com.MAVLink.common.msg_set_position_target_local_ned;
 import com.MAVLink.enums.MAV_CMD;
 import com.MAVLink.enums.MAV_FRAME;
 import com.MAVLink.enums.MAV_GOTO;
+import com.MAVLink.enums.MAV_MODE_FLAG;
 import com.o3dr.services.android.lib.model.ICommandListener;
 
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
 import org.droidplanner.services.android.impl.core.drone.variables.ApmModes;
+import org.droidplanner.services.android.impl.core.drone.variables.Px4Mode;
 
 import timber.log.Timber;
 
@@ -111,11 +113,32 @@ public class MavLinkCommands {
         drone.getMavClient().sendMessage(msg, null);
     }
 
-    public static void changeFlightMode(MavLinkDrone drone, ApmModes mode, ICommandListener listener) {
+    public static void changeAPMFlightMode(MavLinkDrone drone, ApmModes mode, ICommandListener listener) {
         msg_set_mode msg = new msg_set_mode();
         msg.target_system = drone.getSysid();
         msg.base_mode = 1; // TODO use meaningful constant
         msg.custom_mode = mode.getNumber();
+        drone.getMavClient().sendMessage(msg, listener);
+    }
+
+    public static void changePx4FlightMode(MavLinkDrone drone, Px4Mode mode, ICommandListener listener) {
+        Log.v(TAG, String.format("changePx4FlightMode(%s)", mode));
+
+        // Supposed to be how you're supposed to do it, doesn't appear to work?
+//        msg_command_long msg = new msg_command_long();
+//        msg.target_system = drone.getSysid();
+//        msg.command = MAV_CMD.MAV_CMD_DO_SET_MODE;
+//        msg.param1 = mode.getMainMode();
+//        msg.param2 = mode.getModeChangeValue();
+
+        msg_set_mode msg = new msg_set_mode();
+        msg.target_system = drone.getSysid();
+//        msg.base_mode = (short)mode.getMainMode();
+        // This is what QGC does, although the above works too.
+        msg.base_mode = MAV_MODE_FLAG.MAV_MODE_FLAG_CUSTOM_MODE_ENABLED;
+        msg.custom_mode = mode.getModeChangeValue();
+        Log.v(TAG, String.format("msg.custom_mode=%d", msg.custom_mode));
+        Log.v(TAG, String.format("msg=%s", msg));
         drone.getMavClient().sendMessage(msg, listener);
     }
 

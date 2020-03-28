@@ -4,12 +4,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Surface;
 
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.ardupilotmega.msg_ekf_status_report;
 import com.MAVLink.common.msg_adsb_vehicle;
+import com.MAVLink.common.msg_altitude;
 import com.MAVLink.common.msg_attitude;
 import com.MAVLink.common.msg_autopilot_version;
 import com.MAVLink.common.msg_battery_status;
@@ -59,9 +59,9 @@ import com.o3dr.services.android.lib.model.action.Action;
 import com.o3dr.services.android.lib.util.MathUtils;
 
 import org.droidplanner.services.android.impl.communication.model.DataLink;
+import org.droidplanner.services.android.impl.core.MAVLink.IWaypointManager;
 import org.droidplanner.services.android.impl.core.MAVLink.MavLinkCommands;
 import org.droidplanner.services.android.impl.core.MAVLink.MavLinkWaypoint;
-import org.droidplanner.services.android.impl.core.MAVLink.WaypointManager;
 import org.droidplanner.services.android.impl.core.drone.DroneEvents;
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces;
 import org.droidplanner.services.android.impl.core.drone.LogMessageListener;
@@ -102,7 +102,7 @@ public class GenericMavLinkDrone implements MavLinkDrone {
 
     private final DroneEvents events;
     protected final Type type;
-    private final State state;
+    protected final State state;
     private final HeartBeat heartbeat;
     private final StreamRates streamRates;
     private final ParameterManager parameterManager;
@@ -188,7 +188,7 @@ public class GenericMavLinkDrone implements MavLinkDrone {
     }
 
     @Override
-    public WaypointManager getWaypointManager() {
+    public IWaypointManager getWaypointManager() {
         //TODO: complete implementation
         return null;
     }
@@ -571,7 +571,7 @@ public class GenericMavLinkDrone implements MavLinkDrone {
                 return altitude;
 
             case AttributeType.STATE:
-                return CommonApiUtils.getState(this, isConnected(), vibration, getSysid(), getCompid());
+                return CommonApiUtils.getAPMState(this, isConnected(), vibration, getSysid(), getCompid());
 
             case AttributeType.MAVLINK_STATS:
                 return mavlinkStats;
@@ -624,6 +624,10 @@ public class GenericMavLinkDrone implements MavLinkDrone {
             case msg_attitude.MAVLINK_MSG_ID_ATTITUDE:
                 msg_attitude m_att = (msg_attitude) message;
                 processAttitude(m_att);
+                break;
+
+            case msg_altitude.MAVLINK_MSG_ID_ALTITUDE:
+                processAltitude((msg_altitude)message);
                 break;
 
             case msg_heartbeat.MAVLINK_MSG_ID_HEARTBEAT:
@@ -729,9 +733,7 @@ public class GenericMavLinkDrone implements MavLinkDrone {
         );
     }
 
-    private void processHeartbeat(msg_heartbeat msg_heart) {
-//        Log.v(TAG, String.format("heartbeat: %d/%d to %d/%d", msg_heart.sysid, msg_heart.compid, this.getSysid(), this.getCompid()));
-
+    protected void processHeartbeat(msg_heartbeat msg_heart) {
         if(Type.isVehicle(msg_heart.type)) {
             setType(msg_heart.type);
             checkIfFlying(msg_heart);
@@ -744,18 +746,19 @@ public class GenericMavLinkDrone implements MavLinkDrone {
         mavlinkStats.set(mavClient.getReceivedCount(), mavClient.getCrcErrorCount(), mavClient.getLostPacketCount());
     }
 
-    private void processVehicleMode(msg_heartbeat msg_heart) {
+    protected void processVehicleMode(msg_heartbeat msg_heart) {
         final ApmModes newMode = ApmModes.getMode(msg_heart.custom_mode, msg_heart.type);
 
         if(newMode != ApmModes.UNKNOWN) {
 //            Log.v(TAG, String.format("Got mode %s for mav type %d", newMode.getName(), msg_heart.type));
             state.setMode(newMode);
+            state.setVehicleType(msg_heart.type);
         } else {
             Timber.w("Did not find mode (%d) for mav type %d", msg_heart.custom_mode, msg_heart.type);
         }
     }
 
-    private void processState(msg_heartbeat msg_heart) {
+    protected void processState(msg_heartbeat msg_heart) {
         checkArmState(msg_heart);
         checkFailsafe(msg_heart);
     }
@@ -774,7 +777,7 @@ public class GenericMavLinkDrone implements MavLinkDrone {
                 (msg_heart.base_mode & MAV_MODE_FLAG.MAV_MODE_FLAG_SAFETY_ARMED) == MAV_MODE_FLAG.MAV_MODE_FLAG_SAFETY_ARMED);
     }
 
-    private void checkIfFlying(msg_heartbeat msg_heart) {
+    protected void checkIfFlying(msg_heartbeat msg_heart) {
         short systemStatus = msg_heart.system_status;
         boolean wasFlying = state.isFlying();
 
@@ -898,6 +901,10 @@ public class GenericMavLinkDrone implements MavLinkDrone {
         attitude.setYawSpeed((float) Math.toDegrees(m_att.yawspeed));
 
         notifyDroneEvent(DroneInterfaces.DroneEventsType.ATTITUDE);
+    }
+
+    protected void processAltitude(msg_altitude msg) {
+
     }
 
     protected void processSignalUpdate(int rxerrors, int fixed, short rssi, short remrssi, short txbuf,

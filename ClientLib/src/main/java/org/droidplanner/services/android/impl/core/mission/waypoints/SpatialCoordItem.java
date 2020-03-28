@@ -58,4 +58,10 @@ public abstract class SpatialCoordItem extends MissionItemImpl {
         coordinate.set(position);
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{" +
+                "coordinate=" + coordinate +
+                '}';
+    }
 }

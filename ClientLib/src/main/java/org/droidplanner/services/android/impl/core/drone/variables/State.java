@@ -7,13 +7,15 @@ import android.os.SystemClock;
 import com.MAVLink.ardupilotmega.msg_ekf_status_report;
 import com.MAVLink.enums.EKF_STATUS_FLAGS;
 
+import org.droidplanner.services.android.impl.core.MAVLink.IWaypointManager;
 import org.droidplanner.services.android.impl.core.MAVLink.MavLinkCommands;
-import org.droidplanner.services.android.impl.core.MAVLink.WaypointManager;
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces.DroneEventsType;
 import org.droidplanner.services.android.impl.core.drone.DroneVariable;
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
 import org.droidplanner.services.android.impl.core.drone.autopilot.generic.GenericMavLinkDrone;
 import org.droidplanner.services.android.impl.core.model.AutopilotWarningParser;
+
+import com.MAVLink.enums.MAV_TYPE;
 import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
 import com.o3dr.services.android.lib.model.ICommandListener;
 import com.o3dr.services.android.lib.model.action.Action;
@@ -33,7 +35,8 @@ public class State extends DroneVariable<GenericMavLinkDrone> {
     private String errorId;
     private boolean armed = false;
     private boolean isFlying = false;
-    private ApmModes mode = ApmModes.UNKNOWN;
+    private BaseMode mode = UnknownMode.INSTANCE;
+    private int vehicleType = MAV_TYPE.MAV_TYPE_GENERIC;
 
     // flightTimer
     // ----------------
@@ -63,7 +66,7 @@ public class State extends DroneVariable<GenericMavLinkDrone> {
         return isFlying;
     }
 
-    public ApmModes getMode() {
+    public BaseMode getMode() {
         return mode;
     }
 
@@ -111,7 +114,7 @@ public class State extends DroneVariable<GenericMavLinkDrone> {
             myDrone.notifyDroneEvent(DroneEventsType.ARMING);
 
             if (newState) {
-                WaypointManager waypointManager = myDrone.getWaypointManager();
+                IWaypointManager waypointManager = myDrone.getWaypointManager();
                 if(waypointManager != null) {
                     waypointManager.getWaypoints();
                 }
@@ -121,14 +124,19 @@ public class State extends DroneVariable<GenericMavLinkDrone> {
         checkEkfPositionState(this.ekfStatus);
     }
 
-    public void setMode(ApmModes mode) {
+    public void setMode(BaseMode mode) {
         if (this.mode != mode) {
             this.mode = mode;
             myDrone.notifyDroneEvent(DroneEventsType.MODE);
         }
     }
 
-    public void changeFlightMode(ApmModes mode, final ICommandListener listener) {
+    public int getVehicleType() { return this.vehicleType; }
+    public void setVehicleType(int type) {
+        this.vehicleType = type;
+    }
+
+    public void changeAPMFlightMode(ApmModes mode, final ICommandListener listener) {
         if (this.mode == mode) {
             if (listener != null) {
                 handler.post(new Runnable() {
@@ -146,7 +154,45 @@ public class State extends DroneVariable<GenericMavLinkDrone> {
         }
 
         if (ApmModes.isValid(mode)) {
-            MavLinkCommands.changeFlightMode(myDrone, mode, listener);
+            MavLinkCommands.changeAPMFlightMode(myDrone, mode, listener);
+        } else {
+            if (listener != null) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            listener.onError(CommandExecutionError.COMMAND_FAILED);
+                        } catch (RemoteException e) {
+                            Timber.e(e, e.getMessage());
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    public void changePX4FlightMode(Px4Mode mode, final ICommandListener listener) {
+        Timber.d("changePX4FlightMode(%s)", mode);
+
+        if (this.mode == mode) {
+            if (listener != null) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            listener.onSuccess();
+                        } catch (RemoteException e) {
+                            Timber.e(e, e.getMessage());
+                        }
+                    }
+                });
+            }
+            return;
+        }
+
+        if (Px4Mode.isValid(mode)) {
+            Timber.d("%s is valid", mode);
+            MavLinkCommands.changePx4FlightMode(myDrone, mode, listener);
         } else {
             if (listener != null) {
                 handler.post(new Runnable() {
@@ -224,5 +270,16 @@ public class State extends DroneVariable<GenericMavLinkDrone> {
 
     public boolean isEkfPositionOk() {
         return isEkfPositionOk;
+    }
+
+    @Override
+    public String toString() {
+        return "State{" +
+                "errorId='" + errorId + '\'' +
+                ", armed=" + armed +
+                ", isFlying=" + isFlying +
+                ", mode=" + mode +
+                ", vehicleType=" + vehicleType +
+                '}';
     }
 }

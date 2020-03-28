@@ -33,6 +33,7 @@ public class ChangeSpeedImpl extends MissionCMD {
 		msg_mission_item mavMsg = list.get(0);
 		mavMsg.command = MAV_CMD.MAV_CMD_DO_CHANGE_SPEED;
 		mavMsg.frame = MAV_FRAME.MAV_FRAME_GLOBAL_RELATIVE_ALT;
+		mavMsg.param1 = 1;
 		mavMsg.param2 = (float) speed;
 		return list;
 	}

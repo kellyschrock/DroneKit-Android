@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.Messages.MAVLinkMessage;
@@ -250,9 +251,9 @@ public class MAVLinkClient implements DataLink.DataLinkProvider<MAVLinkMessage> 
         packet.compid = compId;
         packet.seq = packetSeqNumber;
 
-        mavlinkConn.sendMavPacket(packet);
-
         packetSeqNumber = (packetSeqNumber + 1) % (MAX_PACKET_SEQUENCE + 1);
+
+        mavlinkConn.sendMavPacket(packet);
 
         if (commandTracker != null && listener != null) {
             commandTracker.onCommandSubmitted(message, listener);
@@ -297,5 +298,4 @@ public class MAVLinkClient implements DataLink.DataLinkProvider<MAVLinkMessage> 
             mavlinkConn.removeLoggingPath(appId);
         }
     }
-
 }

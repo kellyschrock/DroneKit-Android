@@ -4,7 +4,8 @@ import android.os.Bundle;
 
 import com.o3dr.services.android.lib.drone.property.Parameter;
 
-import org.droidplanner.services.android.impl.core.MAVLink.WaypointManager;
+import org.droidplanner.services.android.impl.core.MAVLink.APMWaypointManager;
+import org.droidplanner.services.android.impl.core.MAVLink.IWaypointManager;
 import org.droidplanner.services.android.impl.core.drone.autopilot.Drone;
 
 public class DroneInterfaces {
@@ -215,11 +216,11 @@ public class DroneInterfaces {
     }
 
     public interface OnWaypointManagerListener {
-        public void onBeginWaypointEvent(WaypointManager.WaypointEvent_Type wpEvent);
+        public void onBeginWaypointEvent(IWaypointManager.WaypointEvent_Type wpEvent);
 
-        public void onWaypointEvent(WaypointManager.WaypointEvent_Type wpEvent, int index, int count);
+        public void onWaypointEvent(IWaypointManager.WaypointEvent_Type wpEvent, int index, int count);
 
-        public void onEndWaypointEvent(WaypointManager.WaypointEvent_Type wpEvent);
+        public void onEndWaypointEvent(IWaypointManager.WaypointEvent_Type wpEvent);
     }
 
 }

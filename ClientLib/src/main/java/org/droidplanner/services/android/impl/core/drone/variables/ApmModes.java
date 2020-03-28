@@ -1,11 +1,12 @@
 package org.droidplanner.services.android.impl.core.drone.variables;
 
 import com.MAVLink.enums.MAV_TYPE;
+import com.o3dr.services.android.lib.drone.property.VehicleMode;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public enum ApmModes {
+public enum ApmModes implements BaseMode<ApmModes> {
 	FIXED_WING_MANUAL (0,"Manual",MAV_TYPE.MAV_TYPE_FIXED_WING),
 	FIXED_WING_CIRCLE (1,"Circle",MAV_TYPE.MAV_TYPE_FIXED_WING),
 	FIXED_WING_STABILIZE (2,"Stabilize",MAV_TYPE.MAV_TYPE_FIXED_WING),
@@ -67,8 +68,14 @@ public enum ApmModes {
 		return number;
 	}
 
+	@Override
 	public String getName() {
 		return name;
+	}
+
+	@Override
+	public ApmModes getNativeMode() {
+		return this;
 	}
 
 	public int getType() {
@@ -116,6 +123,19 @@ public enum ApmModes {
 		return modeList;
 	}
 
+	public static List<VehicleMode> getUserModesForType(int type) {
+		final List<VehicleMode> modes = new ArrayList<>();
+
+		for(ApmModes m: getModeList(type)) {
+			final VehicleMode vm = getVehicleMode(m);
+			if(vm != null) {
+				modes.add(vm);
+			}
+		}
+
+		return modes;
+	}
+
 	public static boolean isValid(ApmModes mode) {
 		return mode!=ApmModes.UNKNOWN;
 	}
@@ -135,4 +155,137 @@ public enum ApmModes {
 		}
 	}
 
+	public static VehicleMode getVehicleMode(ApmModes mode) {
+		switch (mode) {
+			case FIXED_WING_MANUAL:
+				return VehicleMode.PLANE_MANUAL;
+			case FIXED_WING_CIRCLE:
+				return VehicleMode.PLANE_CIRCLE;
+
+			case FIXED_WING_STABILIZE:
+				return VehicleMode.PLANE_STABILIZE;
+
+			case FIXED_WING_TRAINING:
+				return VehicleMode.PLANE_TRAINING;
+
+			case FIXED_WING_ACRO:
+				return VehicleMode.PLANE_ACRO;
+
+			case FIXED_WING_FLY_BY_WIRE_A:
+				return VehicleMode.PLANE_FLY_BY_WIRE_A;
+
+			case FIXED_WING_FLY_BY_WIRE_B:
+				return VehicleMode.PLANE_FLY_BY_WIRE_B;
+
+			case FIXED_WING_CRUISE:
+				return VehicleMode.PLANE_CRUISE;
+
+			case FIXED_WING_AUTOTUNE:
+				return VehicleMode.PLANE_AUTOTUNE;
+
+			case FIXED_WING_AUTO:
+				return VehicleMode.PLANE_AUTO;
+
+			case FIXED_WING_RTL:
+				return VehicleMode.PLANE_RTL;
+
+			case FIXED_WING_LOITER:
+				return VehicleMode.PLANE_LOITER;
+
+			case FIXED_WING_GUIDED:
+				return VehicleMode.PLANE_GUIDED;
+
+			case ROTOR_STABILIZE:
+				return VehicleMode.COPTER_STABILIZE;
+
+			case ROTOR_ACRO:
+				return VehicleMode.COPTER_ACRO;
+
+			case ROTOR_ALT_HOLD:
+				return VehicleMode.COPTER_ALT_HOLD;
+
+			case ROTOR_AUTO:
+				return VehicleMode.COPTER_AUTO;
+
+			case ROTOR_GUIDED:
+				return VehicleMode.COPTER_GUIDED;
+
+			case ROTOR_LOITER:
+				return VehicleMode.COPTER_LOITER;
+
+			case ROTOR_RTL:
+				return VehicleMode.COPTER_RTL;
+
+			case ROTOR_CIRCLE:
+				return VehicleMode.COPTER_CIRCLE;
+
+			case ROTOR_LAND:
+				return VehicleMode.COPTER_LAND;
+
+			case ROTOR_TOY:
+				return VehicleMode.COPTER_DRIFT;
+
+			case ROTOR_SPORT:
+				return VehicleMode.COPTER_SPORT;
+
+			case ROTOR_FLIP:
+				return VehicleMode.COPTER_FLIP;
+
+			case ROTOR_AUTOTUNE:
+				return VehicleMode.COPTER_AUTOTUNE;
+
+			case ROTOR_POSHOLD:
+				return VehicleMode.COPTER_POSHOLD;
+
+			case ROTOR_BRAKE:
+				return VehicleMode.COPTER_BRAKE;
+
+			case ROTOR_THROW:
+				return VehicleMode.COPTER_THROW;
+
+			case ROTOR_AVOID_ADSB:
+				return VehicleMode.COPTER_AVOID_ADSB;
+
+			case ROTOR_GUIDED_NOGPS:
+				return VehicleMode.COPTER_GUIDED_NOGPS;
+
+			case ROTOR_SMART_RTL:
+				return VehicleMode.COPTER_SMART_RTL;
+
+			case ROVER_MANUAL:
+				return VehicleMode.ROVER_MANUAL;
+
+			case ROVER_LEARNING:
+				return VehicleMode.ROVER_LEARNING;
+
+			case ROVER_STEERING:
+				return VehicleMode.ROVER_STEERING;
+
+			case ROVER_HOLD:
+				return VehicleMode.ROVER_HOLD;
+
+			case ROVER_AUTO:
+				return VehicleMode.ROVER_AUTO;
+
+			case ROVER_RTL:
+				return VehicleMode.ROVER_RTL;
+
+			case ROVER_SMARTRTL:
+				return VehicleMode.ROVER_SMART_RTL;
+
+			case ROVER_ACRO:
+				return VehicleMode.ROVER_ACRO;
+
+			case ROVER_GUIDED:
+				return VehicleMode.ROVER_GUIDED;
+
+			case ROVER_INITIALIZING:
+				return VehicleMode.ROVER_INITIALIZING;
+
+			default:
+			case UNKNOWN:
+				return null;
+
+		}
+	}
 }

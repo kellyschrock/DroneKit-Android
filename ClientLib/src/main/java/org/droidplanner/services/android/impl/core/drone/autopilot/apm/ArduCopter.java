@@ -91,13 +91,13 @@ public class ArduCopter extends ArduPilot {
         String appId = data.getString(DroneManager.EXTRA_CLIENT_APP_ID);
 
         State state = getState();
-        ApmModes vehicleMode = state.getMode();
+        ApmModes vehicleMode = (ApmModes)state.getMode().getNativeMode();
         if(enable){
             if(vehicleMode == ApmModes.ROTOR_GUIDED){
                 CommonApiUtils.postSuccessEvent(listener);
             }
             else{
-                state.changeFlightMode(ApmModes.ROTOR_GUIDED, listener);
+                state.changeAPMFlightMode(ApmModes.ROTOR_GUIDED, listener);
             }
 
             if(listener != null) {
@@ -111,7 +111,7 @@ public class ArduCopter extends ArduPilot {
                 CommonApiUtils.postSuccessEvent(listener);
             }
             else{
-                state.changeFlightMode(ApmModes.ROTOR_LOITER, listener);
+                state.changeAPMFlightMode(ApmModes.ROTOR_LOITER, listener);
             }
         }
 
@@ -123,7 +123,7 @@ public class ArduCopter extends ArduPilot {
         switch(event){
             case MODE:
                 //Listen for vehicle mode updates, and update the manual control state listeners appropriately
-                ApmModes currentMode = getState().getMode();
+                ApmModes currentMode = (ApmModes)getState().getMode().getNativeMode();
                 for(ICommandListener listener: manualControlStateListeners.values()) {
                     if (currentMode == ApmModes.ROTOR_GUIDED) {
                         CommonApiUtils.postSuccessEvent(listener);
@@ -152,7 +152,7 @@ public class ArduCopter extends ArduPilot {
     @Override
     protected boolean brakeVehicle(ICommandListener listener) {
         if (getFirmwareVersionNumber().greaterThanOrEqualTo(BRAKE_FEATURE_FIRMWARE_VERSION)) {
-            getState().changeFlightMode(ApmModes.ROTOR_BRAKE, listener);
+            getState().changeAPMFlightMode(ApmModes.ROTOR_BRAKE, listener);
         } else {
             super.brakeVehicle(listener);
         }
