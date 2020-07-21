@@ -46,6 +46,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * This implements a mavlink mission. A mavlink mission is a set of
  * commands/mission items to be carried out by the drone.
@@ -379,6 +381,10 @@ public class Mission extends DroneVariable<GenericMavLinkDrone> {
             for(msg_mission_item msg_item: item.packMissionItem()){
                 msg_item.seq = waypointCount++;
                 data.add(msg_item);
+
+                if(msg_item.command == MAV_CMD.MAV_CMD_NAV_LAND) {
+                    Timber.d("THIS IS THE LAND ITEM ALTITUDE BEING SENT: %.2f", msg_item.z);
+                }
             }
         }
         return data;

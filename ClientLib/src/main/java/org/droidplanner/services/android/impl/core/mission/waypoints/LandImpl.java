@@ -1,5 +1,7 @@
 package org.droidplanner.services.android.impl.core.mission.waypoints;
 
+import android.util.Log;
+
 import com.MAVLink.common.msg_mission_item;
 import com.MAVLink.enums.MAV_CMD;
 
@@ -15,7 +17,6 @@ public class LandImpl extends SpatialCoordItem {
 
     public LandImpl(MissionItemImpl item) {
         super(item);
-        setAltitude((0.0));
     }
 
     public LandImpl(Mission mission) {
@@ -24,6 +25,10 @@ public class LandImpl extends SpatialCoordItem {
 
     public LandImpl(Mission mMission, LatLong coord) {
         super(mMission, new LatLongAlt(coord, 0));
+    }
+
+    public LandImpl(Mission mMission, LatLongAlt coord) {
+        super(mMission, coord);
     }
 
     public LandImpl(msg_mission_item msg, Mission mission) {

@@ -247,9 +247,7 @@ public class ProxyUtils {
             }
             case LAND: {
                 Land proxy = (Land) proxyItem;
-
                 LandImpl temp = new LandImpl(mission, (proxy.getCoordinate()));
-
                 missionItemImpl = temp;
                 break;
             }
