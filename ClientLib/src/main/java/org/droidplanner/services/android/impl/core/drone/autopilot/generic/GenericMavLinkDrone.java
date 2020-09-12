@@ -642,6 +642,7 @@ public class GenericMavLinkDrone implements MavLinkDrone {
             case msg_battery_status.MAVLINK_MSG_ID_BATTERY_STATUS:
                 msg_battery_status batt = (msg_battery_status)message;
                 processBattery2Update(batt);
+                processBatteryStatus(batt);
                 break;
 
             //*************** EKF State handling ******************//
@@ -795,6 +796,20 @@ public class GenericMavLinkDrone implements MavLinkDrone {
 
             notifyDroneEvent(DroneInterfaces.DroneEventsType.BATTERY);
         }
+    }
+
+    protected void processBatteryStatus(msg_battery_status batt) {
+        processBatteryStatusUpdate(
+                batt.id, batt.battery_function, batt.current_consumed, batt.temperature, batt.voltages
+        );
+    }
+
+    protected void processBatteryStatusUpdate(
+            short id, short battery_function, int current_consumed, short temperature, int[] voltages) {
+        // Update the battery. BATTERY events will be sent when sys_status is updated.
+        battery.setCurrentConsumed(current_consumed);
+        battery.setTemperature(temperature);
+        battery.setCellVoltages(voltages);
     }
 
     protected void processBattery2Update(msg_battery_status batt) {
