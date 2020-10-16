@@ -704,10 +704,12 @@ public class GenericMavLinkDrone implements MavLinkDrone {
 
     private void processHeartbeat(msg_heartbeat msg_heart) {
 //        Timber.d("processHeartbeat(): type=%d", msg_heart.type);
-        setType(msg_heart.type);
-        checkIfFlying(msg_heart);
-        processState(msg_heart);
-        processVehicleMode(msg_heart);
+        if(Type.isVehicle(msg_heart.type)) {
+            setType(msg_heart.type);
+            checkIfFlying(msg_heart);
+            processState(msg_heart);
+            processVehicleMode(msg_heart);
+        }
     }
 
     private void processVehicleMode(msg_heartbeat msg_heart) {
