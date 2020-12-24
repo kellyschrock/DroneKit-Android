@@ -79,6 +79,8 @@ public class ParameterManager extends DroneVariable<MavLinkDrone> implements OnD
     }
 
     public void refreshParameters() {
+        Timber.d("refreshParameters()");
+        
         if (isRefreshing.compareAndSet(false, true)) {
             expectedParams = 0;
             parameters.clear();
@@ -192,7 +194,7 @@ public class ParameterManager extends DroneVariable<MavLinkDrone> implements OnD
     public void onDroneEvent(DroneEventsType event, MavLinkDrone drone) {
         switch (event) {
             case HEARTBEAT_FIRST:
-                refreshParameters();
+                // refreshParameters();
                 break;
 
             case DISCONNECTED:
