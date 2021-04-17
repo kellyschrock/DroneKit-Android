@@ -4,6 +4,7 @@ import android.os.Handler;
 
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.common.msg_mission_ack;
+import com.MAVLink.common.msg_mission_clear_all;
 import com.MAVLink.common.msg_mission_count;
 import com.MAVLink.common.msg_mission_current;
 import com.MAVLink.common.msg_mission_item;
@@ -29,14 +30,15 @@ public class WaypointManager extends DroneVariable {
     static final String TAG = WaypointManager.class.getSimpleName();
 
     enum WaypointStates {
-        IDLE, READ_REQUEST, READING_WP, WRITING_WP_COUNT, WRITING_WP, WAITING_WRITE_ACK
+        IDLE, READ_REQUEST, READING_WP, WRITING_WP_COUNT, WRITING_WP, WAITING_CLEAR_ACK, WAITING_WRITE_ACK
     }
 
     public enum WaypointEvent_Type {
         WP_UPLOAD, WP_DOWNLOAD, WP_RETRY, WP_CONTINUE, WP_TIMED_OUT
     }
 
-    private static final long TIMEOUT = 15000; //ms
+    private static final long TIMEOUT = 7000; //ms
+    private static final long CLEAR_TIMEOUT = 3000; // ms
     private static final int RETRY_LIMIT = 3;
 
     private int retryTracker = 0;
@@ -71,11 +73,11 @@ public class WaypointManager extends DroneVariable {
         this.wpEventListener = wpEventListener;
     }
 
-    private void startWatchdog() {
+    private void startWatchdog(long timeout) {
         stopWatchdog();
 
         retryTracker = 0;
-        this.watchdog.postDelayed(watchdogCallback, TIMEOUT);
+        this.watchdog.postDelayed(watchdogCallback, timeout);
     }
 
     private void stopWatchdog() {
@@ -97,7 +99,7 @@ public class WaypointManager extends DroneVariable {
         state = WaypointStates.READ_REQUEST;
         MavLinkWaypoint.requestWaypointsList(myDrone);
 
-        startWatchdog();
+        startWatchdog(TIMEOUT);
     }
 
     /**
@@ -120,12 +122,13 @@ public class WaypointManager extends DroneVariable {
             mission.clear();
             mission.addAll(data);
             writeIndex = 0;
-            state = WaypointStates.WRITING_WP_COUNT;
-            Log.v(TAG, "sendWaypointCount()");
 
-            MavLinkWaypoint.sendWaypointCount(myDrone, mission.size());
+            sendClearAllMessage();
+//            state = WaypointStates.WRITING_WP_COUNT;
+//            Log.v(TAG, "sendWaypointCount()");
+//            MavLinkWaypoint.sendWaypointCount(myDrone, mission.size());
 
-            startWatchdog();
+            startWatchdog(CLEAR_TIMEOUT);
         }
     }
 
@@ -181,7 +184,7 @@ public class WaypointManager extends DroneVariable {
                 if (msg.msgid == msg_mission_count.MAVLINK_MSG_ID_MISSION_COUNT) {
                     waypointCount = ((msg_mission_count) msg).count;
                     mission.clear();
-                    startWatchdog();
+                    startWatchdog(TIMEOUT);
                     MavLinkWaypoint.requestWayPoint(myDrone, mission.size());
                     state = WaypointStates.READING_WP;
                     return true;
@@ -190,7 +193,7 @@ public class WaypointManager extends DroneVariable {
 
             case READING_WP:
                 if (msg.msgid == msg_mission_item.MAVLINK_MSG_ID_MISSION_ITEM) {
-                    startWatchdog();
+                    startWatchdog(TIMEOUT);
                     processReceivedWaypoint((msg_mission_item) msg);
                     doWaypointEvent(WaypointEvent_Type.WP_DOWNLOAD, readIndex + 1, waypointCount);
                     if (mission.size() < waypointCount) {
@@ -212,16 +215,25 @@ public class WaypointManager extends DroneVariable {
                 if (msg.msgid == msg_mission_request.MAVLINK_MSG_ID_MISSION_REQUEST) {
                     Log.v(TAG, "got MISSION_REQUEST");
 
-                    startWatchdog();
+                    startWatchdog(TIMEOUT);
                     processWaypointToSend((msg_mission_request) msg);
                     doWaypointEvent(WaypointEvent_Type.WP_UPLOAD, writeIndex + 1, mission.size());
                     return true;
                 }
                 break;
 
+            case WAITING_CLEAR_ACK: {
+                if(msg.msgid == msg_mission_ack.MAVLINK_MSG_ID_MISSION_ACK) {
+                    Log.v(TAG, "got MISSION_ACK for CLEAR");
+                    onGotClearAck();
+                    return true;
+                }
+                break;
+            }
+
             case WAITING_WRITE_ACK:
                 if (msg.msgid == msg_mission_ack.MAVLINK_MSG_ID_MISSION_ACK) {
-                    Log.v(TAG, "got MISSION_ACK");
+                    Log.v(TAG, "got MISSION_ACK for write wp");
 
                     stopWatchdog();
                     myDrone.getMission().onWriteWaypoints((msg_mission_ack) msg);
@@ -236,6 +248,7 @@ public class WaypointManager extends DroneVariable {
             onWaypointReached(((msg_mission_item_reached) msg).seq);
             return true;
         }
+
         if (msg.msgid == msg_mission_current.MAVLINK_MSG_ID_MISSION_CURRENT) {
             onCurrentWaypointUpdate(((msg_mission_current) msg).seq);
             return true;
@@ -279,6 +292,14 @@ public class WaypointManager extends DroneVariable {
                 if (writeIndex < mission.size()) {
                     myDrone.getMavClient().sendMessage(mission.get(writeIndex), null);
                 }
+                break;
+
+            case WAITING_CLEAR_ACK:
+                Log.v(TAG, "Timed out waiting for clear ack. SCREW IT, just send the damn waypoints");
+                // No idea why the effing autopilot sometimes just ignores this message.
+                // Worst software ever.
+                onGotClearAck();
+//                sendClearAllMessage();
                 break;
 
             case WAITING_WRITE_ACK:
@@ -350,4 +371,25 @@ public class WaypointManager extends DroneVariable {
         wpEventListener.onWaypointEvent(wpEvent, index, count);
     }
 
+    private void sendClearAllMessage() {
+        Log.v(TAG, "sendClearAllMessage()");
+
+        state = WaypointStates.WAITING_CLEAR_ACK;
+        final msg_mission_clear_all msg = new msg_mission_clear_all();
+//        msg.isMavlink2 = false;
+//        msg.mission_type = 0;
+
+        myDrone.getMavClient().sendMessage(msg, null);
+    }
+
+    private void onGotClearAck() {
+        Log.v(TAG, "onGotClearAck()");
+
+        writeIndex = 0;
+        state = WaypointStates.WRITING_WP_COUNT;
+        Log.v(TAG, "sendWaypointCount()");
+
+        MavLinkWaypoint.sendWaypointCount(myDrone, mission.size());
+        startWatchdog(TIMEOUT);
+    }
 }

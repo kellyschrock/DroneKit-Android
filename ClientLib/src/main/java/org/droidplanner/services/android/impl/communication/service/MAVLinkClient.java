@@ -219,7 +219,7 @@ public class MAVLinkClient implements DataLink.DataLinkProvider<MAVLinkMessage> 
     }
 
     public void sendMavMessage(MAVLinkMessage message, int sysId, int compId, ICommandListener listener){
-//        Timber.d("sendMavMessage(%s, %d, %d)", message, sysId, compId);
+        Timber.d("sendMavMessage(%s, %d, %d)", message.getClass().getSimpleName(), sysId, compId);
 
         if (isDisconnected() || message == null) {
             Timber.d("Not connected || message is null");
