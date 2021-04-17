@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import android.util.Log;
 
+import timber.log.Timber;
+
 /**
  * Class to manage the communication of waypoints to the MAV.
  * <p/>
@@ -114,8 +116,10 @@ public class WaypointManager extends DroneVariable {
         Log.v(TAG, "writeWaypoints()");
 
         // ensure that WPManager is not doing anything else
-        if (state != WaypointStates.IDLE)
-            return;
+        if (state != WaypointStates.IDLE) {
+            Timber.w("PRevious state was %s, switching to IDLE", state);
+            state = WaypointStates.IDLE;
+        }
 
         if ((mission != null)) {
             doBeginWaypointEvent(WaypointEvent_Type.WP_UPLOAD);
@@ -124,9 +128,6 @@ public class WaypointManager extends DroneVariable {
             writeIndex = 0;
 
             sendClearAllMessage();
-//            state = WaypointStates.WRITING_WP_COUNT;
-//            Log.v(TAG, "sendWaypointCount()");
-//            MavLinkWaypoint.sendWaypointCount(myDrone, mission.size());
 
             startWatchdog(CLEAR_TIMEOUT);
         }
