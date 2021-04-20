@@ -317,6 +317,12 @@ public class Mission extends DroneVariable<GenericMavLinkDrone> {
      */
     public void sendMissionToAPM() {
         List<msg_mission_item> msgMissionItems = getMsgMissionItems();
+
+        for(msg_mission_item item: msgMissionItems) {
+            item.target_component = myDrone.getCompid();
+            item.target_system = myDrone.getSysid();
+        }
+
         myDrone.getWaypointManager().writeWaypoints(msgMissionItems);
         updateComponentItems(msgMissionItems);
     }
