@@ -10,6 +10,7 @@ import com.MAVLink.common.msg_heartbeat;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 
 import org.droidplanner.services.android.impl.core.model.Logger;
+import org.droidplanner.services.android.impl.utils.CoreStats;
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
@@ -167,10 +168,12 @@ public abstract class MavLinkConnection {
             }
 
             for (int i = 0; i < bufferSize; i++) {
+                CoreStats.get().notifyReceivedBytes(buffer.length);
                 MAVLinkPacket receivedPacket = parser.mavlink_parse_char(buffer[i] & 0x00ff);
                 if (receivedPacket != null) {
                     queueToLog(receivedPacket);
                     reportReceivedPacket(receivedPacket);
+                    CoreStats.get().notifyMessageReceived();
                 }
             }
         }
@@ -187,6 +190,7 @@ public abstract class MavLinkConnection {
                     byte[] buffer = mPacketsToSend.take();
 
                     try {
+                        CoreStats.get().notifySentBytes(buffer.length);
                         sendBuffer(buffer);
                         queueToLog(buffer);
                     } catch (IOException e) {

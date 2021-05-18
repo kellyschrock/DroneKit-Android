@@ -22,6 +22,7 @@ import org.droidplanner.services.android.impl.communication.model.DataLink;
 import org.droidplanner.services.android.impl.core.MAVLink.connection.MavLinkConnection;
 import org.droidplanner.services.android.impl.core.MAVLink.connection.MavLinkConnectionListener;
 import org.droidplanner.services.android.impl.core.drone.manager.DroneCommandTracker;
+import org.droidplanner.services.android.impl.utils.CoreStats;
 import org.droidplanner.services.android.impl.utils.connection.WifiConnectionHandler;
 
 import java.io.File;
@@ -232,6 +233,8 @@ public class MAVLinkClient implements DataLink.DataLinkProvider<MAVLinkMessage> 
         packet.seq = packetSeqNumber;
 
         mavlinkConn.sendMavPacket(packet);
+        CoreStats.get().notifyMessageSent();
+
 
         packetSeqNumber = (packetSeqNumber + 1) % (MAX_PACKET_SEQUENCE + 1);
 
