@@ -221,7 +221,7 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
         try {
             receivedMsg = packet.unpack();
         } catch(Throwable ex) {
-            Timber.e(ex, "Caught error unpacking packet with msgid %d", packet.msgid);
+//            Timber.e(ex, "Caught error unpacking packet with msgid %d", packet.msgid);
             receivedMsg = null;
         }
 
