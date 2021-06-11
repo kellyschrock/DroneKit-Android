@@ -4,12 +4,11 @@ import android.os.Bundle;
 import android.support.v4.util.Pair;
 
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.Messages.MAVLinkStats;
 import com.MAVLink.Parser;
-import com.MAVLink.common.msg_heartbeat;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 
 import org.droidplanner.services.android.impl.core.model.Logger;
+import org.droidplanner.services.android.impl.utils.SkywardConnectionStats;
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
@@ -167,10 +166,12 @@ public abstract class MavLinkConnection {
             }
 
             for (int i = 0; i < bufferSize; i++) {
+                SkywardConnectionStats.get().onBytesReceived(buffer.length);
                 MAVLinkPacket receivedPacket = parser.mavlink_parse_char(buffer[i] & 0x00ff);
                 if (receivedPacket != null) {
                     queueToLog(receivedPacket);
                     reportReceivedPacket(receivedPacket);
+                    SkywardConnectionStats.get().onMessageReceived();
                 }
             }
         }
@@ -187,6 +188,7 @@ public abstract class MavLinkConnection {
                     byte[] buffer = mPacketsToSend.take();
 
                     try {
+                        SkywardConnectionStats.get().onBytesSent(buffer.length);
                         sendBuffer(buffer);
                         queueToLog(buffer);
                     } catch (IOException e) {
