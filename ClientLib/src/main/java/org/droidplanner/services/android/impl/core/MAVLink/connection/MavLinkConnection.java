@@ -1,6 +1,7 @@
 package org.droidplanner.services.android.impl.core.MAVLink.connection;
 
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.util.Pair;
 
 import com.MAVLink.MAVLinkPacket;
@@ -8,7 +9,7 @@ import com.MAVLink.Parser;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 
 import org.droidplanner.services.android.impl.core.model.Logger;
-import org.droidplanner.services.android.impl.utils.SkywardConnectionStats;
+import org.droidplanner.services.android.impl.utils.LinkStats;
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
@@ -111,6 +112,7 @@ public abstract class MavLinkConnection {
 
         @Override
         public void run() {
+            Looper.prepare();
             Thread sendingThread = null;
             Thread loggingThread = null;
 
@@ -166,12 +168,12 @@ public abstract class MavLinkConnection {
             }
 
             for (int i = 0; i < bufferSize; i++) {
-                SkywardConnectionStats.get().onBytesReceived(buffer.length);
+                LinkStats.get().onBytesReceived(buffer.length);
                 MAVLinkPacket receivedPacket = parser.mavlink_parse_char(buffer[i] & 0x00ff);
                 if (receivedPacket != null) {
                     queueToLog(receivedPacket);
                     reportReceivedPacket(receivedPacket);
-                    SkywardConnectionStats.get().onMessageReceived();
+                    LinkStats.get().onMessageReceived();
                 }
             }
         }
@@ -183,12 +185,13 @@ public abstract class MavLinkConnection {
     private final Runnable mSendingTask = new Runnable() {
         @Override
         public void run() {
+            Looper.prepare();
             try {
                 while (mConnectionStatus.get() == MAVLINK_CONNECTED) {
                     byte[] buffer = mPacketsToSend.take();
 
                     try {
-                        SkywardConnectionStats.get().onBytesSent(buffer.length);
+                        LinkStats.get().onBytesSent(buffer.length);
                         sendBuffer(buffer);
                         queueToLog(buffer);
                     } catch (IOException e) {

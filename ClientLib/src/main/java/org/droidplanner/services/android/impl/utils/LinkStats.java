@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /** Class for collecting/reporting stats on a mavlink connection */
-public class SkywardConnectionStats {
+public class LinkStats {
     public static class Stats {
         public final long when;
         public final long period;
@@ -32,15 +32,15 @@ public class SkywardConnectionStats {
 
     private final static int PING_INTERVAL = 1000; // ms
 
-    private static SkywardConnectionStats sInstance;
+    private static LinkStats sInstance;
 
     private final Set<LinkRateListener> listeners = new HashSet<>();
-    private final Handler handler = new android.os.Handler();
+//    private final Handler handler = new android.os.Handler();
 
     private final Runnable heartbeat = new Runnable() {
         public void run() {
             if(doHeartbeat()) {
-                handler.postDelayed(this, PING_INTERVAL);
+//                handler.postDelayed(this, PING_INTERVAL);
             }
         }
     };
@@ -52,11 +52,11 @@ public class SkywardConnectionStats {
 
     private boolean active = false;
 
-    private SkywardConnectionStats() { }
+    private LinkStats() { }
 
-    public static SkywardConnectionStats get() {
+    public static LinkStats get() {
         if(sInstance == null)
-            sInstance = new SkywardConnectionStats();
+            sInstance = new LinkStats();
         return sInstance;
     }
 
@@ -120,22 +120,22 @@ public class SkywardConnectionStats {
 
     private void startHeartbeat() {
         active = true;
-        handler.postDelayed(heartbeat, PING_INTERVAL);
+//        handler.postDelayed(heartbeat, PING_INTERVAL);
     }
 
     private void stopHeartbeat() {
         active = false;
-        handler.removeCallbacks(heartbeat);
+//        handler.removeCallbacks(heartbeat);
     }
 
     private boolean doHeartbeat() {
         final long now = System.currentTimeMillis();
         // Reset internal counters
-        final int bytesSent = SkywardConnectionStats.this.bytesSentCount;
-        SkywardConnectionStats.this.bytesSentCount = 0;
+        final int bytesSent = LinkStats.this.bytesSentCount;
+        LinkStats.this.bytesSentCount = 0;
 
-        final int bytesReceived = SkywardConnectionStats.this.bytesReceivedCount;
-        SkywardConnectionStats.this.bytesReceivedCount = 0;
+        final int bytesReceived = LinkStats.this.bytesReceivedCount;
+        LinkStats.this.bytesReceivedCount = 0;
 
         final Stats stats = new Stats(now, PING_INTERVAL, messageSentCount, messageReceivedCount, bytesSent, bytesReceived);
 
