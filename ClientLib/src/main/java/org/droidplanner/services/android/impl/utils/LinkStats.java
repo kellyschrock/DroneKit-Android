@@ -2,6 +2,7 @@ package org.droidplanner.services.android.impl.utils;
 
 
 import android.os.Handler;
+import android.os.Looper;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -35,12 +36,12 @@ public class LinkStats {
     private static LinkStats sInstance;
 
     private final Set<LinkRateListener> listeners = new HashSet<>();
-//    private final Handler handler = new android.os.Handler();
+    private final Handler handler = new android.os.Handler(Looper.getMainLooper());
 
     private final Runnable heartbeat = new Runnable() {
         public void run() {
             if(doHeartbeat()) {
-//                handler.postDelayed(this, PING_INTERVAL);
+                handler.postDelayed(this, PING_INTERVAL);
             }
         }
     };
@@ -120,12 +121,12 @@ public class LinkStats {
 
     private void startHeartbeat() {
         active = true;
-//        handler.postDelayed(heartbeat, PING_INTERVAL);
+        handler.postDelayed(heartbeat, PING_INTERVAL);
     }
 
     private void stopHeartbeat() {
         active = false;
-//        handler.removeCallbacks(heartbeat);
+        handler.removeCallbacks(heartbeat);
     }
 
     private boolean doHeartbeat() {
