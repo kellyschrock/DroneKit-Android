@@ -29,6 +29,7 @@ public class LinkStats {
 
     public interface LinkRateListener {
         void onStatsUpdate(Stats stats);
+        void onCommandTimeout(int ackID);
     }
 
     private final static int PING_INTERVAL = 1000; // ms
@@ -83,6 +84,13 @@ public class LinkStats {
 
     public int getMessageReceivedCount() {
         return messageReceivedCount;
+    }
+
+    //Note: COMMAND_TIMEOUT_PERIOD = 5000l; //5 seconds
+    public void onTimeout(int ackID) {
+        for (LinkRateListener listener : listeners) {
+            listener.onCommandTimeout(ackID);
+        }
     }
 
     public Stats getCurrentStats() {

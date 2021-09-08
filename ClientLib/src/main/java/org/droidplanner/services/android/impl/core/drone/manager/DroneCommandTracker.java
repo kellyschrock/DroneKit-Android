@@ -10,6 +10,8 @@ import com.MAVLink.common.msg_set_mode;
 
 import com.o3dr.services.android.lib.model.ICommandListener;
 
+import org.droidplanner.services.android.impl.utils.LinkStats;
+
 import java.util.concurrent.ConcurrentHashMap;
 
 import timber.log.Timber;
@@ -145,6 +147,9 @@ public class DroneCommandTracker {
 
         @Override
         public void run() {
+            if(ackResult == COMMAND_TIMED_OUT)
+                LinkStats.get().onTimeout(ackId);
+
             if (listener == null)
                 return;
 
