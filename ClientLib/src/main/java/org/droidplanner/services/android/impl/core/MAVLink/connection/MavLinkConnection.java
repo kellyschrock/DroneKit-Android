@@ -167,10 +167,12 @@ public abstract class MavLinkConnection {
                 return;
             }
 
+            int lastReceived = 0;
             for (int i = 0; i < bufferSize; i++) {
-                LinkStats.get().onBytesReceived(buffer.length);
                 MAVLinkPacket receivedPacket = parser.mavlink_parse_char(buffer[i] & 0x00ff);
                 if (receivedPacket != null) {
+                    LinkStats.get().onBytesReceived(i - lastReceived);
+                    lastReceived = i;
                     queueToLog(receivedPacket);
                     reportReceivedPacket(receivedPacket);
                     LinkStats.get().onMessageReceived();
@@ -191,7 +193,7 @@ public abstract class MavLinkConnection {
                     byte[] buffer = mPacketsToSend.take();
 
                     try {
-                        LinkStats.get().onBytesSent(buffer.length);
+                        LinkStats.get().onBytesSent(buffer);
                         sendBuffer(buffer);
                         queueToLog(buffer);
                     } catch (IOException e) {

@@ -70,12 +70,20 @@ public class LinkStats {
         messageReceivedCount++;
     }
 
-    public void onBytesSent(int numSent) {
-        bytesSentCount += numSent;
+    public void onBytesSent(byte[] buffer) {
+        int index = 0;
+        for(int i = buffer.length-1 ; i > 0 ; i--) {
+            if(buffer[i] != 0) {
+                index = i;
+                break;
+            }
+        }
+
+        bytesSentCount = bytesSentCount + index + 1;
     }
 
-    public void onBytesReceived(int numReceived) {
-        bytesReceivedCount += numReceived;
+    public void onBytesReceived(int bufferSize) {
+        bytesReceivedCount = bytesReceivedCount + bufferSize;
     }
 
     public int getMessageSentCount() {
