@@ -12,6 +12,7 @@ import org.droidplanner.services.android.impl.core.mission.commands.LoiterToAltI
 import org.droidplanner.services.android.impl.core.mission.commands.ReturnToHomeImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.SetRelayImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.SetServoImpl;
+import org.droidplanner.services.android.impl.core.mission.commands.TakePictureImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.TakeoffImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.VTOLLandImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.VTOLTakeoffImpl;
@@ -53,6 +54,7 @@ public enum MissionItemType {
     VTOL_LAND("VTOL Land"),
     RAW_COMMAND("Raw command"),
     LOITER_TIME("Loiter Time"),
+    TAKE_PICTURE("Take Picture")
     ;
 
     private final String name;
@@ -113,6 +115,8 @@ public enum MissionItemType {
                 return new VTOLTakeoffImpl(referenceItem);
             case VTOL_LAND:
                 return new VTOLLandImpl(referenceItem);
+            case TAKE_PICTURE:
+                return new TakePictureImpl(referenceItem);
             default:
                 throw new IllegalArgumentException("Unrecognized mission item type (" + name + ")" + "");
         }
