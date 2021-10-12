@@ -63,14 +63,23 @@ public class LinkStats {
     }
 
     public void onMessageSent() {
+        if(messageSentCount > Integer.MAX_VALUE - 100)
+            messageSentCount = 0;
+
         messageSentCount++;
     }
 
     public void onMessageReceived() {
+        if(messageReceivedCount > Integer.MAX_VALUE - 100)
+            messageReceivedCount = 0;
+
         messageReceivedCount++;
     }
 
     public void onBytesSent(byte[] buffer) {
+        if(bytesSentCount > Integer.MAX_VALUE - 10000)
+            bytesSentCount = 0;
+
         int index = 0;
         for(int i = buffer.length-1 ; i > 0 ; i--) {
             if(buffer[i] != 0) {
@@ -83,6 +92,9 @@ public class LinkStats {
     }
 
     public void onBytesReceived(int bufferSize) {
+        if(bytesReceivedCount > Integer.MAX_VALUE - 10000)
+            bytesReceivedCount = 0;
+
         bytesReceivedCount = bytesReceivedCount + bufferSize;
     }
 
