@@ -74,6 +74,8 @@ public abstract class MavLinkConnection {
     private final AtomicInteger mConnectionStatus = new AtomicInteger(MAVLINK_DISCONNECTED);
     private final AtomicLong mConnectionTime = new AtomicLong(-1);
 
+    private MavLinkConnectionSubscribers subscribers = MavLinkConnectionSubscribers.get();
+
     /**
      * Start the connection process.
      */
@@ -170,11 +172,13 @@ public abstract class MavLinkConnection {
                 return;
             }
 
+            int lastReceived = 0;
             for (int i = 0; i < bufferSize; i++) {
                 MAVLinkPacket receivedPacket = parser.mavlink_parse_char(buffer[i] & 0x00ff);
                 if (receivedPacket != null) {
                     queueToLog(receivedPacket);
                     reportReceivedPacket(receivedPacket);
+                    reportReceivedBytes(i - lastReceived);
                 }
             }
 
@@ -200,6 +204,7 @@ public abstract class MavLinkConnection {
                     try {
                         sendBuffer(buffer);
                         queueToLog(buffer);
+                        reportBytesSent(buffer);
                     } catch (IOException e) {
                         reportIOException(e);
                         mLogger.logErr(TAG, e);
@@ -357,6 +362,8 @@ public abstract class MavLinkConnection {
         final byte[] packetData = packet.encodePacket();
         if (!mPacketsToSend.offer(packetData)) {
             mLogger.logErr(TAG, "Unable to send mavlink packet. Packet queue is full!");
+        } else {
+            reportMessageSent();
         }
     }
 
@@ -419,6 +426,15 @@ public abstract class MavLinkConnection {
     }
 
     /**
+     * Adds a listener to the mavlink connection.
+     *
+     * @param listener
+     */
+    public static void addExternalMavLinkConnectionListener(MavLinkConnectionListener listener) {
+        MavLinkConnectionSubscribers.get().registerListener(listener);
+    }
+
+    /**
      * @return the count of connection listeners.
      */
     public int getMavLinkConnectionListenersCount() {
@@ -442,6 +458,11 @@ public abstract class MavLinkConnection {
      */
     public void removeMavLinkConnectionListener(String tag) {
         mListeners.remove(tag);
+    }
+
+
+    public static void removeExternalMavLinkConnectionListener(MavLinkConnectionListener listener) {
+        MavLinkConnectionSubscribers.get().unregisterListener(listener);
     }
 
     /**
@@ -479,12 +500,16 @@ public abstract class MavLinkConnection {
      * @param connectionStatus
      */
     protected void reportConnectionStatus(LinkConnectionStatus connectionStatus) {
-        if (mListeners.isEmpty()) {
-            return;
+        if (!mListeners.isEmpty()) {
+            for (MavLinkConnectionListener listener : mListeners.values()) {
+                listener.onConnectionStatus(connectionStatus);
+            }
         }
 
-        for (MavLinkConnectionListener listener : mListeners.values()) {
-            listener.onConnectionStatus(connectionStatus);
+        if(!subscribers.getListeners().isEmpty()) {
+            for (MavLinkConnectionListener externalListener : subscribers.getListeners()) {
+                externalListener.onConnectionStatus(connectionStatus);
+            }
         }
     }
 
@@ -518,25 +543,87 @@ public abstract class MavLinkConnection {
     private void reportReceivedPacket(MAVLinkPacket packet) {
 //        Timber.i("packet.msgid=%d", packet.msgid);
 
-        if (mListeners.isEmpty()) {
-            return;
+        if (!mListeners.isEmpty()) {
+            for (MavLinkConnectionListener listener : mListeners.values()) {
+                listener.onReceivePacket(packet);
+            }
         }
 
-        for (MavLinkConnectionListener listener : mListeners.values()) {
-            listener.onReceivePacket(packet);
+        if(!subscribers.getListeners().isEmpty()) {
+            for (MavLinkConnectionListener externalListener : subscribers.getListeners()) {
+                externalListener.onReceivePacket(packet);
+            }
         }
     }
 
     private void reportMavlinkStats(MAVLinkStats stats) {
-        if(mListeners.isEmpty()) {
+        if(!mListeners.isEmpty()) {
+            for(MavLinkConnectionListener listener: mListeners.values()) {
+                listener.onMavlinkStatsUpdate(stats.receivedPacketCount, stats.crcErrorCount, stats.lostPacketCount);
+            }
+        } else {
             Log.v(TAG, "No listeners");
-            return;
         }
 
-        for(MavLinkConnectionListener listener: mListeners.values()) {
-            listener.onMavlinkStatsUpdate(stats.receivedPacketCount, stats.crcErrorCount, stats.lostPacketCount);
+        if(!subscribers.getListeners().isEmpty()) {
+            for (MavLinkConnectionListener externalListener : subscribers.getListeners()) {
+                externalListener.onMavlinkStatsUpdate(stats.receivedPacketCount, stats.crcErrorCount, stats.lostPacketCount);
+            }
         }
     }
+
+    /**
+     * Utility method to notify the mavlink listeners about the data sent.
+     *
+     * @param buffer the data sent
+     */
+    private void reportBytesSent(byte[] buffer) {
+
+        if (!mListeners.isEmpty()) {
+            for (MavLinkConnectionListener listener : mListeners.values()) {
+                listener.onBytesSent(buffer);
+            }
+        }
+
+        if(!subscribers.getListeners().isEmpty()) {
+            for (MavLinkConnectionListener externalListener : subscribers.getListeners()) {
+                externalListener.onBytesSent(buffer);
+            }
+        }
+    }
+
+    private void reportReceivedBytes(int numBytes) {
+        if (!mListeners.isEmpty()) {
+            for (MavLinkConnectionListener listener : mListeners.values()) {
+                listener.onBytesReceived(numBytes);
+            }
+        }
+
+        if(!subscribers.getListeners().isEmpty()) {
+            for (MavLinkConnectionListener externalListener : subscribers.getListeners()) {
+                externalListener.onBytesReceived(numBytes);
+            }
+        }
+    }
+
+    /**
+     * Utility method to notify the mavlink listeners that a message was sent
+     */
+    private void reportMessageSent() {
+
+        if (!mListeners.isEmpty()) {
+            for (MavLinkConnectionListener listener : mListeners.values()) {
+                listener.onMessageSent();
+            }
+        }
+
+        if(!subscribers.getListeners().isEmpty()) {
+            for (MavLinkConnectionListener externalListener : subscribers.getListeners()) {
+                externalListener.onMessageSent();
+            }
+        }
+    }
+
 
     protected void reportIOException(IOException e) {
         reportConnectionStatus(LinkConnectionStatus.newFailedConnectionStatus(getErrorCode(e), e.getMessage()));

@@ -27,4 +27,26 @@ public interface MavLinkConnectionListener {
      * Provides information about mavlink stats
      */
     void onMavlinkStatsUpdate(int receivedCount, int crcErrorCount, int lostPacketCount);
+
+
+    /**
+     * Called when data is sent via the mavlink connection.
+     */
+    void onBytesSent(byte[] data);
+
+    /**
+     * Called when a mavlink message is received
+     */
+    void onBytesReceived(int numBytes);
+
+    /**
+     * Called when a mavlink message is sent
+     */
+    void onMessageSent();
+
+    /**
+     * Called when a mavlink message is received
+     */
+    void onMessageReceived();
+
 }

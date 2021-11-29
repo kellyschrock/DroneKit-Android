@@ -71,6 +71,18 @@ public class MAVLinkClient implements DataLink.DataLinkProvider<MAVLinkMessage> 
             crcErrorCount = crcErrors;
             lostPacketCount = lostPackets;
         }
+
+        @Override
+        public void onBytesSent(byte[] data) { }
+
+        @Override
+        public void onBytesReceived(int numBytes) { }
+
+        @Override
+        public void onMessageSent() { }
+
+        @Override
+        public void onMessageReceived() { }
     };
 
     private AndroidMavLinkConnection mavlinkConn;
