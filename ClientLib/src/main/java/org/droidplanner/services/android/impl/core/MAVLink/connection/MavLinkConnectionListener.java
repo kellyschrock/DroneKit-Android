@@ -27,4 +27,25 @@ public interface MavLinkConnectionListener {
      * Provides information about mavlink stats
      */
     void onMavlinkStatsUpdate(int receivedCount, int crcErrorCount, int lostPacketCount);
+
+
+    /**
+     * Called when data taken from the outgoing queue is sent
+     * @param data array of encoded bytes created from the Mavlink Message which was added to the queue
+     */
+    void onBytesSent(byte[] data);
+
+    /**
+     * Called when an incoming mavlink message is parsed from the queue
+     * @param numBytes the number of bytes in the message
+     */
+    void onReceivedBytesParsed(int numBytes);
+
+    /**
+     * Called when a outgoing mavlink messages is offered to the queue
+     * @param packetData array of encoded bytes created from the Mavlink Message which was added to the queue
+     */
+    void onMessageQueued(byte[] packetData);
+
+
 }
