@@ -76,13 +76,11 @@ public class MAVLinkClient implements DataLink.DataLinkProvider<MAVLinkMessage> 
         public void onBytesSent(byte[] data) { }
 
         @Override
-        public void onBytesReceived(int numBytes) { }
+        public void onReceivedBytesParsed(int numBytes) { }
 
         @Override
-        public void onMessageSent() { }
+        public void onMessageQueued(byte[] packetData) { }
 
-        @Override
-        public void onMessageReceived() { }
     };
 
     private AndroidMavLinkConnection mavlinkConn;

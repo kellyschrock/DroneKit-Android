@@ -7,8 +7,6 @@ import android.util.Log;
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.Messages.MAVLinkStats;
 import com.MAVLink.Parser;
-import com.MAVLink.common.msg_heartbeat;
-import com.MAVLink.enums.MAV_COMPONENT;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 
 import org.droidplanner.services.android.impl.core.model.Logger;
@@ -24,8 +22,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-
-import timber.log.Timber;
 
 /**
  * Base for mavlink connection implementations.
@@ -178,7 +174,8 @@ public abstract class MavLinkConnection {
                 if (receivedPacket != null) {
                     queueToLog(receivedPacket);
                     reportReceivedPacket(receivedPacket);
-                    reportReceivedBytes(i - lastReceived);
+                    reportReceivedBytesParsed(i - lastReceived);
+                    lastReceived = i;
                 }
             }
 
@@ -363,7 +360,7 @@ public abstract class MavLinkConnection {
         if (!mPacketsToSend.offer(packetData)) {
             mLogger.logErr(TAG, "Unable to send mavlink packet. Packet queue is full!");
         } else {
-            reportMessageSent();
+            reportMessageQueued(packetData);
         }
     }
 
@@ -573,7 +570,7 @@ public abstract class MavLinkConnection {
     }
 
     /**
-     * Utility method to notify the mavlink listeners about the data sent.
+     * Utility method to notify the mavlink listeners that a bytes were sent
      *
      * @param buffer the data sent
      */
@@ -592,16 +589,19 @@ public abstract class MavLinkConnection {
         }
     }
 
-    private void reportReceivedBytes(int numBytes) {
+    /**
+     * Utility method to notify the mavlink listeners that a bytes were received as a full mavlink message
+     */
+    private void reportReceivedBytesParsed(int numBytes) {
         if (!mListeners.isEmpty()) {
             for (MavLinkConnectionListener listener : mListeners.values()) {
-                listener.onBytesReceived(numBytes);
+                listener.onReceivedBytesParsed(numBytes);
             }
         }
 
         if(!subscribers.getListeners().isEmpty()) {
             for (MavLinkConnectionListener externalListener : subscribers.getListeners()) {
-                externalListener.onBytesReceived(numBytes);
+                externalListener.onReceivedBytesParsed(numBytes);
             }
         }
     }
@@ -609,17 +609,17 @@ public abstract class MavLinkConnection {
     /**
      * Utility method to notify the mavlink listeners that a message was sent
      */
-    private void reportMessageSent() {
+    private void reportMessageQueued(byte[] packetData) {
 
         if (!mListeners.isEmpty()) {
             for (MavLinkConnectionListener listener : mListeners.values()) {
-                listener.onMessageSent();
+                listener.onMessageQueued(packetData);
             }
         }
 
         if(!subscribers.getListeners().isEmpty()) {
             for (MavLinkConnectionListener externalListener : subscribers.getListeners()) {
-                externalListener.onMessageSent();
+                externalListener.onMessageQueued(packetData);
             }
         }
     }

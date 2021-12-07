@@ -30,23 +30,22 @@ public interface MavLinkConnectionListener {
 
 
     /**
-     * Called when data is sent via the mavlink connection.
+     * Called when data taken from the outgoing queue is sent
+     * @param data array of encoded bytes created from the Mavlink Message which was added to the queue
      */
     void onBytesSent(byte[] data);
 
     /**
-     * Called when a mavlink message is received
+     * Called when an incoming mavlink message is parsed from the queue
+     * @param numBytes the number of bytes in the message
      */
-    void onBytesReceived(int numBytes);
+    void onReceivedBytesParsed(int numBytes);
 
     /**
-     * Called when a mavlink message is sent
+     * Called when a outgoing mavlink messages is offered to the queue
+     * @param packetData array of encoded bytes created from the Mavlink Message which was added to the queue
      */
-    void onMessageSent();
+    void onMessageQueued(byte[] packetData);
 
-    /**
-     * Called when a mavlink message is received
-     */
-    void onMessageReceived();
 
 }
