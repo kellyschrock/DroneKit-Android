@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
 //apply plugin: 'com.getkeepsafe.dexcount'
 
 ext {
@@ -125,6 +127,7 @@ dependencies {
 
     androidTestImplementation 'junit:junit:4.12'
     androidTestImplementation "org.robolectric:robolectric:3.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 def getSoloLinkIp() {
@@ -141,5 +144,8 @@ def getLocalIp() {
 
 evaluationDependsOn ':Mavlink'
 assemble.dependsOn ':Mavlink:jar'
+repositories {
+    mavenCentral()
+}
 
 //apply from: "$projectDir/maven-push.gradle"

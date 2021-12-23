@@ -161,7 +161,7 @@ public class VideoManager implements IpConnectionListener {
                         new UdpConnection(handler, udpPort, UDP_BUFFER_SIZE, true, 42);
                 this.linkConn.setIpConnectionListener(this);
                 this.linkPort = udpPort;
-            } catch(UnknownHostException ex) {
+            } catch(Throwable ex) {
                 Timber.e(ex, ex.getMessage());
                 listener.onLinkDisconnected();
                 handler.removeCallbacks(reconnectTask);

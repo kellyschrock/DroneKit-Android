@@ -117,7 +117,7 @@ public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListen
     }
 
     public void disconnect(DroneApi.ClientInfo clientInfo) {
-        String appId = clientInfo.appId;
+        String appId = clientInfo.getAppId();
         if (TextUtils.isEmpty(appId)) {
             return;
         }
@@ -216,7 +216,7 @@ public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListen
 
         switch (type) {
             case ControlActions.ACTION_ENABLE_MANUAL_CONTROL:
-                data.putString(EXTRA_CLIENT_APP_ID, clientInfo.appId);
+                data.putString(EXTRA_CLIENT_APP_ID, clientInfo.getAppId());
                 break;
         }
         return executeAsyncAction(action, listener);

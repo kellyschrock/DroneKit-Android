@@ -453,15 +453,15 @@ public abstract class MavLinkConnection {
 
     protected abstract Logger initLogger();
 
-    protected abstract void openConnection() throws IOException;
+    public abstract void openConnection() throws IOException;
 
-    protected abstract int readDataBlock(byte[] buffer) throws IOException;
+    public abstract int readDataBlock(byte[] buffer) throws IOException;
 
-    protected abstract void sendBuffer(byte[] buffer) throws IOException;
+    public abstract void sendBuffer(byte[] buffer) throws IOException;
 
-    protected abstract void closeConnection() throws IOException;
+    public abstract void closeConnection() throws IOException;
 
-    protected abstract void loadPreferences();
+    public abstract void loadPreferences();
 
     /**
      * @return The type of this mavlink connection.
