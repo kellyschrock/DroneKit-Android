@@ -47,7 +47,12 @@ open class MAVLinkClient(private val context: Context, private val listener: Dat
             crcErrorCount = crcErrors
             lostPacketCount = lostPackets
         }
+
+        override fun onBytesSent(data: ByteArray?) {}
+        override fun onReceivedBytesParsed(numBytes: Int) {}
+        override fun onMessageQueued(packetData: ByteArray?) {}
     }
+
     private var mavlinkConn: AndroidMavLinkConnection? = null
     private var packetSeqNumber = 0
     private val connParams: ConnectionParameter

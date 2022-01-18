@@ -22,6 +22,7 @@ object AttributeType {
 
     /**
      * Used to access the vehicle's battery state.
+     * @see {@link com.o3dr.services.android.lib.drone.property.Battery}
      */
     const val BATTERY = "$PACKAGE_NAME.BATTERY"
     const val BATTERY2 = "$PACKAGE_NAME.BATTERY2"
