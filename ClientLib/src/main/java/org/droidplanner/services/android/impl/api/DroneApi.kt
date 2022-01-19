@@ -54,17 +54,24 @@ import java.util.concurrent.ConcurrentLinkedQueue
 /**
  * Implementation for the IDroneApi interface.
  */
-class DroneApi internal constructor(private val service: DroidPlannerService, listener: IApiListener, ownerId: String)
-    : IDroneApi.Stub(), OnDroneListener<Drone>, AttributeEventListener, OnParameterManagerListener, OnMagnetometerCalibrationListener, DeathRecipient {
-    private val context: Context
-    private val observersList: ConcurrentLinkedQueue<IObserver>
-    private val mavlinkObserversList: ConcurrentLinkedQueue<IMavlinkObserver>
+class DroneApi internal constructor(private val service: DroidPlannerService, listener: IApiListener, theOwnerId: String)
+    : IDroneApi.Stub(),
+    OnDroneListener<Drone>,
+    AttributeEventListener,
+    OnParameterManagerListener,
+    OnMagnetometerCalibrationListener,
+    DeathRecipient {
+
+    private val context: Context = service.applicationContext
+    private val observersList: ConcurrentLinkedQueue<IObserver> = ConcurrentLinkedQueue()
+    private val mavlinkObserversList: ConcurrentLinkedQueue<IMavlinkObserver> = ConcurrentLinkedQueue()
     var droneManager: DroneManager<*, *>? = null
         private set
-    private val apiListener: IApiListener
-    val ownerId: String
+    private val apiListener: IApiListener = listener
+    val ownerId: String = theOwnerId
     val clientInfo: ClientInfo
     private var connectionParams: ConnectionParameter? = null
+
     fun destroy() {
         Timber.d("Destroying drone api instance for %s", ownerId)
         observersList.clear()
@@ -221,40 +228,55 @@ class DroneApi internal constructor(private val service: DroidPlannerService, li
         val drone = drone
         when (type) {
             ConnectionActions.ACTION_CONNECT -> {
-                val parameter: ConnectionParameter = data!!.getParcelable(ConnectionActions.EXTRA_CONNECT_PARAMETER)
-                connect(parameter)
-            }
-            ConnectionActions.ACTION_DISCONNECT -> disconnect()
-            CameraActions.ACTION_START_VIDEO_STREAM -> {
-                val videoSurface = data!!.getParcelable<Surface>(CameraActions.EXTRA_VIDEO_DISPLAY)
-                val videoTag = data.getString(CameraActions.EXTRA_VIDEO_TAG, "")
-                var videoProps = data.getBundle(CameraActions.EXTRA_VIDEO_PROPERTIES)
-                if (videoProps == null) {
-                    //Only case where it's null is when interacting with a deprecated client version.
-                    //In this case, we assume that the client is attempting to start a solo stream, since that's
-                    //the only api that was exposed.
-                    videoProps = Bundle()
-                    videoProps.putInt(CameraActions.EXTRA_VIDEO_PROPS_UDP_PORT, VideoManager.ARTOO_UDP_PORT)
+                val param: ConnectionParameter? = data?.getParcelable(ConnectionActions.EXTRA_CONNECT_PARAMETER)
+                param?.let {
+                    connect(param)
                 }
-                CommonApiUtils.startVideoStream(drone, videoProps, ownerId, videoTag, videoSurface, listener)
             }
+
+            ConnectionActions.ACTION_DISCONNECT -> disconnect()
+
+            CameraActions.ACTION_START_VIDEO_STREAM -> {
+                data?.getParcelable<Surface>(CameraActions.EXTRA_VIDEO_DISPLAY)?.let { videoSurface ->
+                    val videoTag = data.getString(CameraActions.EXTRA_VIDEO_TAG, "")
+                    var videoProps = data.getBundle(CameraActions.EXTRA_VIDEO_PROPERTIES)
+                    if (videoProps == null) {
+                        //Only case where it's null is when interacting with a deprecated client version.
+                        //In this case, we assume that the client is attempting to start a solo stream, since that's
+                        //the only api that was exposed.
+                        videoProps = Bundle().apply {
+                            putInt(CameraActions.EXTRA_VIDEO_PROPS_UDP_PORT, VideoManager.ARTOO_UDP_PORT)
+                        }
+                    }
+
+                    CommonApiUtils.startVideoStream(drone, videoProps, ownerId, videoTag, videoSurface, listener)
+                }
+            }
+
             ExperimentalActions.ACTION_START_VIDEO_STREAM_FOR_OBSERVER -> {
-                val videoTag = data!!.getString(CameraActions.EXTRA_VIDEO_TAG, "")
-                CommonApiUtils.startVideoStreamForObserver(drone, ownerId, videoTag, listener)
+                data?.getString(CameraActions.EXTRA_VIDEO_TAG, "")?.let { videoTag ->
+                    CommonApiUtils.startVideoStreamForObserver(drone, ownerId, videoTag, listener)
+                }
             }
+
             CameraActions.ACTION_STOP_VIDEO_STREAM -> {
-                val videoTag = data!!.getString(CameraActions.EXTRA_VIDEO_TAG, "")
-                CommonApiUtils.stopVideoStream(drone, ownerId, videoTag, listener)
+                data?.getString(CameraActions.EXTRA_VIDEO_TAG, "")?.let { videoTag ->
+                    CommonApiUtils.stopVideoStream(drone, ownerId, videoTag, listener)
+                }
             }
+
             ExperimentalActions.ACTION_STOP_VIDEO_STREAM_FOR_OBSERVER -> {
-                val videoTag = data!!.getString(CameraActions.EXTRA_VIDEO_TAG, "")
-                CommonApiUtils.stopVideoStreamForObserver(drone, ownerId, videoTag, listener)
+                data?.getString(CameraActions.EXTRA_VIDEO_TAG, "")?.let { videoTag ->
+                    CommonApiUtils.stopVideoStreamForObserver(drone, ownerId, videoTag, listener)
+                }
             }
+
             MissionActions.ACTION_BUILD_COMPLEX_MISSION_ITEM -> if (drone is MavLinkDrone || drone == null) {
                 CommonApiUtils.buildComplexMissionItem(drone as MavLinkDrone?, data)
             } else {
                 CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener)
             }
+
             else -> if (droneManager != null) {
                 droneManager!!.executeAsyncAction(clientInfo, action, listener)
             } else {
@@ -385,7 +407,7 @@ class DroneApi internal constructor(private val service: DroidPlannerService, li
             DroneEventsType.FIRMWARE, DroneEventsType.TYPE -> droneEvent = AttributeEvent.TYPE_UPDATED
             DroneEventsType.HOME -> droneEvent = AttributeEvent.HOME_UPDATED
             DroneEventsType.CALIBRATION_IMU -> if (drone is MavLinkDrone) {
-                val calIMUMessage = drone.calibrationSetup.message
+                val calIMUMessage = drone.calibrationSetup?.message
                 extrasBundle.putString(AttributeEventExtra.EXTRA_CALIBRATION_IMU_MESSAGE, calIMUMessage)
                 droneEvent = AttributeEvent.CALIBRATION_IMU
             }
@@ -398,8 +420,8 @@ class DroneApi internal constructor(private val service: DroidPlannerService, li
                  * not be happening
                  */
                 val accelCalibration = drone.calibrationSetup
-                val message = accelCalibration.message
-                droneEvent = if (accelCalibration.isCalibrating && TextUtils.isEmpty(message)) {
+                val message = accelCalibration?.message
+                droneEvent = if (accelCalibration?.isCalibrating == true && TextUtils.isEmpty(message)) {
                     accelCalibration.cancelCalibration()
                     AttributeEvent.HEARTBEAT_TIMEOUT
                 } else {
@@ -439,12 +461,12 @@ class DroneApi internal constructor(private val service: DroidPlannerService, li
             DroneEventsType.MISSION_SENT -> droneEvent = AttributeEvent.MISSION_SENT
             DroneEventsType.INVALID_POLYGON -> {}
             DroneEventsType.MISSION_WP_UPDATE -> if (drone is MavLinkDrone) {
-                val currentWaypoint = drone.missionStats.currentWP
+                val currentWaypoint = drone.missionStats?.currentWP ?: 0
                 extrasBundle.putInt(AttributeEventExtra.EXTRA_MISSION_CURRENT_WAYPOINT, currentWaypoint)
                 droneEvent = AttributeEvent.MISSION_ITEM_UPDATED
             }
             DroneEventsType.MISSION_WP_REACHED -> if (drone is MavLinkDrone) {
-                val lastReachedWaypoint = drone.missionStats.lastReachedWP
+                val lastReachedWaypoint = drone.missionStats?.lastReachedWP ?: 0
                 extrasBundle.putInt(AttributeEventExtra.EXTRA_MISSION_LAST_REACHED_WAYPOINT, lastReachedWaypoint)
                 droneEvent = AttributeEvent.MISSION_ITEM_REACHED
             }
@@ -525,11 +547,6 @@ class DroneApi internal constructor(private val service: DroidPlannerService, li
     }
 
     init {
-        context = service.applicationContext
-        this.ownerId = ownerId
-        observersList = ConcurrentLinkedQueue()
-        mavlinkObserversList = ConcurrentLinkedQueue()
-        apiListener = listener
         var apiVersionCode = -1
         var clientVersionCode = -1
         try {

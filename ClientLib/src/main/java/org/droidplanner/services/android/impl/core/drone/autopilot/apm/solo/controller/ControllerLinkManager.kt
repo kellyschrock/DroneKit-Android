@@ -35,8 +35,8 @@ import java.util.concurrent.atomic.AtomicReference
 class ControllerLinkManager(context: Context?, handler: Handler, asyncExecutor: ExecutorService?)
     : AbstractLinkManager<ControllerLinkListener>(context, TcpConnection(handler, ARTOO_IP, ARTOO_BUTTON_PORT), handler, asyncExecutor) {
 
-    private val controllerVersion = AtomicReference("")
-    private val stm32Version = AtomicReference("")
+    private val _controllerVersion = AtomicReference("")
+    private val _stm32Version = AtomicReference("")
     private val txPowerCompliantCountry = AtomicReference(defaultCountry.name)
     private val controllerMode = AtomicInteger(SoloControllerMode.UNKNOWN_MODE)
     private val controllerUnits = AtomicReference("")
@@ -62,7 +62,7 @@ class ControllerLinkManager(context: Context?, handler: Handler, asyncExecutor: 
 
     private val artooVersionRetriever = Runnable {
         val version = retrieveVersion(ARTOO_VERSION_FILENAME)
-        if (version != null) controllerVersion.set(version)
+        if (version != null) _controllerVersion.set(version)
         updateControllerModeIfPossible()
         updateControllerUnitIfPossible()
         onVersionsUpdated()
@@ -70,7 +70,7 @@ class ControllerLinkManager(context: Context?, handler: Handler, asyncExecutor: 
 
     private val stm32VersionRetriever = Runnable {
         val version = retrieveVersion(STM32_VERSION_FILENAME)
-        if (version != null) stm32Version.set(version)
+        if (version != null) _stm32Version.set(version)
         onVersionsUpdated()
     }
 
@@ -140,20 +140,20 @@ class ControllerLinkManager(context: Context?, handler: Handler, asyncExecutor: 
     }
 
     fun areVersionsSet(): Boolean {
-        return !TextUtils.isEmpty(controllerVersion.get()) && !TextUtils.isEmpty(stm32Version.get())
+        return !TextUtils.isEmpty(_controllerVersion.get()) && !TextUtils.isEmpty(_stm32Version.get())
     }
 
     /**
      * @return the controller version.
      */
-    val artooVersion: String
-        get() = controllerVersion.get()
+    val controllerVersion: String
+        get() = _controllerVersion.get()
 
     /**
      * @return the stm32 version
      */
     fun getStm32Version(): String {
-        return stm32Version.get()
+        return _stm32Version.get()
     }
 
     /**
@@ -216,7 +216,7 @@ class ControllerLinkManager(context: Context?, handler: Handler, asyncExecutor: 
         }
     }
 
-    val soloLinkWifiInfo: Pair<String, String>
+    val wifiSettings: Pair<String, String>
         get() = sololinkWifiInfo.get()
 
     override fun start(listener: ControllerLinkListener) {
@@ -290,7 +290,7 @@ class ControllerLinkManager(context: Context?, handler: Handler, asyncExecutor: 
     }
 
     private fun doesSupportControllerMode(): Boolean {
-        val version = controllerVersion.get()
+        val version = _controllerVersion.get()
         return if (TextUtils.isEmpty(version)) false else try {
             val currentVersion = Version.valueOf(version)
             CONTROLLER_MODE_MIN_VERSION.lessThanOrEqualTo(currentVersion)

@@ -264,17 +264,13 @@ open class Drone(val context: Context) {
             else -> null
         }
     }
+
     /**
      * Connect to a vehicle using a specified [ConnectionParameter] and a [LinkListener]
      * callback.
      *
      * @param connParams Specified parameters to determine how to connect the vehicle.
      * @param linkListener A callback that will update the caller on the state of the link connection.
-     */
-    /**
-     * Connect to a vehicle using a specified [ConnectionParameter].
-     *
-     * @param connParams Specified parameters to determine how to connect the vehicle.
      */
     @JvmOverloads
     fun connect(connParams: ConnectionParameter?, linkListener: LinkListener? = null) {
@@ -296,15 +292,15 @@ open class Drone(val context: Context) {
         return performActionOnDroneThread(action, null)
     }
 
-    fun performActionOnDroneThread(action: Action?, listener: AbstractCommandListener?): Boolean {
+    private fun performActionOnDroneThread(action: Action?, listener: AbstractCommandListener?): Boolean {
         return performActionOnHandler(action, handler, listener)
     }
 
-    fun performActionOnHandler(action: Action?, handler: Handler?, listener: AbstractCommandListener?): Boolean {
+    private fun performActionOnHandler(action: Action?, handler: Handler?, listener: AbstractCommandListener?): Boolean {
         val droneApi = droneApiRef.get()
         if (isStarted(droneApi)) {
             try {
-                droneApi!!.executeAction(action, wrapListener(handler, listener))
+                droneApi?.executeAction(action, wrapListener(handler, listener))
                 return true
             } catch (e: RemoteException) {
                 handleRemoteException(e)
@@ -491,11 +487,12 @@ open class Drone(val context: Context) {
         }
     }
 
-    fun notifyDroneServiceInterrupted(errorMsg: String?) {
+    private fun notifyDroneServiceInterrupted(errorMsg: String?) {
         if (droneListeners.isEmpty()) {
             return
         }
-        handler!!.post { for (listener in droneListeners) listener.onDroneServiceInterrupted(errorMsg) }
+
+        handler?.post { for (listener in droneListeners) listener.onDroneServiceInterrupted(errorMsg) }
     }
 
     companion object {
