@@ -210,12 +210,13 @@ class GimbalApi private constructor(private val drone: Drone) : Api(), DroneList
         }
     }
 
-    override fun onDroneServiceInterrupted(errorMsg: String?) {}
+    override fun onDroneServiceInterrupted(errorMsg: String) {}
 
     companion object {
         private val gimbalApiCache = ConcurrentHashMap<Drone, GimbalApi>()
         private val apiBuilder: Builder<GimbalApi> = Builder { drone -> GimbalApi(drone) }
 
+        @JvmStatic
         fun getApi(drone: Drone?): GimbalApi {
             return getApi(drone, gimbalApiCache, apiBuilder)
         }

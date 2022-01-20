@@ -286,7 +286,7 @@ class DroneApi internal constructor(private val service: DroidPlannerService, li
     }
 
     @Throws(RemoteException::class)
-    override fun executeAsyncAction(action: Action, listener: ICommandListener) {
+    override fun executeAsyncAction(action: Action, listener: ICommandListener?) {
         executeAction(action, listener)
     }
 

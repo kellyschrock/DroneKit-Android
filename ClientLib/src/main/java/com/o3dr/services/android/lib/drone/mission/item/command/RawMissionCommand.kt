@@ -8,25 +8,15 @@ import com.o3dr.services.android.lib.drone.mission.MissionItemType
 
 class RawMissionCommand : MissionItem, MissionItem.Command, Parcelable {
     var param1 = 0f
-        private set
     var param2 = 0f
-        private set
     var param3 = 0f
-        private set
     var param4 = 0f
-        private set
     var x = 0f
-        private set
     var y = 0f
-        private set
     var z = 0f
-        private set
     var command = 0
-        private set
     var target_system: Short = 0
-        private set
     var target_component: Short = 0
-        private set
 
     constructor() : super(MissionItemType.RAW_COMMAND) {}
     constructor(input: RawMissionCommand) : this() {

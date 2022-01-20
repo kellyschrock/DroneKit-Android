@@ -129,6 +129,7 @@ class ConnectionParameter : Parcelable, Cloneable {
          * @return Returns a new [ConnectionParameter] with type [ConnectionType.TYPE_USB]
          * and baud rate [ConnectionType.DEFAULT_USB_BAUD_RATE].
          */
+        @JvmStatic
         fun newUsbConnection(tlogLoggingUri: Uri?): ConnectionParameter {
             return newUsbConnection(ConnectionType.DEFAULT_USB_BAUD_RATE, tlogLoggingUri)
         }
@@ -139,6 +140,7 @@ class ConnectionParameter : Parcelable, Cloneable {
          * @param tlogLoggingUri Uri where the tlog data should be logged. Pass null if the tlog data shouldn't be logged
          * @return Returns a new [ConnectionParameter] with type [ConnectionType.TYPE_USB].
          */
+        @JvmStatic
         fun newUsbConnection(usbBaudRate: Int, tlogLoggingUri: Uri?): ConnectionParameter {
             val paramsBundle = Bundle(1)
             paramsBundle.putInt(ConnectionType.EXTRA_USB_BAUD_RATE, usbBaudRate)
@@ -150,6 +152,7 @@ class ConnectionParameter : Parcelable, Cloneable {
          * @return Returns [ConnectionParameter] with type [ConnectionType.TYPE_UDP], using
          * [ConnectionType.DEFAULT_UDP_SERVER_PORT] port.
          */
+        @JvmStatic
         fun newUdpConnection(tlogLoggingUri: Uri?): ConnectionParameter {
             return newUdpConnection(ConnectionType.DEFAULT_UDP_SERVER_PORT, tlogLoggingUri)
         }
@@ -160,6 +163,7 @@ class ConnectionParameter : Parcelable, Cloneable {
          * @param tlogLoggingUri Uri where the tlog data should be logged. Pass null if the tlog data shouldn't be logged
          * @return Returns [ConnectionParameter] with type [ConnectionType.TYPE_UDP].
          */
+        @JvmStatic
         fun newUdpConnection(udpPort: Int, tlogLoggingUri: Uri?): ConnectionParameter {
             return newUdpConnection(null, udpPort, null, 0, null, tlogLoggingUri)
         }
@@ -170,6 +174,7 @@ class ConnectionParameter : Parcelable, Cloneable {
          * @param tlogLoggingUri Uri where the tlog data should be logged. Pass null if the tlog data shouldn't be logged
          * @return Returns [ConnectionParameter] with type [ConnectionType.TYPE_UDP].
          */
+        @JvmStatic
         fun newUdpConnection(udpIP: String?, udpPort: Int, tlogLoggingUri: Uri?): ConnectionParameter {
             return newUdpConnection(udpIP, udpPort, null, 0, null, tlogLoggingUri)
         }
@@ -187,6 +192,7 @@ class ConnectionParameter : Parcelable, Cloneable {
          * @return Returns [ConnectionParameter] with type [ConnectionType.TYPE_UDP]. The ping
          * period is set to [ConnectionType.DEFAULT_UDP_PING_PERIOD]
          */
+        @JvmStatic
         fun newUdpConnection(udpIP: String?, udpPort: Int, udpPingReceiverIp: String?, udpPingReceiverPort: Int,
                              udpPingPayload: ByteArray?, tlogLoggingUri: Uri?): ConnectionParameter {
             return newUdpConnection(udpIP, udpPort, udpPingReceiverIp, udpPingReceiverPort, udpPingPayload, ConnectionType.DEFAULT_UDP_PING_PERIOD, tlogLoggingUri)
@@ -205,6 +211,7 @@ class ConnectionParameter : Parcelable, Cloneable {
          *
          * @return Returns [ConnectionParameter] with type [ConnectionType.TYPE_UDP].
          */
+        @JvmStatic
         fun newUdpConnection(udpIP: String?, udpPort: Int, udpPingReceiverIp: String?, udpPingReceiverPort: Int,
                              udpPingPayload: ByteArray?, pingPeriod: Long, tlogLoggingUri: Uri?): ConnectionParameter {
             val paramsBundle = Bundle()
@@ -230,6 +237,7 @@ class ConnectionParameter : Parcelable, Cloneable {
          * @return Returns [ConnectionParameter] with type [ConnectionType.TYPE_TCP], using
          * [ConnectionType.DEFAULT_TCP_SERVER_PORT].
          */
+        @JvmStatic
         fun newTcpConnection(tcpServerIp: String?, tlogLoggingUri: Uri?): ConnectionParameter {
             return newTcpConnection(tcpServerIp, ConnectionType.DEFAULT_TCP_SERVER_PORT, tlogLoggingUri)
         }
@@ -241,6 +249,7 @@ class ConnectionParameter : Parcelable, Cloneable {
          * @param tlogLoggingUri Uri where the tlog data should be logged. Pass null if the tlog data shouldn't be logged
          * @return Returns [ConnectionParameter] with type [ConnectionType.TYPE_TCP].
          */
+        @JvmStatic
         fun newTcpConnection(tcpServerIp: String?, tcpServerPort: Int, tlogLoggingUri: Uri?): ConnectionParameter {
             val paramsBundle = Bundle(2)
             paramsBundle.putString(ConnectionType.EXTRA_TCP_SERVER_IP, tcpServerIp)
@@ -254,18 +263,21 @@ class ConnectionParameter : Parcelable, Cloneable {
          * @param tlogLoggingUri Uri where the tlog data should be logged. Pass null if the tlog data shouldn't be logged
          * @return Returns [ConnectionParameter] with type [ConnectionType.TYPE_BLUETOOTH].
          */
+        @JvmStatic
         fun newBluetoothConnection(bluetoothAddress: String?, tlogLoggingUri: Uri?): ConnectionParameter {
             val paramsBundle = Bundle(1)
             paramsBundle.putString(ConnectionType.EXTRA_BLUETOOTH_ADDRESS, bluetoothAddress)
             return ConnectionParameter(ConnectionType.TYPE_BLUETOOTH, paramsBundle, tlogLoggingUri, null)
         }
 
+        @JvmStatic
         fun newCustomConnection(connection: AndroidMavLinkConnection?, connectionId: String?): ConnectionParameter {
             val paramsBundle = Bundle(1)
             paramsBundle.putString(ConnectionType.EXTRA_CUSTOM_CONNECTION_ID, connectionId)
             return ConnectionParameter(ConnectionType.TYPE_CUSTOM, paramsBundle, null, connection)
         }
 
+        @JvmStatic
         fun newCustomConnection(connection: AndroidMavLinkConnection?, connectionId: String?, tlogUri: Uri?): ConnectionParameter {
             val paramsBundle = Bundle(1)
             paramsBundle.putString(ConnectionType.EXTRA_CUSTOM_CONNECTION_ID, connectionId)

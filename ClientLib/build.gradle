@@ -76,6 +76,8 @@ android {
                 println "DO STUFF: ${PUBLISH_ARTIFACT_ID}.${PUBLISH_VERSION}.aar, ${file.parent}"
 //                output.outputFile = new File(file.parent, "${PUBLISH_ARTIFACT_ID}.${PUBLISH_VERSION}.aar")
                 output.outputFileName = "${PUBLISH_ARTIFACT_ID}.${PUBLISH_VERSION}.aar"
+                file.renameTo("$buildDir/outputs/aar/${PUBLISH_ARTIFACT_ID}.${PUBLISH_VERSION}.aar")
+//                file.renameTo("${PUBLISH_ARTIFACT_ID}.${PUBLISH_VERSION}.aar")
             }
         }
     }

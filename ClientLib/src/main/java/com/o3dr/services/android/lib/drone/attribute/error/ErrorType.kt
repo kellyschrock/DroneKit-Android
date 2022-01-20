@@ -67,6 +67,7 @@ enum class ErrorType(@field:StringRes @param:StringRes private val labelResId: I
     }
 
     companion object {
+        @JvmStatic
         fun getErrorById(errorId: String?): ErrorType? {
             return if (TextUtils.isEmpty(errorId)) null else valueOf(errorId!!)
         }

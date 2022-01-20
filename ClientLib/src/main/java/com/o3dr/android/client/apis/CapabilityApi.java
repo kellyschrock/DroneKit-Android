@@ -12,6 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static com.o3dr.services.android.lib.drone.action.CapabilityActions.*;
 
+import kotlin.jvm.JvmStatic;
+
 /**
  * Allows to query the capabilities offered by the vehicle.
  * Created by Fredia Huya-Kouadio on 7/5/15.
@@ -46,6 +48,7 @@ public class CapabilityApi extends Api {
      * @param drone target vehicle.
      * @return a CapabilityApi instance.
      */
+    @JvmStatic
     public static CapabilityApi getApi(final Drone drone){
         return getApi(drone, capabilityApiCache, apiBuilder);
     }

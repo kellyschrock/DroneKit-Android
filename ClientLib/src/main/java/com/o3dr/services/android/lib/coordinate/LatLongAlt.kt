@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 /** Stores latitude, longitude, and altitude information for a coordinate. */
-class LatLongAlt : LatLong {
+open class LatLongAlt : LatLong {
     var altitude: Double
 
     constructor(latitude: Double, longitude: Double, altitude: Double) : super(latitude, longitude) {

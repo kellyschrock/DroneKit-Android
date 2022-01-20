@@ -53,7 +53,7 @@ open class Drone(val context: Context) {
 
     private val binderDeathRecipient = DeathRecipient { notifyDroneServiceInterrupted("Lost access to the drone api.") }
     private val droneListeners = ConcurrentLinkedQueue<DroneListener>()
-    var handler: Handler? = null
+    var handler: Handler? = android.os.Handler(Looper.getMainLooper())
         private set
     private var serviceMgr: ControlTower? = null
     private var droneObserver: DroneObserver? = null
@@ -426,7 +426,9 @@ open class Drone(val context: Context) {
         }
     }
 
-    fun notifyAttributeUpdated(attributeEvent: String, extras: Bundle?) {
+    fun notifyAttributeUpdated(attributeEvent: String?, extras: Bundle?) {
+        attributeEvent ?: return
+
         //Update the bundle classloader
         if (extras != null) {
             extras.classLoader = contextClassLoader
@@ -492,7 +494,9 @@ open class Drone(val context: Context) {
             return
         }
 
-        handler?.post { for (listener in droneListeners) listener.onDroneServiceInterrupted(errorMsg) }
+        errorMsg?.let {
+            handler?.post { for (listener in droneListeners) listener.onDroneServiceInterrupted(it) }
+        }
     }
 
     companion object {

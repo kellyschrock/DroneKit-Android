@@ -32,7 +32,9 @@ class DroneEvents(myDrone: MavLinkDrone, private val handler: Handler) : DroneVa
     private val eventQueue = ConcurrentLinkedQueue<DroneEventsType>()
 
     fun addDroneListener(listener: OnDroneListener<MavLinkDrone>) {
-        if (listener != null!! && !droneListeners.contains(listener)) droneListeners.add(listener)
+        if (listener != null && !droneListeners.contains(listener)) {
+            droneListeners.add(listener)
+        }
     }
 
     fun removeDroneListener(listener: OnDroneListener<*>?) {

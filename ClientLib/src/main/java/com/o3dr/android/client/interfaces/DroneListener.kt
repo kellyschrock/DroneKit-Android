@@ -7,5 +7,5 @@ import android.os.Bundle
  */
 interface DroneListener {
     fun onDroneEvent(event: String?, extras: Bundle?)
-    fun onDroneServiceInterrupted(errorMsg: String?)
+    fun onDroneServiceInterrupted(errorMsg: String)
 }

@@ -108,7 +108,7 @@ class ArduSolo(
     }
 
     override fun startVideoStream(videoProps: Bundle, appId: String, newVideoTag: String, videoSurface: Surface,
-                                  listener: ICommandListener) {
+                                  listener: ICommandListener?) {
         if (!soloComp!!.hasStreamingPermission()) {
             postErrorEvent(CommandExecutionError.COMMAND_DENIED, listener)
             return
@@ -256,7 +256,7 @@ class ArduSolo(
         }
     }
 
-    override fun brakeVehicle(listener: ICommandListener): Boolean {
+    override fun brakeVehicle(listener: ICommandListener?): Boolean {
         state?.changeFlightMode(ApmModes.ROTOR_BRAKE, listener)
         return true
     }

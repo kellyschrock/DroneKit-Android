@@ -289,31 +289,31 @@ abstract class ArduPilot(droneId: String?, context: Context?, mavClient: DataLin
         }
     }
 
-    override fun enableManualControl(data: Bundle, listener: ICommandListener): Boolean {
+    override fun enableManualControl(data: Bundle, listener: ICommandListener?): Boolean {
         CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener)
         return true
     }
 
-    override fun performArming(data: Bundle, listener: ICommandListener): Boolean {
+    override fun performArming(data: Bundle, listener: ICommandListener?): Boolean {
         val doArm = data.getBoolean(StateActions.EXTRA_ARM)
         val emergencyDisarm = data.getBoolean(StateActions.EXTRA_EMERGENCY_DISARM)
         CommonApiUtils.arm(this, doArm, emergencyDisarm, listener)
         return true
     }
 
-    override fun setVehicleMode(data: Bundle, listener: ICommandListener): Boolean {
+    override fun setVehicleMode(data: Bundle, listener: ICommandListener?): Boolean {
         data.classLoader = VehicleMode::class.java.classLoader
         val newMode: VehicleMode = data.getParcelable(StateActions.EXTRA_VEHICLE_MODE)
         CommonApiUtils.changeVehicleMode(this, newMode, listener)
         return true
     }
 
-    override fun setVelocity(data: Bundle, listener: ICommandListener): Boolean {
+    override fun setVelocity(data: Bundle, listener: ICommandListener?): Boolean {
         CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener)
         return true
     }
 
-    override fun performTakeoff(data: Bundle, listener: ICommandListener): Boolean {
+    override fun performTakeoff(data: Bundle, listener: ICommandListener?): Boolean {
         val takeoffAltitude = data.getDouble(ControlActions.EXTRA_ALTITUDE)
         CommonApiUtils.doGuidedTakeoff(this, takeoffAltitude, listener)
         return true

@@ -117,6 +117,7 @@ object ConnectionType {
      * Used to retrieve the password to access the solo wifi network.
      */
     const val EXTRA_SOLO_LINK_PASSWORD = "extra_solo_link_password"
+    @JvmStatic
     fun getConnectionTypeLabel(@Type connectionType: Int): String? {
         return when (connectionType) {
             TYPE_BLUETOOTH -> "bluetooth"

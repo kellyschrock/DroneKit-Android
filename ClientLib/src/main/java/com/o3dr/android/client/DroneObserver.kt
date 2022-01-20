@@ -10,7 +10,7 @@ import android.os.RemoteException
  */
 internal class DroneObserver(private val drone: Drone) : IObserver.Stub() {
     @Throws(RemoteException::class)
-    override fun onAttributeUpdated(attributeEvent: String, eventExtras: Bundle) {
+    override fun onAttributeUpdated(attributeEvent: String?, eventExtras: Bundle?) {
         drone.notifyAttributeUpdated(attributeEvent, eventExtras)
     }
 }

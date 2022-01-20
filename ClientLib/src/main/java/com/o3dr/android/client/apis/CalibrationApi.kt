@@ -78,6 +78,7 @@ class CalibrationApi private constructor(private val drone: Drone) : Api() {
          * @param drone target vehicle.
          * @return a CalibrationApi instance.
          */
+        @JvmStatic
         fun getApi(drone: Drone?): CalibrationApi {
             return getApi(drone, calibrationApiCache, apiBuilder)
         }

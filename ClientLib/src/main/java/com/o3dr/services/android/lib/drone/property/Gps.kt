@@ -11,14 +11,18 @@ class Gps : DroneAttribute {
         private set
     var fixType = 0
 
-    private var position: LatLong? = null
+    private var _position: LatLong? = null
     private var vehicleArmed = false
     private var ekfStatus: EkfStatus? = null
+
+    var position: LatLong?
+        get() = if(isValid) _position else null
+        set(value) { _position = value }
 
     constructor() {}
 
     constructor(position: LatLong?, gpsEph: Double, satCount: Int, fixType: Int) {
-        this.position = position
+        this._position = position
         this.gpsEph = gpsEph
         satellitesCount = satCount
         this.fixType = fixType
@@ -28,9 +32,9 @@ class Gps : DroneAttribute {
 
     val isValid: Boolean
         get() = if (ekfStatus == null) {
-            position != null
+            _position != null
         } else {
-            ekfStatus!!.isPositionOk(vehicleArmed) && position != null
+            ekfStatus!!.isPositionOk(vehicleArmed) && _position != null
         }
 
     val fixStatus: String
@@ -44,20 +48,8 @@ class Gps : DroneAttribute {
             else -> NO_FIX
         }
 
-    fun getPosition(): LatLong? {
-        return if (isValid) {
-            position
-        } else {
-            null
-        }
-    }
-
     fun setSatCount(satCount: Int) {
         satellitesCount = satCount
-    }
-
-    fun setPosition(position: LatLong?) {
-        this.position = position
     }
 
     fun setEkfStatus(ekfStatus: EkfStatus?) {
@@ -85,7 +77,7 @@ class Gps : DroneAttribute {
         if (fixType != other.fixType) return false
         if (java.lang.Double.compare(other.gpsEph, gpsEph) != 0) return false
         if (satellitesCount != other.satellitesCount) return false
-        if (if (position != null) position != other.position else other.position != null) return false
+        if (if (_position != null) _position != other._position else other._position != null) return false
         if (vehicleArmed != other.vehicleArmed) return false
         return !if (ekfStatus != null) ekfStatus != other.ekfStatus else other.ekfStatus != null
     }
@@ -96,7 +88,7 @@ class Gps : DroneAttribute {
         result = (temp xor (temp ushr 32)).toInt()
         result = 31 * result + satellitesCount
         result = 31 * result + fixType
-        result = 31 * result + if (position != null) position.hashCode() else 0
+        result = 31 * result + if (_position != null) _position.hashCode() else 0
         result = 31 * result + if (vehicleArmed) 1 else 0
         result = 31 * result + if (ekfStatus != null) ekfStatus.hashCode() else 0
         return result
@@ -107,7 +99,7 @@ class Gps : DroneAttribute {
                 "gpsEph=" + gpsEph +
                 ", satCount=" + satellitesCount +
                 ", fixType=" + fixType +
-                ", position=" + position +
+                ", position=" + _position +
                 ", vehicleArmed=" + vehicleArmed +
                 ", ekfStatus=" + ekfStatus +
                 '}'
@@ -121,7 +113,7 @@ class Gps : DroneAttribute {
         dest.writeDouble(gpsEph)
         dest.writeInt(satellitesCount)
         dest.writeInt(fixType)
-        dest.writeParcelable(position, 0)
+        dest.writeParcelable(_position, 0)
         dest.writeByte((if (vehicleArmed) 1 else 0).toByte())
         dest.writeParcelable(ekfStatus, 0)
     }
@@ -130,7 +122,7 @@ class Gps : DroneAttribute {
         gpsEph = input.readDouble()
         satellitesCount = input.readInt()
         fixType = input.readInt()
-        position = input.readParcelable(LatLong::class.java.classLoader)
+        _position = input.readParcelable(LatLong::class.java.classLoader)
         vehicleArmed = input.readByte().toInt() != 0
         ekfStatus = input.readParcelable(EkfStatus::class.java.classLoader)
     }

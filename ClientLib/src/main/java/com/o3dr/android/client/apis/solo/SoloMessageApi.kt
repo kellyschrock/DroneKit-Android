@@ -18,6 +18,7 @@ class SoloMessageApi protected constructor(drone: Drone?) : SoloApi(drone!!) {
         private val apiCache = ConcurrentHashMap<Drone, SoloMessageApi>()
         private val apiBuilder: Builder<SoloMessageApi> = Builder { drone -> SoloMessageApi(drone) }
 
+        @JvmStatic
         fun getApi(drone: Drone?): SoloMessageApi {
             return getApi(drone, apiCache, apiBuilder)
         }

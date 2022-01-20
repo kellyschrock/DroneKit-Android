@@ -35,7 +35,7 @@ open class ArduCopter(
     override val firmwareType: FirmwareType
         get() = FirmwareType.ARDU_COPTER
 
-    override fun setVelocity(data: Bundle, listener: ICommandListener): Boolean {
+    override fun setVelocity(data: Bundle, listener: ICommandListener?): Boolean {
         //Retrieve the normalized values
         val normalizedXVel: Float = data.getFloat(ControlActions.EXTRA_VELOCITY_X)
         val normalizedYVel: Float = data.getFloat(ControlActions.EXTRA_VELOCITY_Y)
@@ -70,7 +70,7 @@ open class ArduCopter(
         manualControlStateListeners.clear()
     }
 
-    override fun enableManualControl(data: Bundle, listener: ICommandListener): Boolean {
+    override fun enableManualControl(data: Bundle, listener: ICommandListener?): Boolean {
         val enable: Boolean = data.getBoolean(ControlActions.EXTRA_DO_ENABLE)
         val appId: String = data.getString(DroneManager.EXTRA_CLIENT_APP_ID)
 
@@ -119,7 +119,7 @@ open class ArduCopter(
         }
     }
 
-    override fun brakeVehicle(listener: ICommandListener): Boolean {
+    override fun brakeVehicle(listener: ICommandListener?): Boolean {
         if (firmwareVersionNumber.greaterThanOrEqualTo(BRAKE_FEATURE_FIRMWARE_VERSION)) {
             state?.changeFlightMode(ApmModes.ROTOR_BRAKE, listener)
         } else {

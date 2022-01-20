@@ -85,6 +85,7 @@ class CameraApi private constructor(private val drone: Drone) : Api() {
          * @param drone
          * @return
          */
+        @JvmStatic
         fun getApi(drone: Drone?): CameraApi {
             return getApi(drone, apiCache, apiBuilder)
         }

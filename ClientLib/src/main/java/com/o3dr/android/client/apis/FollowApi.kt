@@ -65,6 +65,7 @@ class FollowApi private constructor(private val drone: Drone) : Api() {
          * @param drone target vehicle
          * @return a FollowApi instance.
          */
+        @JvmStatic
         fun getApi(drone: Drone?): FollowApi {
             return getApi(drone, followApiCache, apiBuilder)
         }

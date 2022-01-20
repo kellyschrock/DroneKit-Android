@@ -130,6 +130,7 @@ class SoloConfigApi protected constructor(drone: Drone?) : SoloApi(drone!!) {
          * @param drone target vehicle
          * @return a SoloLinkApi instance.
          */
+        @JvmStatic
         fun getApi(drone: Drone?): SoloConfigApi {
             return getApi(drone, soloConfigApiCache, apiBuilder)
         }
