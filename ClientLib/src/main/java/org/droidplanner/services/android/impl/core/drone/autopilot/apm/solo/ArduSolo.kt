@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.RemoteException
 import android.text.TextUtils
 import android.view.Surface
-import com.MAVLink.Messages.MAVLinkMessage
 import com.MAVLink.common.msg_statustext
 import com.MAVLink.enums.MAV_TYPE
 import com.o3dr.android.client.apis.CapabilityApi
@@ -29,7 +28,7 @@ import com.o3dr.services.android.lib.drone.property.DroneAttribute
 import com.o3dr.services.android.lib.drone.property.State
 import com.o3dr.services.android.lib.model.ICommandListener
 import com.o3dr.services.android.lib.model.action.Action
-import org.droidplanner.services.android.impl.communication.model.DataLink.DataLinkProvider
+import org.droidplanner.services.android.impl.communication.service.MAVLinkClient
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces.DroneEventsType
 import org.droidplanner.services.android.impl.core.drone.LogMessageListener
 import org.droidplanner.services.android.impl.core.drone.autopilot.apm.ArduCopter
@@ -47,9 +46,9 @@ class ArduSolo(
         droneId: String?,
         soloIp: String?,
         context: Context?,
-        mavClient: DataLinkProvider<MAVLinkMessage?>?,
+        mavClient: MAVLinkClient,
         handler: Handler,
-       warningParser: AutopilotWarningParser?,
+        warningParser: AutopilotWarningParser?,
         logListener: LogMessageListener?)
 : ArduCopter(droneId, context, mavClient, handler, warningParser, logListener) {
 

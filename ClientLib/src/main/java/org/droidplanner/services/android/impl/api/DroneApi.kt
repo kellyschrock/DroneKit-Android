@@ -526,14 +526,14 @@ class DroneApi internal constructor(private val service: DroidPlannerService, li
         notifyAttributeUpdate(AttributeEvent.CALIBRATION_MAG_CANCELLED, null)
     }
 
-    override fun onCalibrationProgress(progress: msg_mag_cal_progress) {
+    override fun onCalibrationProgress(progress: msg_mag_cal_progress?) {
         val progressBundle = Bundle(1)
         progressBundle.putParcelable(AttributeEventExtra.EXTRA_CALIBRATION_MAG_PROGRESS,
                 CommonApiUtils.getMagnetometerCalibrationProgress(progress))
         notifyAttributeUpdate(AttributeEvent.CALIBRATION_MAG_PROGRESS, progressBundle)
     }
 
-    override fun onCalibrationCompleted(report: msg_mag_cal_report) {
+    override fun onCalibrationCompleted(report: msg_mag_cal_report?) {
         val reportBundle = Bundle(1)
         reportBundle.putParcelable(AttributeEventExtra.EXTRA_CALIBRATION_MAG_RESULT,
                 CommonApiUtils.getMagnetometerCalibrationResult(report))

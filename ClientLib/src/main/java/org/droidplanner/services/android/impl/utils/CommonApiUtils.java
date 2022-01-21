@@ -427,7 +427,7 @@ public class CommonApiUtils {
             return new State();
 
         org.droidplanner.services.android.impl.core.drone.variables.State droneState = drone.getState();
-        ApmModes droneMode = droneState.getMode();
+        ApmModes droneMode = droneState.getVehicleMode();
         AccelCalibration accelCalibration = drone.getCalibrationSetup();
         String calibrationMessage = accelCalibration != null && accelCalibration.isCalibrating()
                 ? accelCalibration.getMessage()
@@ -664,7 +664,7 @@ public class CommonApiUtils {
         final Runnable modeCheckRunnable = new Runnable() {
             @Override
             public void run() {
-                if (drone.getState().getMode() != ApmModes.ROTOR_AUTO) {
+                if (drone.getState().getVehicleMode() != ApmModes.ROTOR_AUTO) {
                     if (forceModeChange) {
                         changeVehicleMode(drone, VehicleMode.COPTER_AUTO, new AbstractCommandListener() {
                             @Override

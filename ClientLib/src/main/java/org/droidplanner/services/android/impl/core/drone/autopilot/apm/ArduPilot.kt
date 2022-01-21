@@ -18,8 +18,8 @@ import com.o3dr.services.android.lib.drone.attribute.AttributeEventExtra
 import com.o3dr.services.android.lib.drone.attribute.AttributeType
 import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError
 import com.o3dr.services.android.lib.drone.mission.action.MissionActions
+import com.o3dr.services.android.lib.drone.mission.item.command.VTOLTransition
 import com.o3dr.services.android.lib.drone.mission.item.command.VTOLTransition.TargetState
-import com.o3dr.services.android.lib.drone.mission.item.command.VTOLTransition.TargetState.Companion.fromOrdinal
 import com.o3dr.services.android.lib.drone.property.DroneAttribute
 import com.o3dr.services.android.lib.drone.property.Parameter
 import com.o3dr.services.android.lib.drone.property.Parameters
@@ -28,14 +28,13 @@ import com.o3dr.services.android.lib.gcs.action.CalibrationActions
 import com.o3dr.services.android.lib.model.AbstractCommandListener
 import com.o3dr.services.android.lib.model.ICommandListener
 import com.o3dr.services.android.lib.model.action.Action
-import org.droidplanner.services.android.impl.communication.model.DataLink.DataLinkProvider
+import org.droidplanner.services.android.impl.communication.service.MAVLinkClient
 import org.droidplanner.services.android.impl.core.MAVLink.MavLinkCommands
 import org.droidplanner.services.android.impl.core.MAVLink.MavLinkParameters
 import org.droidplanner.services.android.impl.core.MAVLink.WaypointManager
 import org.droidplanner.services.android.impl.core.MAVLink.command.doCmd.MavLinkDoCmds
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces
 import org.droidplanner.services.android.impl.core.drone.LogMessageListener
-import org.droidplanner.services.android.impl.core.drone.autopilot.apm.ArduPilot
 import org.droidplanner.services.android.impl.core.drone.autopilot.apm.variables.APMHeartBeat
 import org.droidplanner.services.android.impl.core.drone.autopilot.generic.GenericMavLinkDrone
 import org.droidplanner.services.android.impl.core.drone.variables.*
@@ -45,13 +44,14 @@ import org.droidplanner.services.android.impl.core.mission.Mission
 import org.droidplanner.services.android.impl.core.model.AutopilotWarningParser
 import org.droidplanner.services.android.impl.utils.CommonApiUtils
 import timber.log.Timber
+import java.util.*
 import java.util.regex.Pattern
 
 /**
  * Base class for the ArduPilot autopilots
  */
-abstract class ArduPilot(droneId: String?, context: Context?, mavClient: DataLinkProvider<MAVLinkMessage?>?,
-                         handler: Handler?, warningParser: AutopilotWarningParser?,
+abstract class ArduPilot(droneId: String?, context: Context?, mavClient: MAVLinkClient,
+                         handler: Handler, warningParser: AutopilotWarningParser?,
                          logListener: LogMessageListener?) : GenericMavLinkDrone(droneId, context, handler, mavClient, warningParser, logListener) {
     private val rc: RC
     override val mission: Mission
@@ -119,9 +119,10 @@ abstract class ArduPilot(droneId: String?, context: Context?, mavClient: DataLin
             }
             MissionActions.ACTION_SET_MISSION -> {
                 data.classLoader = com.o3dr.services.android.lib.drone.mission.Mission::class.java.classLoader
-                val mission: com.o3dr.services.android.lib.drone.mission.Mission = data.getParcelable(MissionActions.EXTRA_MISSION)
-                val pushToDrone = data.getBoolean(MissionActions.EXTRA_PUSH_TO_DRONE)
-                CommonApiUtils.setMission(this, mission, pushToDrone)
+                (data.getParcelable(MissionActions.EXTRA_MISSION) as? com.o3dr.services.android.lib.drone.mission.Mission)?.let { mission ->
+                    val pushToDrone = data.getBoolean(MissionActions.EXTRA_PUSH_TO_DRONE)
+                    CommonApiUtils.setMission(this, mission, pushToDrone)
+                }
                 true
             }
             MissionActions.ACTION_START_MISSION -> {
@@ -140,8 +141,7 @@ abstract class ArduPilot(droneId: String?, context: Context?, mavClient: DataLin
                 true
             }
             ExperimentalActions.ACTION_SET_ROI -> {
-                val roi: LatLongAlt = data.getParcelable(ExperimentalActions.EXTRA_SET_ROI_LAT_LONG_ALT)
-                if (roi != null) {
+                data.getParcelable<LatLongAlt>(ExperimentalActions.EXTRA_SET_ROI_LAT_LONG_ALT)?.let { roi ->
                     MavLinkDoCmds.setROI(this, roi, listener)
                 }
                 true
@@ -161,25 +161,29 @@ abstract class ArduPilot(droneId: String?, context: Context?, mavClient: DataLin
             ControlActions.ACTION_SEND_GUIDED_POINT -> {
                 data.classLoader = LatLongAlt::class.java.classLoader
                 val force = data.getBoolean(ControlActions.EXTRA_FORCE_GUIDED_POINT)
-                val guidedPoint: LatLongAlt = data.getParcelable(ControlActions.EXTRA_GUIDED_POINT)
-                Timber.d("ACTION_SEND_GUIDED_POINT: guidedPoint=%s force=%s", guidedPoint, force)
-                CommonApiUtils.sendGuidedPoint(this, guidedPoint, force, listener)
+                data.getParcelable<LatLongAlt?>(ControlActions.EXTRA_GUIDED_POINT)?.let { guidedPoint ->
+                    Timber.d("ACTION_SEND_GUIDED_POINT: guidedPoint=%s force=%s", guidedPoint, force)
+                    CommonApiUtils.sendGuidedPoint(this, guidedPoint, force, listener)
+                }
                 true
             }
             ControlActions.ACTION_SEND_GUIDED_POINT_DIRECT -> {
                 data.classLoader = LatLongAlt::class.java.classLoader
-                val point: LatLongAlt = data.getParcelable(ControlActions.EXTRA_GUIDED_POINT)
-                Timber.d("ACTION_SEND_GUIDED_POINT_DIRECT: point=%s", point)
-                MavLinkCommands.sendGuidedPosition(this,
-                        point.latitude,
-                        point.longitude,
-                        point.altitude)
+                data.getParcelable<LatLongAlt?>(ControlActions.EXTRA_GUIDED_POINT)?.let { point ->
+                    Timber.d("ACTION_SEND_GUIDED_POINT_DIRECT: point=%s", point)
+                    MavLinkCommands.sendGuidedPosition(this,
+                            point.latitude,
+                            point.longitude,
+                            point.altitude)
+                }
                 true
             }
             ControlActions.ACTION_LOOK_AT_TARGET -> {
                 val force = data.getBoolean(ControlActions.EXTRA_FORCE_GUIDED_POINT)
-                val lookAtTarget: LatLongAlt = data.getParcelable(ControlActions.EXTRA_LOOK_AT_TARGET)
-                CommonApiUtils.sendLookAtTarget(this, lookAtTarget, force, listener)
+                data.getParcelable<LatLongAlt?>(ControlActions.EXTRA_LOOK_AT_TARGET)?.let { target ->
+                    CommonApiUtils.sendLookAtTarget(this, target, force, listener)
+                }
+
                 true
             }
             ControlActions.ACTION_RESET_ROI -> {
@@ -193,8 +197,9 @@ abstract class ArduPilot(droneId: String?, context: Context?, mavClient: DataLin
                 true
             }
             ControlActions.ACTION_VTOL_TRANSITION -> {
-                val state = fromOrdinal(data.getInt(ControlActions.EXTRA_VTOL_TARGET_STATE))
-                if (state != null && state !== TargetState.Undefined) {
+
+                val state = VTOLTransition.TargetState.fromOrdinal(data.getInt(ControlActions.EXTRA_VTOL_TARGET_STATE))
+                if (state !== TargetState.Undefined) {
                     MavLinkCommands.sendVTOLTransition(this, state, listener)
                 }
                 true
@@ -205,16 +210,17 @@ abstract class ArduPilot(droneId: String?, context: Context?, mavClient: DataLin
             }
             ParameterActions.ACTION_WRITE_PARAMETERS -> {
                 data.classLoader = Parameters::class.java.classLoader
-                val parameters: Parameters = data.getParcelable(ParameterActions.EXTRA_PARAMETERS)
-                CommonApiUtils.writeParameters(this, parameters)
-                if (!updateParametersFrom(parameters)) {
-                    Timber.w("Unable to update from passed parameters")
+
+                data.getParcelable<Parameters?>(ParameterActions.EXTRA_PARAMETERS)?.let { parameters ->
+                    CommonApiUtils.writeParameters(this, parameters)
+                    if (!updateParametersFrom(parameters)) {
+                        Timber.w("Unable to update from passed parameters")
+                    }
                 }
                 true
             }
             StateActions.ACTION_SET_VEHICLE_HOME -> {
-                val homeLoc: LatLongAlt = data.getParcelable(StateActions.EXTRA_VEHICLE_HOME_LOCATION)
-                if (homeLoc != null) {
+                data.getParcelable<LatLongAlt?>(StateActions.EXTRA_VEHICLE_HOME_LOCATION)?.let { homeLoc ->
                     MavLinkDoCmds.setVehicleHome(this, homeLoc, object : AbstractCommandListener() {
                         override fun onSuccess() {
                             CommonApiUtils.postSuccessEvent(listener)
@@ -231,7 +237,7 @@ abstract class ArduPilot(droneId: String?, context: Context?, mavClient: DataLin
                             requestHomeUpdate()
                         }
                     })
-                } else {
+                } ?: run {
                     CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, listener)
                 }
                 true
@@ -303,8 +309,10 @@ abstract class ArduPilot(droneId: String?, context: Context?, mavClient: DataLin
 
     override fun setVehicleMode(data: Bundle, listener: ICommandListener?): Boolean {
         data.classLoader = VehicleMode::class.java.classLoader
-        val newMode: VehicleMode = data.getParcelable(StateActions.EXTRA_VEHICLE_MODE)
-        CommonApiUtils.changeVehicleMode(this, newMode, listener)
+        data.getParcelable<VehicleMode?>(StateActions.EXTRA_VEHICLE_MODE)?.let { mode ->
+            CommonApiUtils.changeVehicleMode(this, mode, listener)
+        }
+
         return true
     }
 
@@ -398,7 +406,8 @@ abstract class ArduPilot(droneId: String?, context: Context?, mavClient: DataLin
     }
 
     protected fun processMountStatus(mountStatus: msg_mount_status?) {
-        camera.updateMountOrientation(mountStatus)
+        mountStatus?.let { camera.updateMountOrientation(it) }
+
         val eventInfo = Bundle(3)
         eventInfo.putFloat(AttributeEventExtra.EXTRA_GIMBAL_ORIENTATION_PITCH, mountStatus!!.pointing_a / 100f)
         eventInfo.putFloat(AttributeEventExtra.EXTRA_GIMBAL_ORIENTATION_ROLL, mountStatus.pointing_b / 100f)
@@ -411,7 +420,7 @@ abstract class ArduPilot(droneId: String?, context: Context?, mavClient: DataLin
         when (message.getName()) {
             "ARMMASK" -> {
                 //Give information about the vehicle's ability to arm successfully.
-                state?.mode?.let { vehicleMode ->
+                state?.getVehicleMode()?.let { vehicleMode ->
                     if (ApmModes.isCopter(vehicleMode.type)) {
                         val value = message.value
                         val isReadyToArm = value and (1 shl vehicleMode.number.toInt()) != 0
@@ -446,7 +455,7 @@ abstract class ArduPilot(droneId: String?, context: Context?, mavClient: DataLin
                     else -> Log.VERBOSE
                 }
 
-                if (message.toLowerCase().startsWith("prearm:")) {
+                if (message.lowercase(Locale.getDefault()).startsWith("prearm:")) {
                     logLevel = Log.ERROR
                 }
                 logMessage(logLevel, message)

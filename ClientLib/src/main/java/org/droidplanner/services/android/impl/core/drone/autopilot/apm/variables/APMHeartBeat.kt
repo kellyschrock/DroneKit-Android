@@ -6,8 +6,8 @@ import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone
 import org.droidplanner.services.android.impl.core.drone.autopilot.apm.ArduPilot
 import org.droidplanner.services.android.impl.core.drone.variables.HeartBeat
 
-class APMHeartBeat(myDrone: ArduPilot?, handler: Handler?) : HeartBeat(myDrone, handler) {
-    override fun onDroneEvent(event: DroneEventsType, drone: MavLinkDrone) {
+class APMHeartBeat(myDrone: ArduPilot, handler: Handler) : HeartBeat(myDrone, handler) {
+    override fun onDroneEvent(event: DroneEventsType, drone: MavLinkDrone?) {
         when (event) {
             DroneEventsType.CALIBRATION_IMU -> {
                 //Set the heartbeat in imu calibration mode.
@@ -22,7 +22,7 @@ class APMHeartBeat(myDrone: ArduPilot?, handler: Handler?) : HeartBeat(myDrone, 
         when (heartbeatState) {
             IMU_CALIBRATION -> {
                 restartWatchdog(HEARTBEAT_IMU_CALIBRATION_TIMEOUT)
-                myDrone.notifyDroneEvent(DroneEventsType.CALIBRATION_TIMEOUT)
+                myDrone?.notifyDroneEvent(DroneEventsType.CALIBRATION_TIMEOUT)
             }
             else -> super.onHeartbeatTimeout()
         }

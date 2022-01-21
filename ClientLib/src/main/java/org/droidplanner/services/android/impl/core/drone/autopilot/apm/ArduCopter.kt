@@ -3,14 +3,13 @@ package org.droidplanner.services.android.impl.core.drone.autopilot.apm
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
-import com.MAVLink.Messages.MAVLinkMessage
 import com.github.zafarkhaja.semver.Version
 import com.o3dr.android.client.apis.CapabilityApi
 import com.o3dr.services.android.lib.drone.action.ControlActions
 import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError
 import com.o3dr.services.android.lib.drone.property.Parameter
 import com.o3dr.services.android.lib.model.ICommandListener
-import org.droidplanner.services.android.impl.communication.model.DataLink
+import org.droidplanner.services.android.impl.communication.service.MAVLinkClient
 import org.droidplanner.services.android.impl.core.MAVLink.MavLinkCommands
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces
 import org.droidplanner.services.android.impl.core.drone.DroneManager
@@ -24,8 +23,8 @@ import java.util.concurrent.ConcurrentHashMap
 open class ArduCopter(
         droneId: String?,
         context: Context?,
-        mavClient: DataLink.DataLinkProvider<MAVLinkMessage?>?,
-        handler: Handler?,
+        mavClient: MAVLinkClient,
+        handler: Handler,
         warningParser: AutopilotWarningParser?,
         logListener: LogMessageListener?
 ) : ArduPilot(droneId, context, mavClient, handler, warningParser, logListener) {
@@ -72,26 +71,29 @@ open class ArduCopter(
 
     override fun enableManualControl(data: Bundle, listener: ICommandListener?): Boolean {
         val enable: Boolean = data.getBoolean(ControlActions.EXTRA_DO_ENABLE)
-        val appId: String = data.getString(DroneManager.EXTRA_CLIENT_APP_ID)
 
-        val vehicleMode: ApmModes? = state?.mode
-        if (enable) {
-            if (vehicleMode == ApmModes.ROTOR_GUIDED) {
-                CommonApiUtils.postSuccessEvent(listener)
+        data.getString(DroneManager.EXTRA_CLIENT_APP_ID)?.let { appId ->
+            val vehicleMode: ApmModes? = state?.getVehicleMode()
+            if (enable) {
+                if (vehicleMode == ApmModes.ROTOR_GUIDED) {
+                    CommonApiUtils.postSuccessEvent(listener)
+                } else {
+                    state?.changeFlightMode(ApmModes.ROTOR_GUIDED, listener)
+                }
+
+                listener?.let {
+                    manualControlStateListeners[appId] = it
+                }
             } else {
-                state?.changeFlightMode(ApmModes.ROTOR_GUIDED, listener)
-            }
-            if (listener != null) {
-                manualControlStateListeners[appId] = listener
-            }
-        } else {
-            manualControlStateListeners.remove(appId)
-            if (vehicleMode != ApmModes.ROTOR_GUIDED) {
-                CommonApiUtils.postSuccessEvent(listener)
-            } else {
-                state?.changeFlightMode(ApmModes.ROTOR_LOITER, listener)
+                manualControlStateListeners.remove(appId)
+                if (vehicleMode != ApmModes.ROTOR_GUIDED) {
+                    CommonApiUtils.postSuccessEvent(listener)
+                } else {
+                    state?.changeFlightMode(ApmModes.ROTOR_LOITER, listener)
+                }
             }
         }
+
         return true
     }
 
@@ -99,7 +101,7 @@ open class ArduCopter(
         when (event) {
             DroneInterfaces.DroneEventsType.MODE -> {
                 //Listen for vehicle mode updates, and update the manual control state listeners appropriately
-                val currentMode: ApmModes? = state?.getMode()
+                val currentMode: ApmModes? = state?.getVehicleMode()
                 for (listener in manualControlStateListeners.values) {
                     if (currentMode == ApmModes.ROTOR_GUIDED) {
                         CommonApiUtils.postSuccessEvent(listener)
@@ -108,6 +110,8 @@ open class ArduCopter(
                     }
                 }
             }
+
+            else -> {}
         }
         super.notifyDroneEvent(event)
     }
