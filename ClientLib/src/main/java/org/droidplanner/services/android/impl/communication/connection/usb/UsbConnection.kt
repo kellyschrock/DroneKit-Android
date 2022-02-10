@@ -91,7 +91,7 @@ class UsbConnection(parentContext: Context?, private val baudRate: Int) : Androi
 
     internal abstract class UsbConnectionImpl protected constructor(protected val context: Context, private val parentConnection: UsbConnection, protected val baudRate: Int) {
         @JvmField
-        protected val logger = AndroidLogger.getLogger()
+        protected val logger = AndroidLogger.logger
 
         protected fun onUsbConnectionOpened() {
             parentConnection.onConnectionOpened()

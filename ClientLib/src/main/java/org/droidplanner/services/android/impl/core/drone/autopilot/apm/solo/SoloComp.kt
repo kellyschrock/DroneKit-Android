@@ -316,7 +316,7 @@ class SoloComp(
         const val SSH_USERNAME = "root"
         const val SSH_PASSWORD = "TjSDBkAu"
         @JvmStatic
-        fun isAvailable(context: Context?): Boolean {
+        fun isAvailable(context: Context): Boolean {
             return NetworkUtils.isOnSololinkNetwork(context)
         }
     }

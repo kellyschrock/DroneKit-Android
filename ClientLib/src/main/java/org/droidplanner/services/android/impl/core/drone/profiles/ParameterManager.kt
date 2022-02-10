@@ -154,7 +154,7 @@ class ParameterManager(
         val metadataType = myDrone!!.firmwareType!!.parameterMetadataGroup
         if (!TextUtils.isEmpty(metadataType)) {
             try {
-                ParameterMetadataLoader.load(context, metadataType, parametersMetadata)
+                ParameterMetadataLoader.load(context, metadataType, ConcurrentHashMap(parametersMetadata))
             } catch (e: Exception) {
                 Timber.e(e, e.message)
             }

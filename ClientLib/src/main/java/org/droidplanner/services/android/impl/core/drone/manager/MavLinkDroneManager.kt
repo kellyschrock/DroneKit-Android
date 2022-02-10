@@ -285,7 +285,7 @@ class MavLinkDroneManager(
 
     private fun enableFollowMe(followType: FollowType, source: FollowLocationSource, listener: ICommandListener?) {
         Timber.d("enableFollowMe(): followType=%s source=%s", followType, source)
-        val selectedMode = CommonApiUtils.followTypeToMode(drone, followType)
+        val selectedMode = CommonApiUtils.followTypeToMode(drone!!, followType)
         if (selectedMode != null) {
             if (followMe == null) {
                 Timber.d("enableFollowMe(): followMe is null")

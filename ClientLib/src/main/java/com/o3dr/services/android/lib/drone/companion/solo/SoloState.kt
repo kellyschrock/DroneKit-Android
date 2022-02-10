@@ -34,7 +34,7 @@ class SoloState : DroneAttribute {
         private set
     var txPowerCompliantCountry: String? = null
         private set
-    private var buttonSettings: SparseArray<SoloButtonSetting>? = null
+    private var buttonSettings: SparseArray<SoloButtonSetting?>? = null
 
     @get:ControllerMode
     @ControllerMode
@@ -47,10 +47,11 @@ class SoloState : DroneAttribute {
         private set
 
     constructor() {}
+
     constructor(autopilotVersion: String?, controllerFirmwareVersion: String?,
                 controllerVersion: String?, vehicleVersion: String?,
                 wifiPassword: String?, wifiSsid: String?, txPowerCompliantCountry: String?,
-                buttonSettings: SparseArray<SoloButtonSetting>?, gimbalVersion: String?,
+                buttonSettings: SparseArray<SoloButtonSetting?>, gimbalVersion: String?,
                 @ControllerMode controllerMode: Int, @ControllerUnit controllerUnit: String?) {
         this.autopilotVersion = autopilotVersion
         this.controllerFirmwareVersion = controllerFirmwareVersion
@@ -68,7 +69,7 @@ class SoloState : DroneAttribute {
     private val isEUTxPowerCompliant: Boolean
         private get() = TxPowerComplianceCountries.defaultCountry.name != txPowerCompliantCountry
 
-    fun getButtonSetting(buttonType: Int): SoloButtonSetting {
+    fun getButtonSetting(buttonType: Int): SoloButtonSetting? {
         return buttonSettings!![buttonType]
     }
 

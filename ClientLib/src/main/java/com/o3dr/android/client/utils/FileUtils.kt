@@ -28,9 +28,9 @@ object FileUtils {
     @JvmStatic
     @Throws(FileNotFoundException::class)
     fun getExceptionFileStream(context: Context?): FileOutputStream {
-        val myDir = File(DirectoryPath.getCrashLogPath(context))
+        val myDir = File(DirectoryPath.getCrashLogPath(context!!))
         if (!myDir.exists()) myDir.mkdirs()
-        val file = File(myDir, timeStamp + ".log")
+        val file = File(myDir, "$timeStamp.log")
         if (file.exists()) file.delete()
         return FileOutputStream(file)
     }

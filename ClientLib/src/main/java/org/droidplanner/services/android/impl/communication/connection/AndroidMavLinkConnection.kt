@@ -7,6 +7,6 @@ import org.droidplanner.services.android.impl.utils.AndroidLogger
 
 abstract class AndroidMavLinkConnection(val context: Context) : MavLinkConnection() {
     override fun initLogger(): Logger {
-        return AndroidLogger.getLogger()
+        return AndroidLogger.logger
     }
 }

@@ -93,7 +93,7 @@ class DroneApi internal constructor(private val service: DroidPlannerService, li
     override fun getAttribute(type: String): Bundle {
         val carrier = Bundle()
         when (type) {
-            AttributeType.CAMERA -> carrier.putParcelable(type, CommonApiUtils.getCameraProxy(drone, service.cameraDetails))
+            AttributeType.CAMERA -> carrier.putParcelable(type, CommonApiUtils.getCameraProxy(drone!!, service.cameraDetails!!))
             else -> if (droneManager != null) {
                 val attribute = droneManager!!.getAttribute(clientInfo, type)
                 if (attribute != null) {
