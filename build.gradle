@@ -2,7 +2,7 @@
 buildscript {
 
     ext {
-        play_services_version = '8.4.0'
+        play_services_version = '18.0.0'
         support_lib_version = '23.4.0'
 
         android_build_sdk_version = 28
