@@ -1,11 +1,9 @@
 package com.o3dr.services.android.lib.drone.property
 
-import com.o3dr.services.android.lib.drone.property.DroneAttribute
 import com.o3dr.services.android.lib.coordinate.LatLong
 import com.o3dr.services.android.lib.util.MathUtils
 import android.os.Parcel
 import android.os.Parcelable
-import com.o3dr.services.android.lib.drone.property.FootPrint
 import java.util.ArrayList
 
 /**
@@ -43,9 +41,9 @@ class FootPrint : DroneAttribute {
         dest.writeTypedList(vertexInGlobalFrame)
     }
 
-    private constructor(`in`: Parcel) {
-        meanGSD = `in`.readDouble()
-        `in`.readTypedList(vertexInGlobalFrame, LatLong.CREATOR)
+    private constructor(input: Parcel) {
+        meanGSD = input.readDouble()
+        input.readTypedList(vertexInGlobalFrame, LatLong.CREATOR)
     }
 
     companion object {

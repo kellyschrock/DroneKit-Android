@@ -98,7 +98,7 @@ class SoloComp(
      */
     fun destroy() {
         stop()
-        asyncExecutor!!.shutdownNow()
+        asyncExecutor?.shutdownNow()
     }
 
     override fun onTlvPacketReceived(packet: TLVPacket?) {

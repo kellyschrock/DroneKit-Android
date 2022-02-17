@@ -76,8 +76,9 @@ class ControllerLinkManager(context: Context?, handler: Handler, asyncExecutor: 
 
     private val loadWifiInfo = Runnable {
         try {
-            val wifiName = Companion.sshLink.execute(SOLOLINK_SSID_CONFIG_PATH + " --get-wifi-ssid")
-            val wifiPassword = Companion.sshLink.execute(SOLOLINK_SSID_CONFIG_PATH + " --get-wifi-password")
+            val wifiName = Companion.sshLink.execute(SOLOLINK_SSID_CONFIG_PATH + " --get-wifi-ssid") ?: return@Runnable
+            val wifiPassword = Companion.sshLink.execute(SOLOLINK_SSID_CONFIG_PATH + " --get-wifi-password") ?: return@Runnable
+
             if (!TextUtils.isEmpty(wifiName) && !TextUtils.isEmpty(wifiPassword)) {
                 val wifiInfo = Pair.create(wifiName.trim { it <= ' ' }, wifiPassword.trim { it <= ' ' })
                 sololinkWifiInfo.set(wifiInfo)
@@ -91,7 +92,7 @@ class ControllerLinkManager(context: Context?, handler: Handler, asyncExecutor: 
     private val checkEUTxPowerCompliance = Runnable {
         var compliantCountry: String
         try {
-            compliantCountry = Companion.sshLink.execute(SOLOLINK_SSID_CONFIG_PATH + " --get-wifi-country").trim { it <= ' ' }
+            compliantCountry = Companion.sshLink.execute(SOLOLINK_SSID_CONFIG_PATH + " --get-wifi-country")!!.trim { it <= ' ' }
             if (linkListener != null) linkListener!!.onTxPowerComplianceCountryUpdated(compliantCountry)
         } catch (e: IOException) {
             Timber.e(e, "Error occurred while querying wifi country.")
@@ -104,7 +105,7 @@ class ControllerLinkManager(context: Context?, handler: Handler, asyncExecutor: 
         Timber.i("Retrieving controller mode")
         try {
             val response = Companion.sshLink.execute(SOLOLINK_SSID_CONFIG_PATH + " --get-ui-mode")
-            val trimmedResponse = if (TextUtils.isEmpty(response)) "" else response.trim { it <= ' ' }
+            val trimmedResponse = if (TextUtils.isEmpty(response)) "" else response!!.trim { it <= ' ' }
             when (trimmedResponse) {
                 "1" -> setControllerMode(SoloControllerMode.MODE_1)
                 "2" -> setControllerMode(SoloControllerMode.MODE_2)
@@ -122,7 +123,7 @@ class ControllerLinkManager(context: Context?, handler: Handler, asyncExecutor: 
         Timber.d("Retrieving controller units.")
         try {
             val response = Companion.sshLink.execute(SOLOLINK_SSID_CONFIG_PATH + " --get-ui-units")
-            @ControllerUnit val trimmedResponse = if (TextUtils.isEmpty(response)) SoloControllerUnits.UNKNOWN else response.trim { it <= ' ' }
+            @ControllerUnit val trimmedResponse = if (TextUtils.isEmpty(response)) SoloControllerUnits.UNKNOWN else response!!.trim { it <= ' ' }
             when (trimmedResponse) {
                 SoloControllerUnits.METRIC, SoloControllerUnits.IMPERIAL, SoloControllerUnits.UNKNOWN -> controllerUnit = trimmedResponse
                 else -> Timber.w("Received unknown value for controller unit: %s", trimmedResponse)
@@ -328,7 +329,7 @@ class ControllerLinkManager(context: Context?, handler: Handler, asyncExecutor: 
                 Timber.d("No version file was found")
                 ""
             } else {
-                version.split("\n".toRegex()).toTypedArray()[0]
+                version!!.split("\n".toRegex()).toTypedArray()[0]
             }
         } catch (e: IOException) {
             Timber.e("Unable to retrieve the current version.", e)
@@ -366,11 +367,11 @@ class ControllerLinkManager(context: Context?, handler: Handler, asyncExecutor: 
                 val response: String
                 when (mode) {
                     SoloControllerMode.MODE_1 -> {
-                        response = Companion.sshLink.execute(String.format(Locale.US, command, mode))
+                        response = Companion.sshLink.execute(String.format(Locale.US, command, mode))!!
                         postSuccessEvent(listener)
                     }
                     SoloControllerMode.MODE_2 -> {
-                        response = Companion.sshLink.execute(String.format(Locale.US, command, mode))
+                        response = Companion.sshLink.execute(String.format(Locale.US, command, mode))!!
                         postSuccessEvent(listener)
                     }
                     else -> {
@@ -398,10 +399,9 @@ class ControllerLinkManager(context: Context?, handler: Handler, asyncExecutor: 
         postAsyncTask {
             Timber.d("Enabling %s Tx power compliance mode", compliantCountry)
             try {
-                val currentCompliance = Companion.sshLink.execute(SOLOLINK_SSID_CONFIG_PATH + " --get-wifi-country").trim { it <= ' ' }
+                val currentCompliance = Companion.sshLink.execute(SOLOLINK_SSID_CONFIG_PATH + " --get-wifi-country")!!.trim { it <= ' ' }
                 if (currentCompliance != compliantCountry) {
-                    val response: String
-                    response = Companion.sshLink.execute(SOLOLINK_SSID_CONFIG_PATH + " --set-wifi-country " + compliantCountry + "; echo $?")
+                    val response = Companion.sshLink.execute(SOLOLINK_SSID_CONFIG_PATH + " --set-wifi-country " + compliantCountry + "; echo $?")!!
                     if (response.trim { it <= ' ' } == "0") {
                         restartController()
                         Timber.d("wifi country successfully set, rebooting artoo")

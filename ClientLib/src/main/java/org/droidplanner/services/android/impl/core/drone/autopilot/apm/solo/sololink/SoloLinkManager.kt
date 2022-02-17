@@ -43,7 +43,10 @@ class SoloLinkManager(context: Context?, private val serverIp: String, handler: 
         if (version != null) {
             vehicleVersion.set(version)
         }
-        if (linkListener != null && areVersionsSet()) linkListener!!.onVersionsUpdated()
+
+        if (areVersionsSet()) {
+            linkListener?.onVersionsUpdated()
+        }
     }
 
     private val pixhawkVersionRetriever = Runnable {
@@ -51,13 +54,18 @@ class SoloLinkManager(context: Context?, private val serverIp: String, handler: 
         if (version != null) {
             pixhawkVersion.set(version)
         }
-        if (linkListener != null && areVersionsSet()) linkListener!!.onVersionsUpdated()
+
+        if (areVersionsSet()) {
+            linkListener?.onVersionsUpdated()
+        }
     }
 
     private val gimbalVersionRetriever = Runnable {
         val version = retrieveVersion(GIMBAL_VERSION_FILENAME)
         if (version != null) gimbalVersion.set(version)
-        if (linkListener != null && areVersionsSet()) linkListener!!.onVersionsUpdated()
+        if (areVersionsSet()) {
+            linkListener?.onVersionsUpdated()
+        }
     }
 
     private var linkListener: SoloLinkListener? = null
@@ -130,9 +138,8 @@ class SoloLinkManager(context: Context?, private val serverIp: String, handler: 
                     handleReceivedPresetButton(receivedPresetButton)
                 }
             }
-            if (linkListener != null) {
-                linkListener!!.onTlvPacketReceived(tlvMsg)
-            }
+
+            linkListener?.onTlvPacketReceived(tlvMsg)
         }
     }
 
@@ -258,7 +265,7 @@ class SoloLinkManager(context: Context?, private val serverIp: String, handler: 
                 Timber.d("No version file was found")
                 ""
             } else {
-                version.split("\n".toRegex()).toTypedArray()[0]
+                version!!.split("\n".toRegex()).toTypedArray()[0]
             }
         } catch (e: IOException) {
             Timber.e("Unable to retrieve the current version.", e)

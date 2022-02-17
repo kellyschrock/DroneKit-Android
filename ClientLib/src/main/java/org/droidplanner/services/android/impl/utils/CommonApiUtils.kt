@@ -158,7 +158,7 @@ object CommonApiUtils {
 
     @JvmStatic
     fun getProxyCameraFootPrint(footprint: Footprint?): FootPrint? {
-        return if (footprint == null) null else FootPrint(footprint.gsd, footprint.vertexInGlobalFrame)
+        return if (footprint == null) null else FootPrint(footprint.gSD, footprint.vertexInGlobalFrame)
     }
 
     @JvmStatic
@@ -304,23 +304,26 @@ object CommonApiUtils {
             else -> FollowState.STATE_INVALID
         }
         val currentAlg = followMe.followAlgorithm
-        val modeParams = currentAlg.params
         val params = Bundle()
-        for ((key, value) in modeParams) {
-            when (key) {
-                FollowType.EXTRA_FOLLOW_ROI_TARGET -> {
-                    val target = value as LatLongAlt
-                    if (target != null) {
-                        params.putParcelable(key, target)
+
+        currentAlg?.params?.let { modeParams ->
+            for ((key, value) in modeParams) {
+                when (key) {
+                    FollowType.EXTRA_FOLLOW_ROI_TARGET -> {
+                        val target = value as LatLongAlt
+                        if (target != null) {
+                            params.putParcelable(key, target)
+                        }
                     }
-                }
-                FollowType.EXTRA_FOLLOW_RADIUS -> {
-                    val radius = value as Double
-                    if (radius != null) params.putDouble(key, radius)
+                    FollowType.EXTRA_FOLLOW_RADIUS -> {
+                        val radius = value as Double
+                        if (radius != null) params.putDouble(key, radius)
+                    }
                 }
             }
         }
-        return FollowState(state, followModeToType(currentAlg.type), params)
+
+        return FollowState(state, followModeToType(currentAlg?.type), params)
     }
 
     @JvmStatic

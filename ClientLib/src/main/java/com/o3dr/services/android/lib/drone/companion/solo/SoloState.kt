@@ -7,10 +7,8 @@ import com.o3dr.services.android.lib.drone.companion.solo.controller.SoloControl
 import com.o3dr.services.android.lib.drone.companion.solo.controller.SoloControllerUnits.ControllerUnit
 import com.o3dr.android.client.utils.TxPowerComplianceCountries
 import android.os.Parcel
-import com.o3dr.services.android.lib.drone.companion.solo.tlv.TLVPacket
 import com.o3dr.services.android.lib.drone.companion.solo.tlv.TLVMessageParser
 import android.os.Parcelable
-import com.o3dr.services.android.lib.drone.companion.solo.SoloState
 import java.nio.ByteBuffer
 
 /**
@@ -105,23 +103,23 @@ class SoloState : DroneAttribute {
         dest.writeString(txPowerCompliantCountry)
     }
 
-    protected constructor(`in`: Parcel) {
-        wifiSsid = `in`.readString()
-        wifiPassword = `in`.readString()
-        controllerVersion = `in`.readString()
-        controllerFirmwareVersion = `in`.readString()
-        vehicleVersion = `in`.readString()
-        autopilotVersion = `in`.readString()
+    protected constructor(input: Parcel) {
+        wifiSsid = input.readString()
+        wifiPassword = input.readString()
+        controllerVersion = input.readString()
+        controllerFirmwareVersion = input.readString()
+        vehicleVersion = input.readString()
+        autopilotVersion = input.readString()
         //Throw away byte that was added to ensure backwards compatibility
-        `in`.readByte()
-        val buttonCount = `in`.readInt()
+        input.readByte()
+        val buttonCount = input.readInt()
         buttonSettings = SparseArray(buttonCount)
 
         for (i in 0 until buttonCount) {
-            val dataSize = `in`.readInt()
+            val dataSize = input.readInt()
             if (dataSize == 0) continue
             val dataBuffer = ByteBuffer.allocate(dataSize)
-            `in`.readByteArray(dataBuffer.array())
+            input.readByteArray(dataBuffer.array())
             val buttonsList = TLVMessageParser.parseTLVPacket(dataBuffer)
             if (!buttonsList.isEmpty()) {
                 for (tlvPacket in buttonsList) {
@@ -133,12 +131,12 @@ class SoloState : DroneAttribute {
             }
         }
 
-        gimbalVersion = `in`.readString()
-        @ControllerMode val tempMode = `in`.readInt()
+        gimbalVersion = input.readString()
+        @ControllerMode val tempMode = input.readInt()
         controllerMode = tempMode
-        @ControllerUnit val tempUnit = `in`.readString()
+        @ControllerUnit val tempUnit = input.readString()
         controllerUnit = tempUnit
-        txPowerCompliantCountry = `in`.readString()
+        txPowerCompliantCountry = input.readString()
     }
 
     companion object {

@@ -235,8 +235,8 @@ class MavLinkDroneManager(
             FollowMeActions.ACTION_UPDATE_FOLLOW_PARAMS -> {
                 if (followMe != null) {
                     data!!.classLoader = LatLong::class.java.classLoader
-                    val followAlgorithm = followMe!!.followAlgorithm
-                    if (followAlgorithm != null) {
+
+                    followMe?.followAlgorithm?.let { followAlgorithm ->
                         val paramsMap: MutableMap<String, Any?> = HashMap()
                         val dataKeys = data.keySet()
                         for (key in dataKeys) {
@@ -296,7 +296,7 @@ class MavLinkDroneManager(
             followMe?.let { follow ->
                 follow.enableFollowMe(source)
                 val currentAlg = follow.followAlgorithm
-                if (currentAlg.type != selectedMode) {
+                if (currentAlg?.type != selectedMode) {
                     if (selectedMode == FollowModes.SOLO_SHOT &&
                             !SoloApiUtils.isSoloLinkFeatureAvailable(drone, listener)) {
                         Timber.w("FollowType is SOLO_SHOT, but SoloLink is not available.")

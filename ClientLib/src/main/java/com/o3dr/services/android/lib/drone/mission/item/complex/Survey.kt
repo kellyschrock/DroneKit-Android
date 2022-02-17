@@ -15,7 +15,7 @@ import java.util.*
 open class Survey : MissionItem, ComplexItem<Survey?>, Parcelable {
     var surveyDetail: SurveyDetail? = SurveyDetail()
     var polygonArea = 0.0
-    var polygonPoints: List<LatLong>? = ArrayList()
+    var polygonPoints: List<LatLong> = ArrayList()
     var gridPoints: List<LatLong>? = ArrayList()
     var cameraLocations: List<LatLong>? = ArrayList()
     private var cameraElevations: MutableList<LatLongAlt>? = ArrayList()

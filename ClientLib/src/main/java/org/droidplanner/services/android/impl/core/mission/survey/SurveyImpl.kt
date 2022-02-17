@@ -18,7 +18,7 @@ import org.droidplanner.services.android.impl.core.survey.grid.GridBuilder
 import timber.log.Timber
 import java.util.*
 
-open class SurveyImpl(mission: Mission?, points: List<LatLong?>?) : MissionItemImpl(mission) {
+open class SurveyImpl(mission: Mission?, points: List<LatLong>) : MissionItemImpl(mission) {
     @JvmField
     var polygon = Polygon()
     @JvmField
@@ -42,7 +42,7 @@ open class SurveyImpl(mission: Mission?, points: List<LatLong?>?) : MissionItemI
         surveyData.update(angle, altitude, overlap, sidelap, lockOrientation, lockYaw, lockYawAngle)
     }
 
-    fun setCameraInfo(camera: CameraInfo?) {
+    fun setCameraInfo(camera: CameraInfo) {
         surveyData.cameraInfo = camera
     }
 
@@ -74,7 +74,7 @@ open class SurveyImpl(mission: Mission?, points: List<LatLong?>?) : MissionItemI
         if (isStartCameraBeforeFirstWaypoint) {
             list.addAll(camTrigger.packMissionItem())
         }
-        val altitude = surveyData.altitude
+        val altitude = surveyData.getAltitude()
         Timber.d("packSurveyPoints(): centerElevation=%.2f lockYaw=%s lockYawAngle=%.2f", centerElevation, surveyData.lockYaw, surveyData.lockYawAngle)
 
         //Add the camera trigger after the first waypoint if it wasn't added before.
@@ -83,7 +83,7 @@ open class SurveyImpl(mission: Mission?, points: List<LatLong?>?) : MissionItemI
             val mavMsg = getSurveyPoint(point, altitude)
             list.add(mavMsg)
             if (surveyData.lockOrientation) {
-                val yawMsg = getYawCondition(surveyData.angle)
+                val yawMsg = getYawCondition(surveyData.angle!!)
                 list.add(yawMsg)
             } else if (surveyData.lockYaw) {
                 val yawMsg = getYawCondition(surveyData.lockYawAngle)

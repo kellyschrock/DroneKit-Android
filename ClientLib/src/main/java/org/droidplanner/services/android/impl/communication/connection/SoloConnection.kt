@@ -78,7 +78,7 @@ class SoloConnection(
         return dataLink.connectionType
     }
 
-    override fun onWifiConnected(wifiSsid: String) {
+    override fun onWifiConnected(wifiSsid: String?) {
         if (isConnecting) {
             //Let's see if we're connected to our target wifi
             if (wifiSsid.equals(soloLinkId, ignoreCase = true)) {
@@ -97,17 +97,17 @@ class SoloConnection(
         onConnectionStatus(LinkConnectionStatus(LinkConnectionStatus.CONNECTING, null))
     }
 
-    override fun onWifiDisconnected(prevSsid: String) {
+    override fun onWifiDisconnected(prevSsid: String?) {
         if (prevSsid.equals(soloLinkId, ignoreCase = true)) {
             onConnectionStatus(LinkConnectionStatus(LinkConnectionStatus.DISCONNECTED, null))
         }
     }
 
-    override fun onWifiScanResultsAvailable(results: List<ScanResult>) {
+    override fun onWifiScanResultsAvailable(results: List<ScanResult>?) {
         checkScanResults(results)
     }
 
-    override fun onWifiConnectionFailed(connectionStatus: LinkConnectionStatus) {
+    override fun onWifiConnectionFailed(connectionStatus: LinkConnectionStatus?) {
         onConnectionStatus(connectionStatus)
     }
 

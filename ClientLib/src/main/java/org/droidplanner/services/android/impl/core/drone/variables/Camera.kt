@@ -18,7 +18,7 @@ class Camera(myDrone: MavLinkDrone?) : DroneVariable<MavLinkDrone?>(myDrone) {
     private val footprints: MutableList<Footprint> = ArrayList()
     private var gimbal_pitch = 0.0
     
-    fun newImageLocation(msg: msg_camera_feedback?) {
+    fun newImageLocation(msg: msg_camera_feedback) {
         footprints.add(Footprint(camera, msg))
         myDrone?.notifyDroneEvent(DroneEventsType.FOOTPRINT)
     }
@@ -38,12 +38,17 @@ class Camera(myDrone: MavLinkDrone?) : DroneVariable<MavLinkDrone?>(myDrone) {
                 val altitude = droneAltitude.altitude
                 val droneGps = drone.getAttribute(AttributeType.GPS) as Gps
                 val position = droneGps.position
-                //double pitch = drone.getOrientation().getPitch() - gimbal_pitch;
-                val attitude = drone.getAttribute(AttributeType.ATTITUDE) as Attitude
-                val pitch = attitude.pitch
-                val roll = attitude.roll
-                val yaw = attitude.yaw
-                return Footprint(camera, position, altitude, pitch, roll, yaw)
+
+                return if(position != null) {
+                    //double pitch = drone.getOrientation().getPitch() - gimbal_pitch;
+                    val attitude = drone.getAttribute(AttributeType.ATTITUDE) as Attitude
+                    val pitch = attitude.pitch
+                    val roll = attitude.roll
+                    val yaw = attitude.yaw
+                    Footprint(camera, position!!, altitude, pitch, roll, yaw)
+                } else {
+                    null
+                }
             } ?: run {
                 return null
             }

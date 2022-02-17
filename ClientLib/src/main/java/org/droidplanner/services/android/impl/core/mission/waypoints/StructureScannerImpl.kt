@@ -61,14 +61,14 @@ class StructureScannerImpl : SpatialCoordItem {
             angle += 10.0
         }
         val corner = GeoTools.newCoordFromBearingAndDistance(coordinate, -45.0, radius * 2)
-        surveyData.altitude = topHeight
+        surveyData.setAltitude(topHeight)
         try {
-            surveyData.update(0.0, surveyData.altitude, surveyData.overlap, surveyData.sidelap, surveyData.lockOrientation, false, 0.0)
+            surveyData.update(0.0, surveyData.getAltitude(), surveyData.getOverlap(), surveyData.getSidelap(), surveyData.lockOrientation, false, 0.0)
             val grid = GridBuilder(polygon, surveyData, corner)
             for (point in grid.generate(false).gridPoints) {
                 list.add(SurveyImpl.packSurveyPoint(point, topHeight))
             }
-            surveyData.update(90.0, surveyData.altitude, surveyData.overlap, surveyData.sidelap, surveyData.lockOrientation, false, 0.0)
+            surveyData.update(90.0, surveyData.getAltitude(), surveyData.getOverlap(), surveyData.getSidelap(), surveyData.lockOrientation, false, 0.0)
             val grid2 = GridBuilder(polygon, surveyData, corner)
             for (point in grid2.generate(false).gridPoints) {
                 list.add(SurveyImpl.packSurveyPoint(point, topHeight))
@@ -115,10 +115,10 @@ class StructureScannerImpl : SpatialCoordItem {
         endAltitude = newValue.toDouble()
     }
 
-    fun setCamera(cameraInfo: CameraInfo?) {
+    fun setCamera(cameraInfo: CameraInfo) {
         surveyData.cameraInfo = cameraInfo
     }
 
     val camera: String
-        get() = surveyData.cameraName
+        get() = surveyData.camera.cameraName
 }

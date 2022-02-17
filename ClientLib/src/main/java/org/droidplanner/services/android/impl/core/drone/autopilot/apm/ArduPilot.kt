@@ -359,7 +359,7 @@ abstract class ArduPilot(droneId: String?, context: Context?, mavClient: MAVLink
                 }
                 msg_rc_channels_raw.MAVLINK_MSG_ID_RC_CHANNELS_RAW -> rc.setRcInputValues(message as msg_rc_channels_raw?)
                 msg_servo_output_raw.MAVLINK_MSG_ID_SERVO_OUTPUT_RAW -> rc.setRcOutputValues(message as msg_servo_output_raw?)
-                msg_camera_feedback.MAVLINK_MSG_ID_CAMERA_FEEDBACK -> camera.newImageLocation(message as msg_camera_feedback?)
+                msg_camera_feedback.MAVLINK_MSG_ID_CAMERA_FEEDBACK -> camera.newImageLocation(message as msg_camera_feedback)
                 msg_mount_status.MAVLINK_MSG_ID_MOUNT_STATUS -> processMountStatus(message as msg_mount_status?)
                 msg_named_value_int.MAVLINK_MSG_ID_NAMED_VALUE_INT -> processNamedValueInt(message as msg_named_value_int?)
                 msg_mag_cal_progress.MAVLINK_MSG_ID_MAG_CAL_PROGRESS, msg_mag_cal_report.MAVLINK_MSG_ID_MAG_CAL_REPORT -> magnetometerCalibration.processCalibrationMessage(message)

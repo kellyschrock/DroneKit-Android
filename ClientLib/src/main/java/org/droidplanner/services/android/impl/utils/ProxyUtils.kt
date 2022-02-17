@@ -29,9 +29,10 @@ object ProxyUtils {
     }
 
     fun getCameraInfo(camDetail: CameraDetail?): CameraInfo? {
-        if (camDetail == null) return null
+        camDetail ?: return null
+
         val camInfo = CameraInfo()
-        camInfo.name = camDetail.name
+        camInfo.name = camDetail.name ?: ""
         camInfo.sensorWidth = camDetail.sensorWidth
         camInfo.sensorHeight = camDetail.sensorHeight
         camInfo.sensorResolution = camDetail.sensorResolution
@@ -45,10 +46,10 @@ object ProxyUtils {
     fun getSurveyDetail(surveyData: SurveyData): SurveyDetail {
         val surveyDetail = SurveyDetail()
         surveyDetail.cameraDetail = getCameraDetail(surveyData.cameraInfo)
-        surveyDetail.sidelap = surveyData.sidelap
-        surveyDetail.overlap = surveyData.overlap
-        surveyDetail.angle = surveyData.angle
-        surveyDetail.altitude = surveyData.altitude
+        surveyDetail.sidelap = surveyData.getSidelap()
+        surveyDetail.overlap = surveyData.getOverlap()
+        surveyDetail.angle = surveyData.angle!!
+        surveyDetail.altitude = surveyData.getAltitude()
         surveyDetail.lockOrientation = surveyData.lockOrientation
         surveyDetail.lockYaw = surveyData.lockYaw
         surveyDetail.lockYawAngle = surveyData.lockYawAngle
@@ -185,7 +186,7 @@ object ProxyUtils {
                 temp.setAltitudeStep(proxy.heightStep.toInt())
                 temp.enableCrossHatch(proxy.isCrossHatch)
                 val camDetail = proxy.surveyDetail!!.cameraDetail
-                if (camDetail != null) temp.setCamera(getCameraInfo(camDetail))
+                if (camDetail != null) temp.setCamera(getCameraInfo(camDetail)!!)
                 missionItemImpl = temp
             }
             MissionItemType.WAYPOINT -> {
@@ -208,7 +209,7 @@ object ProxyUtils {
                 temp.centerElevation = proxy.centerElevation
                 if (surveyDetail != null) {
                     val cameraDetail = surveyDetail.cameraDetail
-                    if (cameraDetail != null) temp.setCameraInfo(getCameraInfo(cameraDetail))
+                    if (cameraDetail != null) temp.setCameraInfo(getCameraInfo(cameraDetail)!!)
                     temp.update(surveyDetail.angle, surveyDetail.altitude,
                             surveyDetail.overlap, surveyDetail.sidelap,
                             surveyDetail.lockOrientation,
@@ -229,7 +230,7 @@ object ProxyUtils {
                 temp.setCameraElevations(proxy.getCameraElevations())
                 if (surveyDetail != null) {
                     val cameraDetail = surveyDetail.cameraDetail
-                    if (cameraDetail != null) temp.setCameraInfo(getCameraInfo(cameraDetail))
+                    if (cameraDetail != null) temp.setCameraInfo(getCameraInfo(cameraDetail)!!)
                     temp.update(surveyDetail.angle, surveyDetail.altitude,
                             surveyDetail.overlap, surveyDetail.sidelap, surveyDetail.lockOrientation,
                             surveyDetail.lockYaw, surveyDetail.lockYawAngle)

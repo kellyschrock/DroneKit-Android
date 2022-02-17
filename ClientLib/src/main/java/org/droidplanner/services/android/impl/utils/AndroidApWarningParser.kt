@@ -11,7 +11,8 @@ import java.util.*
  * Created by fhuya on 12/16/14.
  */
 class AndroidApWarningParser : AutopilotWarningParser {
-    override fun getDefaultWarning(): String = ErrorType.NO_ERROR.name
+    override val defaultWarning: String?
+        get() = ErrorType.NO_ERROR.name
 
     /**
      * Maps the ArduPilot warnings set to the 3DR Services warnings set.
@@ -19,13 +20,14 @@ class AndroidApWarningParser : AutopilotWarningParser {
      * @param warning warning originating from the ArduPilot autopilot
      * @return equivalent 3DR Services warning type
      */
-    override fun parseWarning(drone: MavLinkDrone, warning: String): String? {
-        if (TextUtils.isEmpty(warning)) return null
+    override fun parseWarning(drone: MavLinkDrone?, warning: String?): String? {
+        warning ?: return null
         val errorType = getErrorType(warning) ?: return null
         return errorType.name
     }
 
     private fun getErrorType(warning: String): ErrorType? {
+        // TODO: This should be updated to handle prearm messages from > 2011..
         return when (warning.toLowerCase(Locale.US)) {
             "arm: thr below fs", "arm: throttle below failsafe" -> ErrorType.ARM_THROTTLE_BELOW_FAILSAFE
             "arm: gyro calibration failed" -> ErrorType.ARM_GYRO_CALIBRATION_FAILED

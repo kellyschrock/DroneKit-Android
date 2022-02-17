@@ -337,7 +337,7 @@ class Mission(myDrone: GenericMavLinkDrone?) : DroneVariable<GenericMavLinkDrone
     fun createDronie(start: LatLong?, end: LatLong?): List<MissionItemImpl?> {
         val startAltitude = 4.0
         val roiDistance = -8
-        val slowDownPoint = GeoTools.pointAlongTheLine(start, end, 5)
+        val slowDownPoint = GeoTools.pointAlongTheLine(start!!, end!!, 5)
         var defaultSpeed = speedParameter
         if (defaultSpeed == -1.0) {
             defaultSpeed = 5.0
