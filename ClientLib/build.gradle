@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
 //apply plugin: 'com.getkeepsafe.dexcount'
 
 ext {
@@ -74,6 +76,8 @@ android {
                 println "DO STUFF: ${PUBLISH_ARTIFACT_ID}.${PUBLISH_VERSION}.aar, ${file.parent}"
 //                output.outputFile = new File(file.parent, "${PUBLISH_ARTIFACT_ID}.${PUBLISH_VERSION}.aar")
                 output.outputFileName = "${PUBLISH_ARTIFACT_ID}.${PUBLISH_VERSION}.aar"
+                file.renameTo("$buildDir/outputs/aar/${PUBLISH_ARTIFACT_ID}.${PUBLISH_VERSION}.aar")
+//                file.renameTo("${PUBLISH_ARTIFACT_ID}.${PUBLISH_VERSION}.aar")
             }
         }
     }
@@ -125,6 +129,7 @@ dependencies {
 
     androidTestImplementation 'junit:junit:4.12'
     androidTestImplementation "org.robolectric:robolectric:3.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 def getSoloLinkIp() {
@@ -141,5 +146,8 @@ def getLocalIp() {
 
 evaluationDependsOn ':Mavlink'
 assemble.dependsOn ':Mavlink:jar'
+repositories {
+    mavenCentral()
+}
 
 //apply from: "$projectDir/maven-push.gradle"

@@ -804,7 +804,7 @@ public class GenericMavLinkDrone implements MavLinkDrone {
 
         if(newMode != ApmModes.UNKNOWN) {
 //            Log.v(TAG, String.format("Got mode %s for mav type %d", newMode.getName(), msg_heart.type));
-            state.setMode(newMode);
+            state.setVehicleMode(newMode);
         } else {
             Timber.w("Did not find mode (%d) for mav type %d", msg_heart.custom_mode, msg_heart.type);
         }
@@ -837,7 +837,7 @@ public class GenericMavLinkDrone implements MavLinkDrone {
                 || (wasFlying
                 && (systemStatus == MAV_STATE.MAV_STATE_CRITICAL || systemStatus == MAV_STATE.MAV_STATE_EMERGENCY));
 
-        state.setIsFlying(isFlying);
+        state.setFlying(isFlying);
     }
 
     private void setDisttowpAndSpeedAltErrors(double disttowp, double alt_error, double aspd_error) {

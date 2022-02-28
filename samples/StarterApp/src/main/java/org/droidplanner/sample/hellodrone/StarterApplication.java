@@ -4,8 +4,6 @@ import android.app.Application;
 
 import com.o3dr.android.client.utils.LogToFileTree;
 
-import timber.log.Timber;
-
 /**
  * Created by fredia on 5/20/16.
  */

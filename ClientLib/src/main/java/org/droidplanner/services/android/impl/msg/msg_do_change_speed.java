@@ -6,6 +6,7 @@ import com.MAVLink.Messages.MAVLinkPayload;
 
 /**
  * Created by kellys on 2/12/17.
+ * Kelly on 2/16/2022: What in this world is this for??
  */
 public class msg_do_change_speed extends MAVLinkMessage {
     public static final int MAVLINK_MSG = 178;

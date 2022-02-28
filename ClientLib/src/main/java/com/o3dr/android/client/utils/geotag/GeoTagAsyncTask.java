@@ -97,7 +97,7 @@ public abstract class GeoTagAsyncTask extends AsyncTask<Void, Integer, GeoTagUti
     public abstract void onFailed(Exception e);
 
 
-    protected interface GeoTagAlgorithm {
+    public interface GeoTagAlgorithm {
         HashMap<TLogParser.Event, File> match(List<TLogParser.Event> events, ArrayList<File> photos);
     }
 
