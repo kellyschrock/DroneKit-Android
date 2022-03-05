@@ -20,6 +20,7 @@ import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
 import com.o3dr.services.android.lib.drone.connection.ConnectionType;
 import com.o3dr.services.android.lib.drone.property.DroneAttribute;
+import com.o3dr.services.android.lib.drone.property.SolexCCState;
 import com.o3dr.services.android.lib.gcs.action.FollowMeActions;
 import com.o3dr.services.android.lib.gcs.follow.FollowLocationSource;
 import com.o3dr.services.android.lib.gcs.follow.FollowType;
@@ -53,8 +54,10 @@ import org.droidplanner.services.android.impl.core.gcs.location.FusedLocation;
 import org.droidplanner.services.android.impl.utils.AndroidApWarningParser;
 import org.droidplanner.services.android.impl.utils.CommonApiUtils;
 import org.droidplanner.services.android.impl.utils.SoloApiUtils;
+import org.droidplanner.services.android.impl.utils.SolexCCStateCheck;
 import org.droidplanner.services.android.impl.utils.prefs.DroidPlannerPrefs;
 
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -134,6 +137,22 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
                 Timber.i("Instantiating Generic mavlink autopilot.");
                 this.drone = new GenericMavLinkDrone(droneId, context, handler, mavClient, new AndroidApWarningParser(), this);
                 break;
+        }
+
+        final InetAddress addr = mavClient.getVehicleIpAddress();
+        final String ipAddress = (addr != null)? addr.getHostAddress(): null;
+        this.drone.setDroneIpAddress(ipAddress);
+        Timber.d("Set drone IP to %s", ipAddress);
+
+        if(ipAddress != null && !this.drone.getSolexCCState().isValid()) {
+            SolexCCStateCheck.check(ipAddress, SolexCCState.SOLEXCC_PORT, new SolexCCStateCheck.Listener() {
+                @Override
+                public void onSolexCCState(SolexCCState state) {
+                    if(state != null) {
+                        drone.getSolexCCState().setTo(state);
+                    }
+                }
+            });
         }
 
         this.followMe = new Follow(this, handler, new FusedLocation(context, handler));
@@ -411,5 +430,11 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
 
         for (DroneApi listener : connectedApps.values())
             listener.onCalibrationCompleted(report);
+    }
+
+    public InetAddress getVehicleIpAddress() {
+        final InetAddress out = (mavClient != null)?
+            mavClient.getVehicleIpAddress(): null;
+        return out;
     }
 }

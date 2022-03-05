@@ -26,7 +26,6 @@ import com.MAVLink.common.msg_nav_controller_output;
 import com.MAVLink.common.msg_radio_status;
 import com.MAVLink.common.msg_sys_status;
 import com.MAVLink.common.msg_vibration;
-import com.MAVLink.enums.MAV_COMPONENT;
 import com.MAVLink.enums.MAV_MODE_FLAG;
 import com.MAVLink.enums.MAV_STATE;
 import com.o3dr.services.android.lib.coordinate.LatLong;
@@ -58,6 +57,7 @@ import com.o3dr.services.android.lib.drone.property.Signal;
 import com.o3dr.services.android.lib.drone.property.Speed;
 import com.o3dr.services.android.lib.drone.property.VehicleMode;
 import com.o3dr.services.android.lib.drone.property.Vibration;
+import com.o3dr.services.android.lib.drone.property.SolexCCState;
 import com.o3dr.services.android.lib.mavlink.MavlinkMessageWrapper;
 import com.o3dr.services.android.lib.model.ICommandListener;
 import com.o3dr.services.android.lib.model.action.Action;
@@ -137,10 +137,12 @@ public class GenericMavLinkDrone implements MavLinkDrone {
     protected final AutopilotVersion apVersion = new AutopilotVersion();
     protected final MavlinkConnectionStats mavlinkStats = new MavlinkConnectionStats();
     protected final RangeFinder rangeFinder = new RangeFinder();
+    protected final SolexCCState solexCCState = new SolexCCState();
 
     protected final Handler handler;
 
     private final String droneId;
+    private String droneIpAddress = null;
 
     public GenericMavLinkDrone(String droneId, Context context, Handler handler, DataLink.DataLinkProvider<MAVLinkMessage> mavClient,
                                AutopilotWarningParser warningParser, LogMessageListener logListener) {
@@ -166,6 +168,9 @@ public class GenericMavLinkDrone implements MavLinkDrone {
         return droneId;
     }
 
+    public String getDroneIpAddress() { return droneIpAddress; }
+    public void setDroneIpAddress(String address) { droneIpAddress = address; }
+
     @Override
     public void setAttributeListener(DroneInterfaces.AttributeEventListener attributeListener) {
         this.attributeListener = attributeListener;
@@ -187,6 +192,9 @@ public class GenericMavLinkDrone implements MavLinkDrone {
         //TODO: complete implementation
         return null;
     }
+
+    @Override
+    public SolexCCState getSolexCCState() { return solexCCState; }
 
     @Override
     public GuidedPoint getGuidedPoint() {
@@ -620,6 +628,9 @@ public class GenericMavLinkDrone implements MavLinkDrone {
 
             case AttributeType.RANGE_FINDER:
                 return rangeFinder;
+
+            case AttributeType.SOLEXCC_STATE:
+                return solexCCState;
         }
 
         return null;

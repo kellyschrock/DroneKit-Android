@@ -3,6 +3,7 @@ package org.droidplanner.services.android.impl.communication.connection;
 import android.content.Context;
 import android.util.Log;
 
+import org.droidplanner.services.android.impl.core.MAVLink.connection.HasIpAddress;
 import org.droidplanner.services.android.impl.core.MAVLink.connection.UdpConnection;
 import org.droidplanner.services.android.impl.core.model.Logger;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
@@ -17,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
 
-public class AndroidUdpConnection extends AndroidIpConnection {
+public class AndroidUdpConnection extends AndroidIpConnection implements HasIpAddress {
 
     private static final String TAG = AndroidUdpConnection.class.getSimpleName();
 
@@ -155,6 +156,8 @@ public class AndroidUdpConnection extends AndroidIpConnection {
         @Override
         public void run() {
             try {
+                Log.v(TAG, "PingTask.run(): address=" + address + " port=" + port);
+
                 mConnectionImpl.sendBuffer(address, port, payload);
             } catch (IOException e) {
                 Log.e(TAG, "Error occurred while sending ping message.", e);
@@ -165,5 +168,12 @@ public class AndroidUdpConnection extends AndroidIpConnection {
         public String toString(){
             return "[" + address.toString() + "; " + port + "; " + period + "]";
         }
+    }
+
+    @Override
+    public InetAddress getIpAddress() {
+        final InetAddress out = (mConnectionImpl != null)?
+            mConnectionImpl.getIpAddress(): null;
+        return out;
     }
 }

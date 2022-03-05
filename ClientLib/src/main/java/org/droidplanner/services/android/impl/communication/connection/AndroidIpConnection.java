@@ -5,6 +5,7 @@ import android.content.Context;
 import org.droidplanner.services.android.impl.utils.connection.WifiConnectionHandler;
 
 import java.io.IOException;
+import java.net.InetAddress;
 
 /**
  * Created by fredia on 3/28/16.
@@ -42,4 +43,5 @@ public abstract class AndroidIpConnection extends AndroidMavLinkConnection {
 
     protected abstract void onCloseConnection() throws IOException;
 
+    public abstract InetAddress getIpAddress();
 }

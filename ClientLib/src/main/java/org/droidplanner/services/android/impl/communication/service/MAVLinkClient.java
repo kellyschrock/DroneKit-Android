@@ -21,6 +21,7 @@ import org.droidplanner.services.android.impl.communication.connection.Bluetooth
 import org.droidplanner.services.android.impl.communication.connection.SoloConnection;
 import org.droidplanner.services.android.impl.communication.connection.usb.UsbConnection;
 import org.droidplanner.services.android.impl.communication.model.DataLink;
+import org.droidplanner.services.android.impl.core.MAVLink.connection.HasIpAddress;
 import org.droidplanner.services.android.impl.core.MAVLink.connection.MavLinkConnection;
 import org.droidplanner.services.android.impl.core.MAVLink.connection.MavLinkConnectionListener;
 import org.droidplanner.services.android.impl.core.drone.manager.DroneCommandTracker;
@@ -314,4 +315,9 @@ public class MAVLinkClient implements DataLink.DataLinkProvider<MAVLinkMessage> 
         }
     }
 
+    public InetAddress getVehicleIpAddress() {
+        final InetAddress out = (mavlinkConn instanceof HasIpAddress)?
+            ((HasIpAddress)mavlinkConn).getIpAddress(): null;
+        return out;
+    }
 }

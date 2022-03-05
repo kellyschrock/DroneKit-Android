@@ -13,6 +13,8 @@ public class GCSEvent {
      */
     public static final String EXTRA_APP_ID = PACKAGE_NAME + ".extra.APP_ID";
 
+    public static final String EXTRA_VEHICLE_IP = PACKAGE_NAME + ".extra.VEHICLE_IP";
+
     /**
      * Broadcast action: a connection with a vehicle was established.
      */

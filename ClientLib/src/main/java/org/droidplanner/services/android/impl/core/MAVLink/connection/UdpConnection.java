@@ -13,7 +13,8 @@ import timber.log.Timber;
 /**
  * Provides support for mavlink connection via udp.
  */
-public abstract class UdpConnection extends MavLinkConnection {
+public abstract class UdpConnection extends MavLinkConnection
+    implements HasIpAddress {
     static final String TAG = UdpConnection.class.getSimpleName();
 
     private static final int BUFSIZE = 32768;
@@ -25,6 +26,11 @@ public abstract class UdpConnection extends MavLinkConnection {
     private InetAddress hostAdd;
     private DatagramPacket sendPacket;
     private DatagramPacket receivePacket;
+
+    @Override
+    public InetAddress getIpAddress() {
+        return hostAdd;
+    }
 
     private void getUdpStream() throws IOException {
         Log.v(TAG, "getUdpStream()");
@@ -43,6 +49,8 @@ public abstract class UdpConnection extends MavLinkConnection {
         if (socket != null) {
             socket.close();
         }
+
+        hostAdd = null;
     }
 
     @Override
@@ -103,8 +111,15 @@ public abstract class UdpConnection extends MavLinkConnection {
 
         socket.receive(receivePacket);
 
-        hostAdd = receivePacket.getAddress();
+        final InetAddress hostAddr = receivePacket.getAddress();
+
+//        hostAdd = receivePacket.getAddress();
         hostPort = receivePacket.getPort();
+
+        if(hostAdd == null) {
+            hostAdd = hostAddr;
+        }
+
         return receivePacket.getLength();
     }
 

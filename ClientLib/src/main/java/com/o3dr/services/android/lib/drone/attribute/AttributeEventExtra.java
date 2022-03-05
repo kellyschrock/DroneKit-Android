@@ -16,6 +16,8 @@ public class AttributeEventExtra {
      */
     public static final String EXTRA_VEHICLE_ID = PACKAGE_NAME + ".VEHICLE_ID";
 
+    public static final String EXTRA_VEHICLE_IP = PACKAGE_NAME + ".VEHICLE_IP";
+
     /**
      * Used to access autopilot error type.
      *

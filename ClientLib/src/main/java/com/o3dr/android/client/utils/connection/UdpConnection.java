@@ -1,6 +1,7 @@
 package com.o3dr.android.client.utils.connection;
 
 import android.os.Handler;
+import android.util.Log;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

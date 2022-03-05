@@ -8,6 +8,7 @@ import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 import org.droidplanner.services.android.impl.utils.connection.WifiConnectionHandler;
 
 import java.io.IOException;
+import java.net.InetAddress;
 
 public class AndroidTcpConnection extends AndroidIpConnection {
 
@@ -48,6 +49,12 @@ public class AndroidTcpConnection extends AndroidIpConnection {
                 AndroidTcpConnection.this.onConnectionStatus(connectionStatus);
             }
         };
+    }
+
+    @Override
+    public InetAddress getIpAddress() {
+        // TODO: Implement this
+        return null;
     }
 
     public AndroidTcpConnection(Context context, String tcpServerIp, int tcpServerPort) {

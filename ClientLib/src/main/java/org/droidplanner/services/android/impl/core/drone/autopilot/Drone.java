@@ -32,4 +32,7 @@ public interface Drone {
     void removeDroneListener(DroneInterfaces.OnDroneListener listener);
 
     void notifyDroneEvent(DroneInterfaces.DroneEventsType event);
+
+    String getDroneIpAddress();
+    void setDroneIpAddress(String ip);
 }

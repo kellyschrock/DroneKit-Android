@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Surface;
 
@@ -48,12 +49,14 @@ import org.droidplanner.services.android.impl.core.drone.DroneInterfaces;
 import org.droidplanner.services.android.impl.core.drone.DroneManager;
 import org.droidplanner.services.android.impl.core.drone.autopilot.Drone;
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
+import org.droidplanner.services.android.impl.core.drone.manager.MavLinkDroneManager;
 import org.droidplanner.services.android.impl.core.drone.variables.calibration.AccelCalibration;
 import org.droidplanner.services.android.impl.core.drone.variables.calibration.MagnetometerCalibrationImpl;
 import org.droidplanner.services.android.impl.exception.ConnectionException;
 import org.droidplanner.services.android.impl.utils.CommonApiUtils;
 import org.droidplanner.services.android.impl.utils.video.VideoManager;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -593,8 +596,16 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
                 attributesInfo.add(Pair.create(AttributeEvent.HEARTBEAT_FIRST, heartBeatExtras));
 
             case CONNECTED:
+                final InetAddress addr = (droneMgr instanceof MavLinkDroneManager)?
+                    ((MavLinkDroneManager)droneMgr).getVehicleIpAddress(): null;
+
                 //Broadcast the vehicle connection.
                 ConnectionParameter sanitizedParameter = connectionParams.clone();
+
+                final String ipAddress = (addr != null)?
+                    addr.getHostAddress(): null;
+
+                extrasBundle.putString(AttributeEventExtra.EXTRA_VEHICLE_IP, ipAddress);
 
                 context.sendBroadcast(new Intent(GCSEvent.ACTION_VEHICLE_CONNECTION)
                     .putExtra(GCSEvent.EXTRA_APP_ID, ownerId)

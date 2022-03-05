@@ -137,4 +137,6 @@ public class AttributeType {
 
     public static final String RANGE_FINDER = PACKAGE_NAME + ".RANGE_FINDER";
 
+    public static final String SOLEXCC_STATE = PACKAGE_NAME + ".SOLEXCC_STATE";
+
 }

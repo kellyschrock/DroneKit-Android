@@ -1,6 +1,7 @@
 package org.droidplanner.services.android.impl.core.drone.autopilot;
 
 import com.MAVLink.Messages.MAVLinkMessage;
+import com.o3dr.services.android.lib.drone.property.SolexCCState;
 
 import org.droidplanner.services.android.impl.communication.model.DataLink;
 import org.droidplanner.services.android.impl.core.MAVLink.WaypointManager;
@@ -59,4 +60,5 @@ public interface MavLinkDrone extends Drone {
 
     public Camera getCamera();
 
+    public SolexCCState getSolexCCState();
 }
