@@ -852,7 +852,7 @@ public class CommonApiUtils {
         message.compid = drone.getCompid();
         message.sysid = drone.getSysid();
 
-        Timber.d("compid=" + message.compid + " sysid=" + message.sysid);
+        // Timber.d("compid=" + message.compid + " sysid=" + message.sysid);
 
         //Set the target system and target component for MAVLink messages that support those
         //attributes.

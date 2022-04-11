@@ -300,7 +300,7 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
         String type = action.getType();
         Bundle data = action.getData();
 
-        Timber.d("executeAsyncAction(): action=%s", type);
+//        Timber.d("executeAsyncAction(): action=%s", type);
 
         switch (type) {
             //FOLLOW-ME ACTIONS

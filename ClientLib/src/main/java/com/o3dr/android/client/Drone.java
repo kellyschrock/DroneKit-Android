@@ -484,22 +484,22 @@ public class Drone {
     }
 
     public boolean performAsyncAction(Action action) {
-        Timber.d("performAsyncAction(%s)", action);
+//        Timber.d("performAsyncAction(%s)", action);
 
         return performAsyncActionOnDroneThread(action, null);
     }
 
     public boolean performAsyncActionOnDroneThread(Action action, AbstractCommandListener listener) {
-        Timber.d("performAsyncActionOnDroneThread(%s)", action);
+//        Timber.d("performAsyncActionOnDroneThread(%s)", action);
 
         return performAsyncActionOnHandler(action, this.handler, listener);
     }
 
     public boolean performAsyncActionOnHandler(Action action, Handler handler, AbstractCommandListener listener) {
-        Timber.d("performAsyncActionOnHandler(%s)", action);
+        // Timber.d("performAsyncActionOnHandler(%s)", action);
 
         final IDroneApi droneApi = droneApiRef.get();
-        Timber.d("droneApi=%s", droneApi);
+        // Timber.d("droneApi=%s", droneApi);
 
         if (isStarted(droneApi)) {
             Timber.d("droneApi is started");

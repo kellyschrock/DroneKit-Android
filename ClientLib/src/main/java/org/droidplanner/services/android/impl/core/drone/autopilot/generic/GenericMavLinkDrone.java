@@ -439,7 +439,7 @@ public class GenericMavLinkDrone implements MavLinkDrone {
                 final short targetComp = data.getShort(ExperimentalActions.EXTRA_TARGET_COMPONENT, (short)-1);
 
                 if(targetSys != -1 && targetComp != -1) {
-                    Timber.d("Send message to sys %d, target %d", targetSys, targetComp);
+                    // Timber.d("Send message to sys %d, target %d", targetSys, targetComp);
                     CommonApiUtils.sendMavlinkMessage(this, messageWrapper, targetSys, targetComp);
                 } else {
                     CommonApiUtils.sendMavlinkMessage(this, messageWrapper);

@@ -287,7 +287,7 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
 
     @Override
     public void executeAction(Action action, ICommandListener listener) throws RemoteException {
-        Timber.d("executeAction(): action=%s", action);
+//        Timber.d("executeAction(): action=%s", action);
 
         if (action == null) {
             return;

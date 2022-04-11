@@ -46,6 +46,14 @@ public class Action implements Parcelable {
         data = source.readBundle();
     }
 
+    @Override
+    public String toString() {
+        return "Action{" +
+            "type='" + type + '\'' +
+            ", data=" + data +
+            '}';
+    }
+
     private Action(Parcel in) {
         readFromParcel(in);
     }
