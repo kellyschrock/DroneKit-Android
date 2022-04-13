@@ -7,6 +7,7 @@ import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
 import com.o3dr.services.android.lib.drone.mission.item.command.CameraTrigger;
 import com.o3dr.services.android.lib.drone.mission.item.command.ChangeSpeed;
+import com.o3dr.services.android.lib.drone.mission.item.command.DelayCondition;
 import com.o3dr.services.android.lib.drone.mission.item.command.DoJump;
 import com.o3dr.services.android.lib.drone.mission.item.command.EpmGripper;
 import com.o3dr.services.android.lib.drone.mission.item.command.LoiterTime;
@@ -38,6 +39,7 @@ import org.droidplanner.services.android.impl.core.mission.Mission;
 import org.droidplanner.services.android.impl.core.mission.MissionItemImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.CameraTriggerImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.ChangeSpeedImpl;
+import org.droidplanner.services.android.impl.core.mission.commands.ConditionDelayImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.ConditionYawImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.DoJumpImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.EpmGripperImpl;
@@ -391,6 +393,13 @@ public class ProxyUtils {
                 break;
             }
 
+            case DELAY_CONDITION: {
+                DelayCondition proxy = (DelayCondition) proxyItem;
+                ConditionDelayImpl impl = new ConditionDelayImpl(mission, ((DelayCondition) proxyItem).getSeconds());
+                missionItemImpl = impl;
+                break;
+            }
+
             case SET_RELAY: {
                 SetRelay proxy = (SetRelay) proxyItem;
                 missionItemImpl = new SetRelayImpl(mission, proxy.getRelayNumber(), proxy.isEnabled());
@@ -682,6 +691,7 @@ public class ProxyUtils {
                 proxyMissionItem = temp;
                 break;
             }
+
             case CONDITION_YAW: {
                 ConditionYawImpl source = (ConditionYawImpl) itemImpl;
 
@@ -689,6 +699,16 @@ public class ProxyUtils {
                 temp.setAngle(source.getAngle());
                 temp.setAngularSpeed(source.getAngularSpeed());
                 temp.setRelative(source.isRelative());
+
+                proxyMissionItem = temp;
+                break;
+            }
+
+            case CONDITION_DELAY: {
+                ConditionDelayImpl source = (ConditionDelayImpl) itemImpl;
+
+                DelayCondition temp = new DelayCondition();
+                temp.setSeconds(source.getSeconds());
 
                 proxyMissionItem = temp;
                 break;

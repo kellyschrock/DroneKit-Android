@@ -43,6 +43,7 @@ public enum MissionItemType {
     EPM_GRIPPER("EPM"),
     SET_SERVO("Set Servo"),
     CONDITION_YAW("Set Yaw"),
+    CONDITION_DELAY("Set Delay"),
     SET_RELAY("Set Relay"),
     DO_LAND_START("Do Land Start"),
     DO_JUMP("Do Jump"),

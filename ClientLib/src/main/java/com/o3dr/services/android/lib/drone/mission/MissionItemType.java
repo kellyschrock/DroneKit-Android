@@ -7,6 +7,7 @@ import android.os.Parcelable.Creator;
 import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
 import com.o3dr.services.android.lib.drone.mission.item.command.CameraTrigger;
 import com.o3dr.services.android.lib.drone.mission.item.command.ChangeSpeed;
+import com.o3dr.services.android.lib.drone.mission.item.command.DelayCondition;
 import com.o3dr.services.android.lib.drone.mission.item.command.DoJump;
 import com.o3dr.services.android.lib.drone.mission.item.command.EpmGripper;
 import com.o3dr.services.android.lib.drone.mission.item.command.LoiterTime;
@@ -206,6 +207,18 @@ public enum MissionItemType {
         @Override
         protected Creator<YawCondition> getMissionItemCreator() {
             return YawCondition.CREATOR;
+        }
+    },
+
+    DELAY_CONDITION("Set Delay") {
+        @Override
+        public MissionItem getNewItem() {
+            return new DelayCondition();
+        }
+
+        @Override
+        protected Creator<DelayCondition> getMissionItemCreator() {
+            return DelayCondition.CREATOR;
         }
     },
 
