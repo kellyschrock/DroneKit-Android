@@ -395,7 +395,7 @@ public class ProxyUtils {
 
             case DELAY_CONDITION: {
                 DelayCondition proxy = (DelayCondition) proxyItem;
-                ConditionDelayImpl impl = new ConditionDelayImpl(mission, ((DelayCondition) proxyItem).getSeconds());
+                ConditionDelayImpl impl = new ConditionDelayImpl(mission, proxy.getSeconds());
                 missionItemImpl = impl;
                 break;
             }

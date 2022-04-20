@@ -23,7 +23,6 @@ public class Battery implements DroneAttribute {
     private int[] voltages;
 
     private boolean mHasCellVoltages;
-    private boolean mHasTemperature;
 
     public Battery(){}
 
@@ -55,10 +54,7 @@ public class Battery implements DroneAttribute {
         currentConsumed = consumed;
     }
 
-    public void setTemperature(short temperature) {
-        this.temperature = temperature;
-        this.mHasTemperature = (temperature > 0);
-    }
+    public void setTemperature(short temperature) { this.temperature = temperature; }
 
     public void setCellVoltages(int[] voltages) {
         this.voltages = voltages;
@@ -84,7 +80,7 @@ public class Battery implements DroneAttribute {
     public int getCurrentConsumed() { return currentConsumed; }
 
     public short getTemperature() { return temperature; }
-    public boolean hasTemperature() { return mHasTemperature; }
+    public boolean hasTemperature() { return (temperature > 0 && temperature < Short.MAX_VALUE); }
 
     public int[] getCellVoltages() { return voltages; }
     public boolean hasCellVoltages() { return mHasCellVoltages; }

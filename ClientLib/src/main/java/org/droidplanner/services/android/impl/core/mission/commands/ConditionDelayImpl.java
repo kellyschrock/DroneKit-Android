@@ -31,7 +31,7 @@ public class ConditionDelayImpl extends MissionCMD {
 	public List<msg_mission_item> packMissionItem() {
 		List<msg_mission_item> list = super.packMissionItem();
 		msg_mission_item mavMsg = list.get(0);
-		mavMsg.command = MAV_CMD.MAV_CMD_CONDITION_YAW;
+		mavMsg.command = MAV_CMD.MAV_CMD_CONDITION_DELAY;
 		mavMsg.param1 = (float)seconds;
 		return list;
 	}
@@ -43,7 +43,7 @@ public class ConditionDelayImpl extends MissionCMD {
 
 	@Override
 	public MissionItemType getType() {
-		return MissionItemType.CONDITION_YAW;
+		return MissionItemType.CONDITION_DELAY;
 	}
 
 	public double getSeconds() { return seconds; }
