@@ -14,6 +14,8 @@ public class TakeoffImpl extends MissionCMD {
 
     public static final double DEFAULT_TAKEOFF_ALTITUDE = 10.0;
 
+    private double lat = 0;
+    private double lng = 0;
     private double finishedAlt = 10;
     private double pitch = 0;
 
@@ -38,12 +40,20 @@ public class TakeoffImpl extends MissionCMD {
         this.pitch = pitch;
     }
 
+    public TakeoffImpl(Mission mission, double lat, double lng, double altitude, double pitch) {
+        this(mission, altitude, pitch);
+        this.lat = lat;
+        this.lng = lng;
+    }
+
     @Override
     public List<msg_mission_item> packMissionItem() {
         List<msg_mission_item> list = super.packMissionItem();
         msg_mission_item mavMsg = list.get(0);
         mavMsg.command = MAV_CMD.MAV_CMD_NAV_TAKEOFF;
         mavMsg.frame = MAV_FRAME.MAV_FRAME_GLOBAL_RELATIVE_ALT;
+        mavMsg.x = (float)lat;
+        mavMsg.y = (float)lng;
         mavMsg.z = (float) finishedAlt;
         if (pitch > 0)
             mavMsg.param1 = (float) pitch;

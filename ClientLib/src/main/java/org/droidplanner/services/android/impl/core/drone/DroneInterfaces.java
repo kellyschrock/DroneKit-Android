@@ -144,6 +144,8 @@ public class DroneInterfaces {
          */
         MISSION_SENT,
 
+        MISSION_SEND_FAILED,
+
         /**
          *
          */

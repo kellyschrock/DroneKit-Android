@@ -42,7 +42,7 @@ public class ReturnToHomeImpl extends MissionCMD {
         List<msg_mission_item> list = super.packMissionItem();
         msg_mission_item mavMsg = list.get(0);
         mavMsg.command = MAV_CMD.MAV_CMD_NAV_RETURN_TO_LAUNCH;
-        mavMsg.frame = MAV_FRAME.MAV_FRAME_GLOBAL_RELATIVE_ALT;
+        mavMsg.frame = MAV_FRAME.MAV_FRAME_MISSION;
         mavMsg.z = (float) returnAltitude;
         return list;
     }

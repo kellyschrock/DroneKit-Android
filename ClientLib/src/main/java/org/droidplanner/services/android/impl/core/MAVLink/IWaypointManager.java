@@ -12,7 +12,7 @@ public interface IWaypointManager {
         IDLE, READ_REQUEST, READING_WP, WRITING_WP_COUNT, WRITING_WP, WAITING_WRITE_ACK
     }
 
-    public enum WaypointEvent_Type {
+    enum WaypointEvent_Type {
         WP_UPLOAD, WP_DOWNLOAD, WP_RETRY, WP_CONTINUE, WP_TIMED_OUT
     }
 

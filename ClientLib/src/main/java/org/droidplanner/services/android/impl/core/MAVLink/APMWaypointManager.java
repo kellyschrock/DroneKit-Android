@@ -222,7 +222,8 @@ public class APMWaypointManager extends DroneVariable implements IWaypointManage
 
             case WAITING_WRITE_ACK:
                 if (msg.msgid == msg_mission_ack.MAVLINK_MSG_ID_MISSION_ACK) {
-                    Log.v(TAG, "got MISSION_ACK");
+                    msg_mission_ack ack = (msg_mission_ack)msg;
+                    Timber.d("Got MISSION_ACK: type=%d", ack.type);
 
                     stopWatchdog();
                     myDrone.getMission().onWriteWaypoints((msg_mission_ack) msg);

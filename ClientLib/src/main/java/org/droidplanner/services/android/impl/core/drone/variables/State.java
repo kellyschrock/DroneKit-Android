@@ -3,6 +3,7 @@ package org.droidplanner.services.android.impl.core.drone.variables;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.MAVLink.ardupilotmega.msg_ekf_status_report;
 import com.MAVLink.enums.EKF_STATUS_FLAGS;
@@ -17,8 +18,12 @@ import org.droidplanner.services.android.impl.core.model.AutopilotWarningParser;
 
 import com.MAVLink.enums.MAV_TYPE;
 import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
+import com.o3dr.services.android.lib.drone.property.VehicleMode;
 import com.o3dr.services.android.lib.model.ICommandListener;
 import com.o3dr.services.android.lib.model.action.Action;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -37,6 +42,8 @@ public class State extends DroneVariable<GenericMavLinkDrone> {
     private boolean isFlying = false;
     private BaseMode mode = UnknownMode.INSTANCE;
     private int vehicleType = MAV_TYPE.MAV_TYPE_GENERIC;
+
+    private final List<VehicleMode> vehicleModes = new ArrayList<>();
 
     // flightTimer
     // ----------------
@@ -135,6 +142,8 @@ public class State extends DroneVariable<GenericMavLinkDrone> {
     public void setVehicleType(int type) {
         this.vehicleType = type;
     }
+
+    public boolean hasVehicleModes() { return !vehicleModes.isEmpty(); }
 
     public void changeAPMFlightMode(ApmModes mode, final ICommandListener listener) {
         if (this.mode == mode) {

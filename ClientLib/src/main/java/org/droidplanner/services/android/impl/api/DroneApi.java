@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Pair;
 import android.view.Surface;
 
@@ -623,6 +622,13 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
 
             case MISSION_SENT:
                 droneEvent = AttributeEvent.MISSION_SENT;
+                break;
+
+            case MISSION_SEND_FAILED:
+                if(drone instanceof MavLinkDrone) {
+                    extrasBundle.putInt(AttributeEventExtra.EXTRA_MISSION_SEND_ACK, ((MavLinkDrone)drone).getMission().getMissionSendAck());
+                }
+                droneEvent = AttributeEvent.MISSION_SEND_FAILED;
                 break;
 
             case INVALID_POLYGON:

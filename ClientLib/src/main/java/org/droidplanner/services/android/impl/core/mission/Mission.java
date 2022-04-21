@@ -63,6 +63,8 @@ public class Mission extends DroneVariable<GenericMavLinkDrone> {
     private List<MissionItemImpl> items = new ArrayList<MissionItemImpl>();
     private final List<MissionItemImpl> componentItems = new ArrayList<>();
 
+    private int missionSendAck = 0;
+
     public Mission(GenericMavLinkDrone myDrone) {
         super(myDrone);
     }
@@ -176,8 +178,11 @@ public class Mission extends DroneVariable<GenericMavLinkDrone> {
     }
 
     public void onWriteWaypoints(msg_mission_ack msg) {
-        myDrone.notifyDroneEvent(DroneEventsType.MISSION_SENT);
+        this.missionSendAck = msg.type;
+        myDrone.notifyDroneEvent((msg.type == 0)? DroneEventsType.MISSION_SENT: DroneEventsType.MISSION_SEND_FAILED);
     }
+
+    public int getMissionSendAck() { return missionSendAck; }
 
     public List<MissionItemImpl> getItems() {
         return items;
@@ -226,6 +231,16 @@ public class Mission extends DroneVariable<GenericMavLinkDrone> {
             msgs.remove(0); // Remove Home waypoint
             items.clear();
             items.addAll(processMavLinkMessages(msgs));
+            myDrone.notifyDroneEvent(DroneEventsType.MISSION_RECEIVED);
+            notifyMissionUpdate();
+        }
+    }
+
+    public void onPX4MissionReceived(List<msg_mission_item> msgs) {
+        if (msgs != null) {
+            items.clear();
+            items.addAll(processMavLinkMessages(msgs));
+            Log.v(TAG, String.format("Now I have %d items", items.size()));
             myDrone.notifyDroneEvent(DroneEventsType.MISSION_RECEIVED);
             notifyMissionUpdate();
         }
@@ -393,9 +408,9 @@ public class Mission extends DroneVariable<GenericMavLinkDrone> {
 
         List<msg_mission_item> data = new ArrayList<msg_mission_item>();
         int waypointCount = 0;
-        msg_mission_item home = packHomeMavlink();
-        home.seq = waypointCount++;
-        data.add(home);
+//        msg_mission_item home = packHomeMavlink();
+//        home.seq = waypointCount++;
+//        data.add(home);
 
         int size = items.size();
         for (int i = 0; i < size; i++) {

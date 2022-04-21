@@ -3,6 +3,7 @@ package org.droidplanner.services.android.impl.core.mission.commands;
 import com.MAVLink.common.msg_mission_item;
 import com.MAVLink.enums.GRIPPER_ACTIONS;
 import com.MAVLink.enums.MAV_CMD;
+import com.MAVLink.enums.MAV_FRAME;
 
 import org.droidplanner.services.android.impl.core.mission.Mission;
 import org.droidplanner.services.android.impl.core.mission.MissionItemImpl;
@@ -33,6 +34,7 @@ public class EpmGripperImpl extends MissionCMD {
 		List<msg_mission_item> list = super.packMissionItem();
 		msg_mission_item mavMsg = list.get(0);
 		mavMsg.command = MAV_CMD.MAV_CMD_DO_GRIPPER;
+		mavMsg.frame = MAV_FRAME.MAV_FRAME_MISSION;
 		mavMsg.param2 = release ? GRIPPER_ACTIONS.GRIPPER_ACTION_RELEASE : GRIPPER_ACTIONS.GRIPPER_ACTION_GRAB;
 		return list;
 	}

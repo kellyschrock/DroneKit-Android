@@ -90,13 +90,15 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
      */
     @Override
     public void getWaypoints() {
+        Log.v(TAG, "getWaypoints(): state=" + state);
+
         // ensure that WPManager is not doing anything else
         if (state != WaypointStates.IDLE)
             return;
 
         doBeginWaypointEvent(WaypointEvent_Type.WP_DOWNLOAD);
         readIndex = -1;
-        state = WaypointStates.READ_REQUEST;
+        setState(WaypointStates.READ_REQUEST);
         MavLinkWaypoint.requestWaypointsList(myDrone);
 
         startWatchdog();
@@ -112,7 +114,7 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
 
     @Override
     public void writeWaypoints(List<msg_mission_item> data) {
-        Log.v(TAG, "writeWaypoints()");
+        Timber.d("writeWaypoints(): data=%s", data);
 
         // ensure that WPManager is not doing anything else
         if (state != WaypointStates.IDLE) {
@@ -127,7 +129,7 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
             sendClearAll();
 
             writeIndex = 0;
-            state = WaypointStates.WRITING_WP_COUNT;
+            setState(WaypointStates.WRITING_WP_COUNT);
             Log.v(TAG, "sendWaypointCount()");
 
             MavLinkWaypoint.sendWaypointCount(myDrone, 0, MAV_MISSION_TYPE.MAV_MISSION_TYPE_FENCE);
@@ -190,18 +192,21 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
                 break;
 
             case READ_REQUEST:
+                Timber.d("READ_REQUEST");
                 if (msg.msgid == msg_mission_count.MAVLINK_MSG_ID_MISSION_COUNT) {
                     waypointCount = ((msg_mission_count) msg).count;
                     mission.clear();
                     startWatchdog();
                     MavLinkWaypoint.requestWayPoint(myDrone, mission.size());
-                    state = WaypointStates.READING_WP;
+                    setState(WaypointStates.READING_WP);
                     return true;
                 }
                 break;
 
             case READING_WP:
                 if (msg.msgid == msg_mission_item.MAVLINK_MSG_ID_MISSION_ITEM) {
+                    Timber.d("READING_WP getting mission item: %s", msg);
+
                     startWatchdog();
                     processReceivedWaypoint((msg_mission_item) msg);
                     doWaypointEvent(WaypointEvent_Type.WP_DOWNLOAD, readIndex + 1, waypointCount);
@@ -209,9 +214,9 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
                         MavLinkWaypoint.requestWayPoint(myDrone, mission.size());
                     } else {
                         stopWatchdog();
-                        state = WaypointStates.IDLE;
+                        setState(WaypointStates.IDLE);
                         MavLinkWaypoint.sendAck(myDrone);
-                        myDrone.getMission().onMissionReceived(mission);
+                        myDrone.getMission().onPX4MissionReceived(mission);
                         doEndWaypointEvent(WaypointEvent_Type.WP_DOWNLOAD);
                     }
                     return true;
@@ -219,7 +224,8 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
                 break;
 
             case WRITING_WP_COUNT:
-                state = WaypointStates.WRITING_WP;
+                Timber.d("WRITING_WP_COUNT");
+                setState(WaypointStates.WRITING_WP);
             case WRITING_WP:
                 switch(msg.msgid) {
                     case msg_mission_request.MAVLINK_MSG_ID_MISSION_REQUEST: {
@@ -246,14 +252,16 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
                 break;
 
             case WAITING_WRITE_ACK:
+                Timber.d("WAITING_WRITE_ACK");
                 if (msg.msgid == msg_mission_ack.MAVLINK_MSG_ID_MISSION_ACK) {
-                    Log.v(TAG, "got MISSION_ACK");
+                    msg_mission_ack ack = (msg_mission_ack)msg;
+                    Timber.d("Got MISSION_ACK: type=%d", ack.type);
 
-                    sendMissionSetCurrent();
+//                    sendMissionSetCurrent();
 
                     stopWatchdog();
                     myDrone.getMission().onWriteWaypoints((msg_mission_ack) msg);
-                    state = WaypointStates.IDLE;
+                    setState(WaypointStates.IDLE);
                     doEndWaypointEvent(WaypointEvent_Type.WP_UPLOAD);
                     return true;
                 }
@@ -277,7 +285,7 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
 
         // If max retry is reached, set state to IDLE. No more retry.
         if (mTimeOutCount >= RETRY_LIMIT) {
-            state = WaypointStates.IDLE;
+            setState(WaypointStates.IDLE);
             doWaypointEvent(WaypointEvent_Type.WP_TIMED_OUT, retryIndex, RETRY_LIMIT);
             return false;
         }
@@ -332,12 +340,13 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
         item.target_system = myDrone.getSysid();
         item.target_component = myDrone.getCompid();
 
-        Log.v(TAG, String.format("Send MISSION_ITEM seq=%d", item.seq));
+//        Log.v(TAG, String.format("Send MISSION_ITEM seq=%d", item.seq));
+        Log.v(TAG, String.format("Send MISSION_ITEM %s", item));
 
         myDrone.getMavClient().sendMessage(item, null);
 
         if (writeIndex + 1 >= mission.size()) {
-            state = WaypointStates.WAITING_WRITE_ACK;
+            setState(WaypointStates.WAITING_WRITE_ACK);
         }
     }
 
@@ -372,7 +381,7 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
         myDrone.getMavClient().sendMessage(item, null);
 
         if (writeIndex + 1 >= mission.size()) {
-            state = WaypointStates.WAITING_WRITE_ACK;
+            setState(WaypointStates.WAITING_WRITE_ACK);
         }
     }
 
@@ -406,7 +415,7 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
         myDrone.getMavClient().sendMessage(item, null);
 
         if (writeIndex + 1 >= mission.size()) {
-            state = WaypointStates.WAITING_WRITE_ACK;
+            setState(WaypointStates.WAITING_WRITE_ACK);
         }
     }
 
@@ -439,6 +448,7 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
         readIndex = msg.seq;
 
         mission.add(msg);
+        Log.v(TAG, String.format("processReceivedWaypoint(): %d items", mission.size()));
     }
 
     private void doBeginWaypointEvent(WaypointEvent_Type wpEvent) {
@@ -471,4 +481,8 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
         wpEventListener.onWaypointEvent(wpEvent, index, count);
     }
 
+    private void setState(WaypointStates state) {
+        Timber.d("setState(%s)", state);
+        this.state = state;
+    }
 }

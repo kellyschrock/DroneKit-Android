@@ -55,6 +55,7 @@ import org.droidplanner.services.android.impl.core.drone.variables.ApmModes;
 import org.droidplanner.services.android.impl.core.drone.variables.Camera;
 import org.droidplanner.services.android.impl.core.drone.variables.GuidedPoint;
 import org.droidplanner.services.android.impl.core.drone.variables.Px4Mode;
+import org.droidplanner.services.android.impl.core.drone.variables.Px4Util;
 import org.droidplanner.services.android.impl.core.drone.variables.calibration.AccelCalibration;
 import org.droidplanner.services.android.impl.core.drone.variables.calibration.MagnetometerCalibrationImpl;
 import org.droidplanner.services.android.impl.core.firmware.FirmwareType;

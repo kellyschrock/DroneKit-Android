@@ -2,6 +2,7 @@ package com.o3dr.services.android.lib.drone.mission.item.command;
 
 import android.os.Parcel;
 
+import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
 import com.o3dr.services.android.lib.drone.mission.MissionItemType;
 
@@ -15,6 +16,7 @@ import com.o3dr.services.android.lib.drone.mission.MissionItemType;
  */
 public class Takeoff extends MissionItem implements MissionItem.Command, android.os.Parcelable {
 
+    private LatLong location;
     private double takeoffAltitude;
     private double takeoffPitch;
 
@@ -22,10 +24,11 @@ public class Takeoff extends MissionItem implements MissionItem.Command, android
         super(MissionItemType.TAKEOFF);
     }
 
-    public Takeoff(Takeoff copy){
+    public Takeoff(Takeoff copy) {
         this();
         takeoffAltitude = copy.takeoffAltitude;
         takeoffPitch = copy.takeoffPitch;
+        location = new LatLong(copy.location);
     }
 
     /**
@@ -50,6 +53,13 @@ public class Takeoff extends MissionItem implements MissionItem.Command, android
     public void setTakeoffPitch(double takeoffPitch) {
         this.takeoffPitch = takeoffPitch;
     }
+
+    public LatLong getLocation() { return location; }
+
+    public void setLocation(LatLong loc) { this.location = (loc != null)? new LatLong(loc): null; }
+
+    public double getLatitude() { return (this.location != null)? this.location.getLatitude(): 0; }
+    public double getLongitude() { return (this.location != null)? this.location.getLongitude(): 0; }
 
     @Override
     public String toString() {
@@ -88,12 +98,14 @@ public class Takeoff extends MissionItem implements MissionItem.Command, android
         super.writeToParcel(dest, flags);
         dest.writeDouble(this.takeoffAltitude);
         dest.writeDouble(this.takeoffPitch);
+        dest.writeParcelable(this.location, flags);
     }
 
     private Takeoff(Parcel in) {
         super(in);
         this.takeoffAltitude = in.readDouble();
         this.takeoffPitch = in.readDouble();
+        this.location = in.readParcelable(LatLong.class.getClassLoader());
     }
 
     @Override

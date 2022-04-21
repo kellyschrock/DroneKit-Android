@@ -236,7 +236,13 @@ public class ProxyUtils {
             case TAKEOFF: {
                 Takeoff proxy = (Takeoff) proxyItem;
 
-                TakeoffImpl temp = new TakeoffImpl(mission, proxy.getTakeoffAltitude(), proxy.getTakeoffPitch());
+                TakeoffImpl temp = new TakeoffImpl(
+                    mission,
+                    proxy.getLatitude(),
+                    proxy.getLongitude(),
+                    proxy.getTakeoffAltitude(),
+                    proxy.getTakeoffPitch()
+                );
 
                 missionItemImpl = temp;
                 break;

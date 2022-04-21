@@ -32,8 +32,6 @@ public enum VehicleMode implements DroneAttribute {
     PLANE_QAUTOTUNE(22, Type.TYPE_PLANE, "QAutoTune"),
     PLANE_QACRO(23, Type.TYPE_PLANE, "QAcro"),
 
-    COPTER_PX4_MANUAL(0, Type.TYPE_COPTER, "Manual"),
-    COPTER_PX4_RATTITUDE(0, Type.TYPE_COPTER, "Rattitude"),
     COPTER_STABILIZE(0, Type.TYPE_COPTER, "Stabilize"),
     COPTER_ACRO(1, Type.TYPE_COPTER, "Acro"),
     COPTER_ALT_HOLD(2, Type.TYPE_COPTER, "Alt Hold"),
@@ -84,7 +82,7 @@ public enum VehicleMode implements DroneAttribute {
     private final int droneType;
     private final String label;
 
-    VehicleMode(int mode, int droneType, String label){
+    VehicleMode(int mode, int droneType, String label) {
         this.mode = mode;
         this.droneType = droneType;
         this.label = label;
@@ -136,6 +134,19 @@ public enum VehicleMode implements DroneAttribute {
         for(VehicleMode vehicleMode: availableModes){
             if(vehicleMode.getDroneType() == droneType)
                 vehicleModes.add(vehicleMode);
+        }
+
+        return vehicleModes;
+    }
+
+    public static List<VehicleMode> getAPMVehicleModesForDroneType(int droneType) {
+        VehicleMode[] availableModes = VehicleMode.values();
+        final List<VehicleMode> vehicleModes = new ArrayList<VehicleMode>(availableModes.length);
+
+        for(VehicleMode vehicleMode: availableModes){
+            if(vehicleMode.getDroneType() == droneType) {
+                vehicleModes.add(vehicleMode);
+            }
         }
 
         return vehicleModes;

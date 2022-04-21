@@ -1,6 +1,7 @@
 package org.droidplanner.services.android.impl.core.mission.commands;
 
 import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.enums.MAV_FRAME;
 import com.o3dr.services.android.lib.drone.mission.item.command.RawMissionCommand;
 
 import org.droidplanner.services.android.impl.core.mission.Mission;
@@ -152,6 +153,7 @@ public class RawMissionCommandImpl extends MissionCMD {
         msg.param2 = param2;
         msg.param3 = param3;
         msg.param4 = param4;
+        msg.frame = MAV_FRAME.MAV_FRAME_MISSION;
         msg.x = x;
         msg.y = y;
         msg.z = z;

@@ -1,7 +1,6 @@
 package org.droidplanner.services.android.impl.core.drone.variables;
 
-import android.util.Log;
-
+import com.MAVLink.common.msg_heartbeat;
 import com.MAVLink.enums.MAV_TYPE;
 import com.o3dr.services.android.lib.drone.property.VehicleMode;
 
@@ -10,67 +9,118 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+MANUAL:     base_mode=29 custom_mode=50593792
+ACRO:       base_mode=65 custom_mode=327680
+STABILIZED: base_mode=81 custom_mode=458752
+ALTCTL:     base_mode=81 custom_mode=131072
+POSCTL:     base_mode=81 custom_mode=196608
+MISSION:    base_mode=29 custom_mode=67371008
+LOITER:     base_mode=29 custom_mode=50593792
+RTL:        base_mode=29 custom_mode=84148224
+TAKEOFF:    base_mode=29 custom_mode=33816576
+LAND:       base_mode=29 custom_mode=100925440
+
+base_mode is 157 when armed and 29 when disarmed. Manual/Stabilized uses base_mode 81 for some reason.
+Best to just use the current base_mode when setting modes. That seems to work.
+
+Overall, this is a dumb way to deal with PX4 modes. QGC uses a C union type to determine mode,
+and it works well. Also unions only exist in C and C++, so there's that.
+ */
+
 public enum Px4Mode implements BaseMode<Px4Mode> {
     MANUAL("Manual",
+            PX4MavBaseMode.STABILIZED,
+            Px4MavCustomMode.MANUAL,
             Px4Util.CUSTOM_ENABLED | Px4Util.MANUAL_MODE_FLAGS,
             Px4Util.PX4_CUSTOM_MAIN_MODE_MANUAL,
             0, true, true, true),
     STABILIZED("Stabilized",
+            PX4MavBaseMode.STABILIZED,
+            Px4MavCustomMode.STABILIZED,
             Px4Util.CUSTOM_ENABLED | Px4Util.MANUAL_MODE_FLAGS,
             Px4Util.PX4_CUSTOM_MAIN_MODE_STABILIZED,
             0, true, true, true),
     ACRO("Acro",
+            PX4MavBaseMode.ACRO,
+            Px4MavCustomMode.ACRO,
             Px4Util.CUSTOM_ENABLED | Px4Util.RAW_MODE_FLAGS,
             Px4Util.PX4_CUSTOM_MAIN_MODE_ACRO,
             0, true, true, true),
     RATTITUDE("Rattitude",
+            PX4MavBaseMode.NONE,
+            0L,
             Px4Util.CUSTOM_ENABLED | Px4Util.RAW_MODE_FLAGS,
             Px4Util.PX4_CUSTOM_MAIN_MODE_RATTITUDE,
             0, true, true, true),
     ALTCTL("ALTCTL",
+            PX4MavBaseMode.NONE,
+            Px4MavCustomMode.ALTCTL,
             Px4Util.CUSTOM_ENABLED | Px4Util.MANUAL_MODE_FLAGS,
             Px4Util.PX4_CUSTOM_MAIN_MODE_ALTCTL,
             0, true, true, true),
     POSCTL("POSCTL",
+            PX4MavBaseMode.NONE,
+            Px4MavCustomMode.POSCTL,
             Px4Util.CUSTOM_ENABLED | Px4Util.MANUAL_MODE_FLAGS,
             Px4Util.PX4_CUSTOM_MAIN_MODE_POSCTL,
             0, true, true, true),
     LOITER("Loiter",
+            PX4MavBaseMode.NONE,
+            Px4MavCustomMode.LOITER,
             Px4Util.CUSTOM_ENABLED | Px4Util.AUTO_MODE_FLAGS,
             Px4Util.PX4_CUSTOM_MAIN_MODE_AUTO,
             Px4Util.PX4_CUSTOM_SUB_MODE_AUTO_LOITER, true, true, true),
     MISSION("Mission",
+            PX4MavBaseMode.NONE,
+            Px4MavCustomMode.MISSION,
             Px4Util.CUSTOM_ENABLED | Px4Util.AUTO_MODE_FLAGS,
             Px4Util.PX4_CUSTOM_MAIN_MODE_AUTO,
             Px4Util.PX4_CUSTOM_SUB_MODE_AUTO_MISSION, true, true, true),
     RTL("RTL",
+            PX4MavBaseMode.NONE,
+            Px4MavCustomMode.RTL,
             Px4Util.CUSTOM_ENABLED | Px4Util.AUTO_MODE_FLAGS,
             Px4Util.PX4_CUSTOM_MAIN_MODE_AUTO,
             Px4Util.PX4_CUSTOM_SUB_MODE_AUTO_RTL, true, true, true),
     FOLLOW_ME("Follow Me",
+            PX4MavBaseMode.NONE,
+            0L,
             Px4Util.CUSTOM_ENABLED | Px4Util.AUTO_MODE_FLAGS,
             Px4Util.PX4_CUSTOM_MAIN_MODE_AUTO,
             Px4Util.PX4_CUSTOM_SUB_MODE_AUTO_FOLLOW_TARGET, true, false, true),
     OFFBOARD("Offboard",
+            PX4MavBaseMode.NONE,
+            0L,
             Px4Util.CUSTOM_ENABLED | Px4Util.AUTO_MODE_FLAGS,
             Px4Util.PX4_CUSTOM_MAIN_MODE_OFFBOARD, 0, true, false, true),
     LAND("Land",
+            PX4MavBaseMode.NONE,
+            Px4MavCustomMode.LAND,
             Px4Util.CUSTOM_ENABLED | Px4Util.AUTO_MODE_FLAGS,
             Px4Util.PX4_CUSTOM_MAIN_MODE_AUTO,
             Px4Util.PX4_CUSTOM_SUB_MODE_AUTO_LAND, false, true, true),
     READY("Ready",
-            Px4Util.CUSTOM_ENABLED | Px4Util.AUTO_MODE_FLAGS,
+            PX4MavBaseMode.NONE,
+        0,
+        Px4Util.CUSTOM_ENABLED | Px4Util.AUTO_MODE_FLAGS,
             Px4Util.PX4_CUSTOM_MAIN_MODE_AUTO,
             Px4Util.PX4_CUSTOM_SUB_MODE_AUTO_READY, false, true, true),
     RTGS("RTGS",
-            Px4Util.CUSTOM_ENABLED | Px4Util.AUTO_MODE_FLAGS,
+            PX4MavBaseMode.NONE,
+            0L,
+        Px4Util.CUSTOM_ENABLED | Px4Util.AUTO_MODE_FLAGS,
             Px4Util.PX4_CUSTOM_MAIN_MODE_AUTO,
             Px4Util.PX4_CUSTOM_SUB_MODE_AUTO_RTGS, false, true, true),
     TAKEOFF("Takeoff",
-            Px4Util.CUSTOM_ENABLED | Px4Util.AUTO_MODE_FLAGS,
+            PX4MavBaseMode.NONE,
+            Px4MavCustomMode.TAKEOFF,
+        Px4Util.CUSTOM_ENABLED | Px4Util.AUTO_MODE_FLAGS,
             Px4Util.PX4_CUSTOM_MAIN_MODE_AUTO,
             Px4Util.PX4_CUSTOM_SUB_MODE_AUTO_TAKEOFF, false, true, true),
     UNKNOWN("Unknown",
+            PX4MavBaseMode.NONE,
+            0L,
             Px4Util.CUSTOM_ENABLED | Px4Util.MANUAL_MODE_FLAGS,
             0, 0, false, false, false)
     ;
@@ -80,14 +130,18 @@ public enum Px4Mode implements BaseMode<Px4Mode> {
     private final int mainMode;
     private final int customMode;
     private final int customSubMode;
+    private final long mavMainMode;
+    private final long mavCustomMode;
     private final boolean canBeSet;
     private final boolean fixedWingCompat;
     private final boolean multiRotorCompat;
 
     private final String name;
 
-    Px4Mode(String name, int mainMode, int customMode, int customSubMode, boolean canSet, boolean fwCompat, boolean mcCompat) {
+    Px4Mode(String name, long mavMainMode, long mavCustomMode, int mainMode, int customMode, int customSubMode, boolean canSet, boolean fwCompat, boolean mcCompat) {
         this.name = name;
+        this.mavMainMode = mavMainMode;
+        this.mavCustomMode = mavCustomMode;
         this.mainMode = mainMode;
         this.customMode = customMode;
         this.customSubMode = customSubMode;
@@ -105,6 +159,8 @@ public enum Px4Mode implements BaseMode<Px4Mode> {
     public Px4Mode getNativeMode() {
         return this;
     }
+
+    public boolean hasMavBaseMode() { return mavMainMode != PX4MavBaseMode.NONE; }
 
     public int getMainMode() {
         return mainMode;
@@ -151,11 +207,19 @@ public enum Px4Mode implements BaseMode<Px4Mode> {
         final List<Px4Mode> list = new ArrayList<>();
 
         if(isCopter(type)) {
-            for(Px4Mode m: values()) {
-                if(m.canBeSet && m.multiRotorCompat) {
-                    list.add(m);
-                }
-            }
+            list.add(Px4Mode.STABILIZED);
+            list.add(Px4Mode.LOITER);
+            list.add(Px4Mode.ALTCTL);
+            list.add(Px4Mode.POSCTL);
+            list.add(Px4Mode.MISSION);
+            list.add(Px4Mode.OFFBOARD);
+            list.add(Px4Mode.ACRO);
+            list.add(Px4Mode.RTL);
+//            for(Px4Mode m: values()) {
+//                if(m.canBeSet && m.multiRotorCompat) {
+//                    list.add(m);
+//                }
+//            }
         } else if(isPlane(type)) {
             for(Px4Mode m: values()) {
                 if(m.canBeSet && m.fixedWingCompat) {
@@ -186,6 +250,37 @@ public enum Px4Mode implements BaseMode<Px4Mode> {
         } else {
             return VehicleMode.UNKNOWN;
         }
+    }
+
+    public static Px4Mode getHackyAssMode(msg_heartbeat msg) {
+        for(Px4Mode mode: values()) {
+            boolean baseMatch = (mode.hasMavBaseMode())?
+                (mode.mavMainMode == msg.base_mode): true;
+
+            if(mode.mavCustomMode == msg.custom_mode && baseMatch) {
+                switch(msg.type) {
+                    case MAV_TYPE.MAV_TYPE_FIXED_WING: {
+                        if(mode.isFixedWing()) return mode;
+                    }
+                    
+                    case MAV_TYPE.MAV_TYPE_QUADROTOR: {
+                        if(mode.isMultiRotor()) return mode;
+                    }
+                    
+                    case MAV_TYPE.MAV_TYPE_VTOL_DUOROTOR:
+                    case MAV_TYPE.MAV_TYPE_VTOL_QUADROTOR:
+                    case MAV_TYPE.MAV_TYPE_VTOL_TILTROTOR:
+                    case MAV_TYPE.MAV_TYPE_VTOL_RESERVED2:
+                    case MAV_TYPE.MAV_TYPE_VTOL_RESERVED3:
+                    case MAV_TYPE.MAV_TYPE_VTOL_RESERVED4:
+                    case MAV_TYPE.MAV_TYPE_VTOL_RESERVED5: {
+                        return mode;
+                    }
+                }
+            }
+        }
+
+        return Px4Mode.UNKNOWN;
     }
 
     public static Px4Mode getHeartbeatMode(int baseMode, long customMode, int type) {

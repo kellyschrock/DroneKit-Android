@@ -79,7 +79,26 @@ public class MavLinkMsgHandler {
                 break;
 
             case MAV_AUTOPILOT.MAV_AUTOPILOT_PX4:
-                droneMgr.onVehicleTypeReceived(FirmwareType.PX4_NATIVE);
+                switch(heartbeat.type) {
+                    case MAV_TYPE.MAV_TYPE_FIXED_WING:
+                        droneMgr.onVehicleTypeReceived(FirmwareType.PX4_PLANE);
+                        break;
+
+                    case MAV_TYPE.MAV_TYPE_GENERIC:
+                    case MAV_TYPE.MAV_TYPE_QUADROTOR:
+                    case MAV_TYPE.MAV_TYPE_COAXIAL:
+                    case MAV_TYPE.MAV_TYPE_HELICOPTER:
+                    case MAV_TYPE.MAV_TYPE_HEXAROTOR:
+                    case MAV_TYPE.MAV_TYPE_OCTOROTOR:
+                    case MAV_TYPE.MAV_TYPE_TRICOPTER:
+                        droneMgr.onVehicleTypeReceived(FirmwareType.PX4_COPTER);
+                        break;
+
+                    default:
+                        droneMgr.onVehicleTypeReceived(FirmwareType.PX4_NATIVE);
+                        break;
+                }
+
                 break;
 
             case MAV_AUTOPILOT.MAV_AUTOPILOT_GENERIC:

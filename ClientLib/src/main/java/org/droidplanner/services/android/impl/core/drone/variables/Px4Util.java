@@ -1,13 +1,21 @@
 package org.droidplanner.services.android.impl.core.drone.variables;
 
+import android.util.Log;
+
 import com.MAVLink.enums.MAV_MODE_FLAG;
 import com.MAVLink.enums.MAV_TYPE;
 import com.o3dr.services.android.lib.drone.property.VehicleMode;
 
+import org.droidplanner.services.android.impl.core.firmware.FirmwareType;
+
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Px4Util {
+    private static final String TAG = Px4Util.class.getSimpleName();
+
     public static final int AUTO_MODE_FLAGS =
             MAV_MODE_FLAG.MAV_MODE_FLAG_AUTO_ENABLED |
             MAV_MODE_FLAG.MAV_MODE_FLAG_STABILIZE_ENABLED |
@@ -38,6 +46,11 @@ public class Px4Util {
     public static final int PX4_CUSTOM_SUB_MODE_AUTO_LAND          = 6;
     public static final int PX4_CUSTOM_SUB_MODE_AUTO_RTGS          = 7;
     public static final int PX4_CUSTOM_SUB_MODE_AUTO_FOLLOW_TARGET = 8;
+    public static final int PX4_CUSTOM_SUB_MODE_AUTO_PRECLAND      = 9;
+
+    public static final int PX4_CUSTOM_SUB_MODE_POSCTL_POSCTL      = 0;
+    public static final int PX4_CUSTOM_SUB_MODE_POSCTL_ORBIT       = 1;
+
 
     private static final HashMap<VehicleMode, Px4Mode> sModeMap = new HashMap<>();
 
@@ -67,16 +80,17 @@ public class Px4Util {
 
     static {
         // Copter
-        sModeMap.put(VehicleMode.COPTER_PX4_MANUAL, Px4Mode.MANUAL);
-        sModeMap.put(VehicleMode.COPTER_PX4_RATTITUDE, Px4Mode.RATTITUDE);
+//        sModeMap.put(VehicleMode.COPTER_PX4_MANUAL, Px4Mode.MANUAL);
+//        sModeMap.put(VehicleMode.COPTER_PX4_RATTITUDE, Px4Mode.RATTITUDE);
         sModeMap.put(VehicleMode.COPTER_STABILIZE, Px4Mode.STABILIZED);
         sModeMap.put(VehicleMode.COPTER_ACRO, Px4Mode.ACRO);
         sModeMap.put(VehicleMode.COPTER_ALT_HOLD, Px4Mode.ALTCTL);
         sModeMap.put(VehicleMode.COPTER_AUTO, Px4Mode.MISSION);
         sModeMap.put(VehicleMode.COPTER_LOITER, Px4Mode.POSCTL);
+        sModeMap.put(VehicleMode.COPTER_POSHOLD, Px4Mode.POSCTL);
+        sModeMap.put(VehicleMode.COPTER_CIRCLE, Px4Mode.POSCTL);
         sModeMap.put(VehicleMode.COPTER_RTL, Px4Mode.RTL);
         sModeMap.put(VehicleMode.COPTER_SMART_RTL, Px4Mode.RTL);
-        sModeMap.put(VehicleMode.COPTER_CIRCLE, Px4Mode.POSCTL);
         sModeMap.put(VehicleMode.COPTER_GUIDED, Px4Mode.OFFBOARD);
 
         // Plane
@@ -122,9 +136,9 @@ public class Px4Util {
 
     static VehicleMode toCopterMode(Px4Mode mode) {
         switch(mode) {
-            case MANUAL: return VehicleMode.COPTER_PX4_MANUAL;
-            case STABILIZED: return VehicleMode.COPTER_STABILIZE;
-            case RATTITUDE: return VehicleMode.COPTER_PX4_RATTITUDE;
+            case MANUAL:
+            case STABILIZED:
+            case RATTITUDE: return VehicleMode.COPTER_STABILIZE;
             case ACRO: return VehicleMode.COPTER_ACRO;
             case ALTCTL: return VehicleMode.COPTER_ALT_HOLD;
             case MISSION: return VehicleMode.COPTER_AUTO;
@@ -132,6 +146,7 @@ public class Px4Util {
             case POSCTL: return VehicleMode.COPTER_POSHOLD;
             case RTL: return VehicleMode.COPTER_RTL;
             case OFFBOARD: return VehicleMode.COPTER_GUIDED;
+            case LAND: return VehicleMode.COPTER_LAND;
             case FOLLOW_ME: // Not supported anyway, leave it
             default: {
                 return VehicleMode.UNKNOWN;

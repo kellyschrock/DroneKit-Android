@@ -2,6 +2,7 @@ package org.droidplanner.services.android.impl.core.mission.commands;
 
 import com.MAVLink.common.msg_mission_item;
 import com.MAVLink.enums.MAV_CMD;
+import com.MAVLink.enums.MAV_FRAME;
 
 import org.droidplanner.services.android.impl.core.helpers.geoTools.GeoTools;
 import org.droidplanner.services.android.impl.core.mission.Mission;
@@ -32,6 +33,7 @@ public class ConditionDelayImpl extends MissionCMD {
 		List<msg_mission_item> list = super.packMissionItem();
 		msg_mission_item mavMsg = list.get(0);
 		mavMsg.command = MAV_CMD.MAV_CMD_CONDITION_DELAY;
+		mavMsg.frame = MAV_FRAME.MAV_FRAME_MISSION;
 		mavMsg.param1 = (float)seconds;
 		return list;
 	}

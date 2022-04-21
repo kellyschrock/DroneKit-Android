@@ -68,6 +68,9 @@ import org.droidplanner.services.android.impl.core.mission.Mission;
 import org.droidplanner.services.android.impl.core.model.AutopilotWarningParser;
 import org.droidplanner.services.android.impl.utils.CommonApiUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import timber.log.Timber;
 
 /**
@@ -216,11 +219,11 @@ public class Px4Native extends GenericMavLinkDrone {
 
     protected void processVehicleMode(msg_heartbeat msg) {
         try {
-            final Px4Util.Px4CustomMode customMode = new Px4Util.Px4CustomMode(msg.custom_mode);
-//            Timber.d("customMode=%s", customMode);
+             Timber.d("processVehicleMode(): base_mode=%d custom_mode=%d", msg.base_mode, msg.custom_mode);
 
-            final Px4Mode mode = Px4Mode.getHeartbeatMode(msg.base_mode, customMode.sub_mode, msg.type);
-//            Log.v(TAG, String.format("mode=%s", mode));
+//            final Px4Mode mode = Px4Mode.getHeartbeatMode(msg.base_mode, customMode.sub_mode, msg.type);
+            final Px4Mode mode = Px4Mode.getHackyAssMode(msg);
+            Log.v(TAG, String.format("mode=%s", mode));
 
             if(mode != Px4Mode.UNKNOWN) {
                 state.setMode(mode);
@@ -250,6 +253,9 @@ public class Px4Native extends GenericMavLinkDrone {
         switch(attributeType) {
             case AttributeType.STATE:
                 return CommonApiUtils.getPX4State(this, isConnected(), vibration, getSysid(), getCompid());
+
+            case AttributeType.MISSION:
+                return CommonApiUtils.getMission(this);
 
             default:
                 return super.getAttribute(attributeType);
@@ -368,28 +374,47 @@ public class Px4Native extends GenericMavLinkDrone {
             // DRONE STATE ACTIONS
             case StateActions.ACTION_SET_VEHICLE_HOME:
                 LatLongAlt homeLoc = data.getParcelable(StateActions.EXTRA_VEHICLE_HOME_LOCATION);
+                Log.v(TAG, String.format("SET_HOME: homeLoc=%s", homeLoc));
+
                 if (homeLoc != null) {
                     MavLinkDoCmds.setVehicleHome(this, homeLoc, new AbstractCommandListener() {
                         @Override
                         public void onSuccess() {
                             CommonApiUtils.postSuccessEvent(listener);
-                            requestHomeUpdate();
+//                            requestHomeUpdate();
                         }
 
                         @Override
                         public void onError(int executionError) {
                             CommonApiUtils.postErrorEvent(executionError, listener);
-                            requestHomeUpdate();
+//                            requestHomeUpdate();
                         }
 
                         @Override
                         public void onTimeout() {
                             CommonApiUtils.postTimeoutEvent(listener);
-                            requestHomeUpdate();
+//                            requestHomeUpdate();
                         }
                     });
                 } else {
-                    CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, listener);
+                    MavLinkDoCmds.setVehicleCurrentHome(this, new AbstractCommandListener() {
+                        @Override
+                        public void onSuccess() {
+                            CommonApiUtils.postSuccessEvent(listener);
+                        }
+
+                        @Override
+                        public void onError(int executionError) {
+                            CommonApiUtils.postErrorEvent(executionError, listener);
+                        }
+
+                        @Override
+                        public void onTimeout() {
+                            CommonApiUtils.postTimeoutEvent(listener);
+                        }
+                    });
+
+//                    CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, listener);
                 }
                 return true;
 

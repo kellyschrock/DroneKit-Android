@@ -29,7 +29,9 @@ import com.o3dr.services.android.lib.drone.property.GuidedState;
 import com.o3dr.services.android.lib.drone.property.Home;
 import com.o3dr.services.android.lib.drone.property.Parameter;
 import com.o3dr.services.android.lib.drone.property.Parameters;
+import com.o3dr.services.android.lib.drone.property.RangeFinder;
 import com.o3dr.services.android.lib.drone.property.Signal;
+import com.o3dr.services.android.lib.drone.property.SolexCCState;
 import com.o3dr.services.android.lib.drone.property.Speed;
 import com.o3dr.services.android.lib.drone.property.State;
 import com.o3dr.services.android.lib.drone.property.Type;
@@ -381,6 +383,12 @@ public class Drone {
 
             case AttributeType.AUTOPILOT_VERSION:
                 return (T) new AutopilotVersion();
+
+            case AttributeType.RANGE_FINDER:
+                return (T) new RangeFinder();
+
+            case AttributeType.SOLEXCC_STATE:
+                return (T) new SolexCCState();
 
             case AttributeType.CAMERA:
             case SoloAttributes.SOLO_STATE:

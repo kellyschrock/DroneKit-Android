@@ -29,6 +29,22 @@ public class MavLinkDoCmds {
         drone.getMavClient().sendMessage(msg, listener);
     }
 
+    public static void setVehicleCurrentHome(MavLinkDrone drone, ICommandListener listener) {
+        if(drone == null)
+            return;
+
+        msg_command_long msg = new msg_command_long();
+        msg.target_system = drone.getSysid();
+        msg.target_component = drone.getCompid();
+        msg.command = MAV_CMD.MAV_CMD_DO_SET_HOME;
+        msg.param1 = 1; // Use current location
+        msg.param5 = 0;
+        msg.param6 = 0;
+        msg.param7 = 0;
+
+        drone.getMavClient().sendMessage(msg, listener);
+    }
+
     public static void setROI(MavLinkDrone drone, LatLongAlt coord, ICommandListener listener) {
         if (drone == null)
             return;

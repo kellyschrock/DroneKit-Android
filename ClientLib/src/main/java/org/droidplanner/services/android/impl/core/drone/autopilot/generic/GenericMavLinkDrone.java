@@ -91,6 +91,9 @@ import org.droidplanner.services.android.impl.utils.CommonApiUtils;
 import org.droidplanner.services.android.impl.utils.prefs.DroidPlannerPrefs;
 import org.droidplanner.services.android.impl.utils.video.VideoManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import timber.log.Timber;
 
 /**

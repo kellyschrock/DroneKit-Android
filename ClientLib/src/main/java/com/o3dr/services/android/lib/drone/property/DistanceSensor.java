@@ -2,6 +2,7 @@ package com.o3dr.services.android.lib.drone.property;
 
 import com.MAVLink.common.msg_distance_sensor;
 import com.MAVLink.enums.MAV_DISTANCE_SENSOR;
+import com.MAVLink.enums.MAV_SENSOR_ORIENTATION;
 
 public class DistanceSensor {
     public enum Type {
@@ -31,7 +32,7 @@ public class DistanceSensor {
     }
 
     public enum Orientation {
-        Forward(0, "Forward"),
+        Forward(MAV_SENSOR_ORIENTATION.MAV_SENSOR_ROTATION_NONE, "Forward"),
         ForwardRight(1, "Forward Right"),
         Right(2, "Right"),
         BackRight(3, "Back Right"),
