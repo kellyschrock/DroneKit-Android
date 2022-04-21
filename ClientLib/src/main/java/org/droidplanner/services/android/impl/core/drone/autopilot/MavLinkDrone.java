@@ -4,7 +4,7 @@ import com.MAVLink.Messages.MAVLinkMessage;
 import com.o3dr.services.android.lib.drone.property.SolexCCState;
 
 import org.droidplanner.services.android.impl.communication.model.DataLink;
-import org.droidplanner.services.android.impl.core.MAVLink.WaypointManager;
+import org.droidplanner.services.android.impl.core.MAVLink.IWaypointManager;
 import org.droidplanner.services.android.impl.core.drone.profiles.ParameterManager;
 import org.droidplanner.services.android.impl.core.drone.variables.Camera;
 import org.droidplanner.services.android.impl.core.drone.variables.GuidedPoint;
@@ -42,7 +42,7 @@ public interface MavLinkDrone extends Drone {
 
     public DataLink.DataLinkProvider<MAVLinkMessage> getMavClient();
 
-    public WaypointManager getWaypointManager();
+    public IWaypointManager getWaypointManager();
 
     public Mission getMission();
 

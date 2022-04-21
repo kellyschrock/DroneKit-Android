@@ -52,6 +52,7 @@ import org.droidplanner.services.android.impl.core.gcs.follow.Follow;
 import org.droidplanner.services.android.impl.core.gcs.follow.FollowAlgorithm;
 import org.droidplanner.services.android.impl.core.gcs.location.FusedLocation;
 import org.droidplanner.services.android.impl.utils.AndroidApWarningParser;
+import org.droidplanner.services.android.impl.utils.AndroidPX4Parser;
 import org.droidplanner.services.android.impl.utils.CommonApiUtils;
 import org.droidplanner.services.android.impl.utils.SoloApiUtils;
 import org.droidplanner.services.android.impl.utils.SolexCCStateCheck;
@@ -130,7 +131,7 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
 
             case PX4_NATIVE:
                 Timber.i("Instantiating PX4 Native autopilot.");
-                this.drone = new Px4Native(droneId, context, handler, mavClient, new AndroidApWarningParser(), this);
+                this.drone = new Px4Native(droneId, context, handler, mavClient, new AndroidPX4Parser(), this);
                 break;
 
             case GENERIC:

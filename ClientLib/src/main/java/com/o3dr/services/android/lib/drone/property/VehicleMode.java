@@ -32,6 +32,8 @@ public enum VehicleMode implements DroneAttribute {
     PLANE_QAUTOTUNE(22, Type.TYPE_PLANE, "QAutoTune"),
     PLANE_QACRO(23, Type.TYPE_PLANE, "QAcro"),
 
+    COPTER_PX4_MANUAL(0, Type.TYPE_COPTER, "Manual"),
+    COPTER_PX4_RATTITUDE(0, Type.TYPE_COPTER, "Rattitude"),
     COPTER_STABILIZE(0, Type.TYPE_COPTER, "Stabilize"),
     COPTER_ACRO(1, Type.TYPE_COPTER, "Acro"),
     COPTER_ALT_HOLD(2, Type.TYPE_COPTER, "Alt Hold"),

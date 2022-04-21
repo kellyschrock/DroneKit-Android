@@ -1,6 +1,7 @@
 package org.droidplanner.services.android.impl.utils;
 
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
@@ -22,6 +23,7 @@ import com.o3dr.services.android.lib.drone.calibration.magnetometer.Magnetometer
 import com.o3dr.services.android.lib.drone.mission.Mission;
 import com.o3dr.services.android.lib.drone.mission.MissionItemType;
 import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
+import com.o3dr.services.android.lib.drone.mission.item.command.CameraTrigger;
 import com.o3dr.services.android.lib.drone.mission.item.complex.CameraDetail;
 import com.o3dr.services.android.lib.drone.mission.item.complex.StructureScanner;
 import com.o3dr.services.android.lib.drone.mission.item.complex.Survey;
@@ -52,6 +54,7 @@ import org.droidplanner.services.android.impl.core.drone.profiles.ParameterManag
 import org.droidplanner.services.android.impl.core.drone.variables.ApmModes;
 import org.droidplanner.services.android.impl.core.drone.variables.Camera;
 import org.droidplanner.services.android.impl.core.drone.variables.GuidedPoint;
+import org.droidplanner.services.android.impl.core.drone.variables.Px4Mode;
 import org.droidplanner.services.android.impl.core.drone.variables.calibration.AccelCalibration;
 import org.droidplanner.services.android.impl.core.drone.variables.calibration.MagnetometerCalibrationImpl;
 import org.droidplanner.services.android.impl.core.firmware.FirmwareType;
@@ -422,18 +425,46 @@ public class CommonApiUtils {
         return new CameraProxy(camDetail, currentFieldOfView, proxyPrints, cameraDetails);
     }
 
-    public static State getState(MavLinkDrone drone, boolean isConnected, Vibration vibration, short sysid, short compid) {
+    public static State getAPMState(MavLinkDrone drone, boolean isConnected, Vibration vibration, short sysid, short compid) {
         if (drone == null)
             return new State();
 
         org.droidplanner.services.android.impl.core.drone.variables.State droneState = drone.getState();
-        ApmModes droneMode = droneState.getMode();
+        final int vehicleType = droneState.getVehicleType();
+        final List<VehicleMode> userModes = ApmModes.getUserModesForType(vehicleType);
+        ApmModes droneMode = (ApmModes)droneState.getMode().getNativeMode();
         AccelCalibration accelCalibration = drone.getCalibrationSetup();
         String calibrationMessage = accelCalibration != null && accelCalibration.isCalibrating()
                 ? accelCalibration.getMessage()
                 : null;
 
-        return new State(isConnected, CommonApiUtils.getVehicleMode(droneMode), droneState.isArmed(),
+//        Log.v(TAG, String.format("userModes=%s", userModes));
+
+        return new State(isConnected, ApmModes.getVehicleMode(droneMode), userModes, droneState.isArmed(),
+            droneState.isFlying(), droneState.getErrorId(), drone.getMavlinkVersion(), calibrationMessage,
+            droneState.getFlightStartTime(), generateEkfStatus(droneState.getEkfStatus()),
+            isConnected && drone.isConnectionAlive(), vibration, sysid, compid);
+    }
+
+    public static State getPX4State(MavLinkDrone drone, boolean isConnected, Vibration vibration, short sysid, short compid) {
+        if (drone == null)
+            return new State();
+
+        org.droidplanner.services.android.impl.core.drone.variables.State droneState = drone.getState();
+        final int vehicleType = droneState.getVehicleType();
+        final Object baseMode = droneState.getMode().getNativeMode();
+        final Px4Mode droneMode = (baseMode instanceof Px4Mode)? (Px4Mode)baseMode: Px4Mode.UNKNOWN;
+
+        final AccelCalibration accelCalibration = drone.getCalibrationSetup();
+        final String calibrationMessage = accelCalibration != null && accelCalibration.isCalibrating()
+                ? accelCalibration.getMessage()
+                : null;
+
+        final List<VehicleMode> userModes = Px4Mode.getUserModesForType(vehicleType);
+//        Log.v(TAG, String.format("userModes=%s", userModes));
+
+        return new State(isConnected,
+            Px4Mode.toVehicleMode(droneMode, vehicleType), userModes, droneState.isArmed(),
             droneState.isFlying(), droneState.getErrorId(), drone.getMavlinkVersion(), calibrationMessage,
             droneState.getFlightStartTime(), generateEkfStatus(droneState.getEkfStatus()),
             isConnected && drone.isConnectionAlive(), vibration, sysid, compid);
@@ -507,7 +538,33 @@ public class CommonApiUtils {
         return new GuidedState(guidedState, new LatLongAlt(guidedCoord, guidedAlt));
     }
 
-    public static void changeVehicleMode(MavLinkDrone drone, VehicleMode newMode, ICommandListener listener) {
+    public static void changePx4VehicleMode(MavLinkDrone drone, VehicleMode newMode, final ICommandListener listener) {
+        if(drone == null) return;
+
+        final int mavType;
+        switch (newMode.getDroneType()) {
+            default:
+            case Type.TYPE_COPTER:
+                mavType = MAV_TYPE.MAV_TYPE_QUADROTOR;
+                break;
+
+            case Type.TYPE_PLANE:
+                mavType = MAV_TYPE.MAV_TYPE_FIXED_WING;
+                break;
+
+            case Type.TYPE_ROVER:
+                mavType = MAV_TYPE.MAV_TYPE_GROUND_ROVER;
+                break;
+        }
+
+        final Px4Mode px4Mode = Px4Mode.getPx4Mode(newMode, mavType);
+        Timber.d("changePx4VehicleMode(%s): px4Mode=%s", newMode, px4Mode);
+        if(px4Mode != Px4Mode.UNKNOWN) {
+            drone.getState().changePX4FlightMode(px4Mode, listener);
+        }
+    }
+
+    public static void changeAPMVehicleMode(MavLinkDrone drone, VehicleMode newMode, ICommandListener listener) {
         if (drone == null)
             return;
 
@@ -527,7 +584,7 @@ public class CommonApiUtils {
                 break;
         }
 
-        drone.getState().changeFlightMode(ApmModes.getMode(newMode.getMode(), mavType), listener);
+        drone.getState().changeAPMFlightMode(ApmModes.getMode(newMode.getMode(), mavType), listener);
     }
 
     public static FollowState getFollowState(Follow followMe) {
@@ -617,8 +674,6 @@ public class CommonApiUtils {
     }
 
     public static void writeParameters(MavLinkDrone drone, Parameters parameters) {
-        Timber.d("writeParameters(): params=%s", parameters);
-
         if (drone == null || parameters == null) return;
 
         List<Parameter> parametersList = parameters.getParameters();
@@ -633,11 +688,18 @@ public class CommonApiUtils {
         }
     }
 
-    public static void setMission(MavLinkDrone drone, Mission mission, boolean pushToDrone) {
+    public static void setAPMMission(MavLinkDrone drone, Mission mission, boolean pushToDrone) {
         if (drone == null)
             return;
 
         org.droidplanner.services.android.impl.core.mission.Mission droneMission = drone.getMission();
+
+        Log.v(TAG, String.format("setAPMMission(): drone=%s mission=%s", drone, droneMission));
+
+        if(droneMission == null) {
+            return;
+        }
+
         droneMission.clearMissionItems();
 
         List<MissionItem> itemsList = mission.getMissionItems();
@@ -647,6 +709,31 @@ public class CommonApiUtils {
 
         if (pushToDrone)
             droneMission.sendMissionToAPM();
+    }
+
+    public static void setPX4Mission(MavLinkDrone drone, Mission mission, boolean pushToDrone) {
+        if (drone == null)
+            return;
+
+        org.droidplanner.services.android.impl.core.mission.Mission droneMission = drone.getMission();
+
+        Log.v(TAG, String.format("setMission(): drone=%s mission=%s", drone, droneMission));
+
+        if(droneMission == null) {
+            return;
+        }
+
+        droneMission.clearMissionItems();
+
+        List<MissionItem> itemsList = mission.getMissionItems();
+        for (MissionItem item : itemsList) {
+            if(!(item instanceof CameraTrigger)) {
+                droneMission.addMissionItem(ProxyUtils.getMissionItemImpl(droneMission, item));
+            }
+        }
+
+        if (pushToDrone)
+            droneMission.sendMissionToPX4(drone);
     }
 
     public static void startMission(final ArduPilot drone, final boolean forceModeChange, boolean forceArm, final ICommandListener listener) {
@@ -666,7 +753,7 @@ public class CommonApiUtils {
             public void run() {
                 if (drone.getState().getMode() != ApmModes.ROTOR_AUTO) {
                     if (forceModeChange) {
-                        changeVehicleMode(drone, VehicleMode.COPTER_AUTO, new AbstractCommandListener() {
+                        changeAPMVehicleMode(drone, VehicleMode.COPTER_AUTO, new AbstractCommandListener() {
                             @Override
                             public void onSuccess() {
                                 sendCommandRunnable.run();
@@ -737,7 +824,7 @@ public class CommonApiUtils {
         if (!arm && emergencyDisarm) {
             if (org.droidplanner.services.android.impl.core.drone.variables.Type.isCopter(drone.getType()) && !isKillSwitchSupported(drone)) {
 
-                changeVehicleMode(drone, VehicleMode.COPTER_STABILIZE, new AbstractCommandListener() {
+                changeAPMVehicleMode(drone, VehicleMode.COPTER_STABILIZE, new AbstractCommandListener() {
                     @Override
                     public void onSuccess() {
                         MavLinkCommands.sendArmMessage(drone, arm, emergencyDisarm, listener);

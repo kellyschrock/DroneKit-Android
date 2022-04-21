@@ -2,12 +2,14 @@ package org.droidplanner.services.android.impl.core.drone.manager;
 
 import android.os.Handler;
 import android.os.RemoteException;
+import android.util.Log;
 
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.common.msg_command_ack;
 import com.MAVLink.common.msg_command_long;
 import com.MAVLink.common.msg_set_mode;
 
+import com.MAVLink.enums.MAV_CMD;
 import com.o3dr.services.android.lib.model.ICommandListener;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,6 +21,7 @@ import timber.log.Timber;
  * Created by Fredia Huya-Kouadio on 6/24/15.
  */
 public class DroneCommandTracker {
+    private static final String TAG = DroneCommandTracker.class.getSimpleName();
 
     private static final long COMMAND_TIMEOUT_PERIOD = 2000l; //2 seconds
 
@@ -68,10 +71,13 @@ public class DroneCommandTracker {
                 return result.result;
             }
         };
+
         final AckCallback callback = new AckCallback(listener, commandId);
 
         keyStore.put(commandId, key);
         callbackStore.put(key, callback);
+
+        Log.v(TAG, "keyStore=" + keyStore);
 
         handler.postDelayed(callback, COMMAND_TIMEOUT_PERIOD);
     }
@@ -85,7 +91,15 @@ public class DroneCommandTracker {
     }
 
     private void onCommandAckImpl(msg_command_ack ack) {
-        final CallbackKey<msg_command_ack> key = keyStore.get(ack.command);
+        CallbackKey<msg_command_ack> key = keyStore.get(ack.command);
+
+        if(key == null) {
+            // PX4 returns an ACK for MAV_CMD_DO_SET_MODE instead of MSG_SET_MODE
+            if(ack.command == MAV_CMD.MAV_CMD_DO_SET_MODE) {
+                key = keyStore.get(msg_set_mode.MAVLINK_MSG_ID_SET_MODE);
+            }
+        }
+
         if (key == null)
             return;
 
@@ -149,10 +163,12 @@ public class DroneCommandTracker {
                 return;
 
             final CallbackKey key = keyStore.remove(ackId);
+            Log.v(TAG, String.format("run(): key=%s", key));
+
             if (key != null)
                 callbackStore.remove(key);
 
-            Timber.d("Callback with ack result %d", ackResult);
+            Log.v(TAG, String.format("Callback with ack result %d", ackResult));
 
             try {
                 switch (ackResult) {

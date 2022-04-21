@@ -409,7 +409,7 @@ public class ArduSolo extends ArduCopter {
 
     @Override
     protected boolean brakeVehicle(ICommandListener listener) {
-        getState().changeFlightMode(ApmModes.ROTOR_BRAKE, listener);
+        getState().changeAPMFlightMode(ApmModes.ROTOR_BRAKE, listener);
         return true;
     }
 }

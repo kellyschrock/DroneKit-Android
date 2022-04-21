@@ -41,13 +41,13 @@ public class MavLinkWaypoint {
 		drone.getMavClient().sendMessage(msg, null);
 	}
 
-	public static void sendWaypointCount(MavLinkDrone drone, int count) {
+	public static void sendWaypointCount(MavLinkDrone drone, int count, int countType) {
 		msg_mission_count msg = new msg_mission_count();
 		msg.target_system = drone.getSysid();
 		msg.target_component = drone.getCompid();
 		msg.count = count;
 		msg.isMavlink2 = false;
-		msg.mission_type = 0;
+		msg.mission_type = (short)countType;
 		drone.getMavClient().sendMessage(msg, null);
 	}
 

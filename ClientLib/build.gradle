@@ -123,6 +123,8 @@ dependencies {
     implementation files('libs/Mavlink.jar')
     implementation files('libs/d2xx.jar')
 
+    testImplementation 'junit:junit:4.12'
+
     androidTestImplementation 'junit:junit:4.12'
     androidTestImplementation "org.robolectric:robolectric:3.0"
 }

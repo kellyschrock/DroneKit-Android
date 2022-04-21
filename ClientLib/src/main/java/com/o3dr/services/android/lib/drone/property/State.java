@@ -7,6 +7,9 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by fhuya on 10/28/14.
  */
@@ -25,6 +28,7 @@ public class State implements DroneAttribute {
     private long flightStartTime;
 
     private VehicleMode vehicleMode = VehicleMode.UNKNOWN;
+    private final List<VehicleMode> vehicleModes = new ArrayList<>();
     private EkfStatus ekfStatus = new EkfStatus();
     private boolean isTelemetryLive;
     private short sysid;
@@ -38,7 +42,7 @@ public class State implements DroneAttribute {
         this.vehicleUid = new JSONObject();
     }
 
-    public State(boolean isConnected, VehicleMode mode, boolean armed, boolean flying,
+    public State(boolean isConnected, VehicleMode mode, List<VehicleMode> availableModes, boolean armed, boolean flying,
                  String autopilotErrorId, int mavlinkVersion, String calibrationStatus,
                  long flightStartTime, EkfStatus ekfStatus, boolean isTelemetryLive,
                  Vibration vibration, short sysid, short compid) {
@@ -53,6 +57,7 @@ public class State implements DroneAttribute {
         this.calibrationStatus = calibrationStatus;
         this.sysid = sysid;
         this.compid = compid;
+        this.vehicleModes.addAll(availableModes);
 
         if (ekfStatus != null)
             this.ekfStatus = ekfStatus;
@@ -113,6 +118,8 @@ public class State implements DroneAttribute {
     public VehicleMode getVehicleMode() {
         return vehicleMode;
     }
+
+    public List<VehicleMode> getVehicleModes() { return vehicleModes; }
 
     public String getAutopilotErrorId() {
         return autopilotErrorId;

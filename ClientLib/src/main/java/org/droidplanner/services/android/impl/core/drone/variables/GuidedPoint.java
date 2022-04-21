@@ -65,24 +65,24 @@ public class GuidedPoint extends DroneVariable implements OnDroneListener<MavLin
     }
 
     public static boolean isGuidedMode(MavLinkDrone drone) {
-        if (drone == null)
-            return false;
-
-        final int droneType = drone.getType();
-        final ApmModes droneMode = drone.getState().getMode();
-
-        if (Type.isCopter(droneType)) {
-            return droneMode == ApmModes.ROTOR_GUIDED;
-        }
-
-        if (Type.isPlane(droneType)) {
-            return droneMode == ApmModes.FIXED_WING_GUIDED;
-        }
-
-        if (Type.isRover(droneType)) {
-            return droneMode == ApmModes.ROVER_GUIDED || droneMode == ApmModes.ROVER_HOLD;
-        }
-
+//        if (drone == null)
+//            return false;
+//
+//        final int droneType = drone.getType();
+//        final ApmModes droneMode = (ApmModes)drone.getState().getMode().getNativeMode();
+//
+//        if (Type.isCopter(droneType)) {
+//            return droneMode == ApmModes.ROTOR_GUIDED;
+//        }
+//
+//        if (Type.isPlane(droneType)) {
+//            return droneMode == ApmModes.FIXED_WING_GUIDED;
+//        }
+//
+//        if (Type.isRover(droneType)) {
+//            return droneMode == ApmModes.ROVER_GUIDED || droneMode == ApmModes.ROVER_HOLD;
+//        }
+//
         return false;
     }
 
@@ -117,12 +117,12 @@ public class GuidedPoint extends DroneVariable implements OnDroneListener<MavLin
         Timber.d("changeToGuidedMode(): state=%s droneType=%d", droneState, droneType);
 
         if (Type.isCopter(droneType)) {
-            droneState.changeFlightMode(ApmModes.ROTOR_GUIDED, listener);
+            droneState.changeAPMFlightMode(ApmModes.ROTOR_GUIDED, listener);
         } else if (Type.isPlane(droneType)) {
             //You have to send a guided point to the plane in order to trigger guided mode.
             forceSendGuidedPoint(drone, getGpsPosition(drone), getDroneAltConstrained(drone));
         } else if (Type.isRover(droneType)) {
-            droneState.changeFlightMode(ApmModes.ROVER_GUIDED, listener);
+            droneState.changeAPMFlightMode(ApmModes.ROVER_GUIDED, listener);
         }
     }
 

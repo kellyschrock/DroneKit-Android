@@ -1,11 +1,14 @@
 package org.droidplanner.services.android.impl.core.mission;
 
+import android.util.Log;
 import android.util.Pair;
 
 import com.MAVLink.common.msg_mission_ack;
+import com.MAVLink.common.msg_mission_count;
 import com.MAVLink.common.msg_mission_item;
 import com.MAVLink.enums.MAV_CMD;
 import com.MAVLink.enums.MAV_FRAME;
+import com.MAVLink.enums.MAV_MISSION_TYPE;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.attribute.AttributeType;
@@ -16,6 +19,7 @@ import com.o3dr.services.android.lib.drone.property.Parameter;
 
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces.DroneEventsType;
 import org.droidplanner.services.android.impl.core.drone.DroneVariable;
+import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
 import org.droidplanner.services.android.impl.core.drone.autopilot.apm.APMConstants;
 import org.droidplanner.services.android.impl.core.drone.autopilot.generic.GenericMavLinkDrone;
 import org.droidplanner.services.android.impl.core.helpers.geoTools.GeoTools;
@@ -26,6 +30,7 @@ import org.droidplanner.services.android.impl.core.mission.commands.DoJumpImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.EpmGripperImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.LoiterTimeImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.LoiterToAltImpl;
+import org.droidplanner.services.android.impl.core.mission.commands.MissionCMD;
 import org.droidplanner.services.android.impl.core.mission.commands.ReturnToHomeImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.SetRelayImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.SetServoImpl;
@@ -50,6 +55,7 @@ import java.util.List;
  * commands/mission items to be carried out by the drone.
  */
 public class Mission extends DroneVariable<GenericMavLinkDrone> {
+    private static final String TAG = Mission.class.getSimpleName();
 
     /**
      * Stores the set of mission items belonging to this mission.
@@ -314,13 +320,19 @@ public class Mission extends DroneVariable<GenericMavLinkDrone> {
      * Sends the mission to the drone using the mavlink protocol.
      */
     public void sendMissionToAPM() {
-        List<msg_mission_item> msgMissionItems = getMsgMissionItems();
+        List<msg_mission_item> msgMissionItems = getAPMMsgMissionItems();
+        myDrone.getWaypointManager().writeWaypoints(msgMissionItems);
+        updateComponentItems(msgMissionItems);
+    }
+
+    public void sendMissionToPX4(MavLinkDrone drone) {
+        List<msg_mission_item> msgMissionItems = getPX4MsgMissionItems(drone);
         myDrone.getWaypointManager().writeWaypoints(msgMissionItems);
         updateComponentItems(msgMissionItems);
     }
 
     private void updateComponentItems(){
-        List<msg_mission_item> msgMissionItems = getMsgMissionItems();
+        List<msg_mission_item> msgMissionItems = getAPMMsgMissionItems();
         updateComponentItems(msgMissionItems);
     }
 
@@ -356,7 +368,7 @@ public class Mission extends DroneVariable<GenericMavLinkDrone> {
         return mavMsg;
     }
 
-    public List<msg_mission_item> getMsgMissionItems() {
+    public List<msg_mission_item> getAPMMsgMissionItems() {
         List<msg_mission_item> data = new ArrayList<msg_mission_item>();
         int waypointCount = 0;
         msg_mission_item home = packHomeMavlink();
@@ -373,6 +385,40 @@ public class Mission extends DroneVariable<GenericMavLinkDrone> {
                 data.add(msg_item);
             }
         }
+        return data;
+    }
+
+    public List<msg_mission_item> getPX4MsgMissionItems(MavLinkDrone drone) {
+        Log.v(TAG, "getPX4MsgMissionItems()");
+
+        List<msg_mission_item> data = new ArrayList<msg_mission_item>();
+        int waypointCount = 0;
+        msg_mission_item home = packHomeMavlink();
+        home.seq = waypointCount++;
+        data.add(home);
+
+        int size = items.size();
+        for (int i = 0; i < size; i++) {
+            MissionItemImpl item = items.get(i);
+//            if(item instanceof ChangeSpeedImpl) continue;
+
+            Log.v(TAG, String.format("item=%s", item));
+
+            for(msg_mission_item msg_item: item.packMissionItem()){
+                msg_item.seq = waypointCount++;
+                msg_item.isMavlink2 = false;
+                msg_item.mission_type = 0;
+                msg_item.target_system = drone.getSysid();
+                msg_item.target_component = drone.getCompid();
+                data.add(msg_item);
+            }
+        }
+
+        int seq = 0;
+        for(msg_mission_item item: data) {
+            item.seq = seq++;
+        }
+
         return data;
     }
 
