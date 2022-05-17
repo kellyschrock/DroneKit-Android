@@ -33,6 +33,7 @@ public class State implements DroneAttribute {
     private boolean isTelemetryLive;
     private short sysid;
     private short compid;
+    private boolean px4 = false;
 
     private Vibration vehicleVibration = new Vibration();
 
@@ -45,7 +46,7 @@ public class State implements DroneAttribute {
     public State(boolean isConnected, VehicleMode mode, List<VehicleMode> availableModes, boolean armed, boolean flying,
                  String autopilotErrorId, int mavlinkVersion, String calibrationStatus,
                  long flightStartTime, EkfStatus ekfStatus, boolean isTelemetryLive,
-                 Vibration vibration, short sysid, short compid) {
+                 Vibration vibration, short sysid, short compid, boolean isPx4) {
         this.vehicleUid  = new JSONObject();
 
         this.isConnected = isConnected;
@@ -70,6 +71,8 @@ public class State implements DroneAttribute {
         if(vibration != null)
             this.vehicleVibration = vibration;
     }
+
+    public boolean isPx4() { return px4; }
 
     public short getSysid() {
         return sysid;

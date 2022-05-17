@@ -444,7 +444,7 @@ public class CommonApiUtils {
         return new State(isConnected, ApmModes.getVehicleMode(droneMode), userModes, droneState.isArmed(),
             droneState.isFlying(), droneState.getErrorId(), drone.getMavlinkVersion(), calibrationMessage,
             droneState.getFlightStartTime(), generateEkfStatus(droneState.getEkfStatus()),
-            isConnected && drone.isConnectionAlive(), vibration, sysid, compid);
+            isConnected && drone.isConnectionAlive(), vibration, sysid, compid, false);
     }
 
     public static State getPX4State(MavLinkDrone drone, boolean isConnected, Vibration vibration, short sysid, short compid) {
@@ -468,7 +468,7 @@ public class CommonApiUtils {
             Px4Mode.toVehicleMode(droneMode, vehicleType), userModes, droneState.isArmed(),
             droneState.isFlying(), droneState.getErrorId(), drone.getMavlinkVersion(), calibrationMessage,
             droneState.getFlightStartTime(), generateEkfStatus(droneState.getEkfStatus()),
-            isConnected && drone.isConnectionAlive(), vibration, sysid, compid);
+            isConnected && drone.isConnectionAlive(), vibration, sysid, compid, true);
     }
 
     public static EkfStatus generateEkfStatus(msg_ekf_status_report ekfStatus) {
