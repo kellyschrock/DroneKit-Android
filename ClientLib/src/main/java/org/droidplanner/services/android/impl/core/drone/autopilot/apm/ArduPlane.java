@@ -19,7 +19,9 @@ import org.droidplanner.services.android.impl.core.model.AutopilotWarningParser;
 public class ArduPlane extends ArduPilot {
     static final String TAG = ArduPlane.class.getSimpleName();
 
-    public ArduPlane(String droneId, Context context, DataLink.DataLinkProvider<MAVLinkMessage> mavClient, Handler handler, AutopilotWarningParser warningParser, LogMessageListener logListener) {
+    public ArduPlane(
+        String droneId, Context context, DataLink.DataLinkProvider<MAVLinkMessage> mavClient,
+        Handler handler, AutopilotWarningParser warningParser, LogMessageListener logListener) {
         super(droneId, context, mavClient, handler, warningParser, logListener);
     }
 

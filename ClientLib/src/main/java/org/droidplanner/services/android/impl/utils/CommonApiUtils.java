@@ -426,14 +426,16 @@ public class CommonApiUtils {
         return new CameraProxy(camDetail, currentFieldOfView, proxyPrints, cameraDetails);
     }
 
-    public static State getAPMState(MavLinkDrone drone, boolean isConnected, Vibration vibration, short sysid, short compid) {
+    public static State getAPMState(MavLinkDrone drone, boolean isConnected, Vibration vibration, short sysid, short compid, boolean isVTOL) {
         if (drone == null)
             return new State();
 
         org.droidplanner.services.android.impl.core.drone.variables.State droneState = drone.getState();
         final int vehicleType = droneState.getVehicleType();
         final List<VehicleMode> userModes = ApmModes.getUserModesForType(vehicleType);
-        ApmModes droneMode = (ApmModes)droneState.getMode().getNativeMode();
+        final Object mode = droneState.getMode().getNativeMode();
+        ApmModes droneMode = (mode instanceof ApmModes)? (ApmModes)mode: ApmModes.UNKNOWN;
+//        ApmModes droneMode = (ApmModes)droneState.getMode().getNativeMode();
         AccelCalibration accelCalibration = drone.getCalibrationSetup();
         String calibrationMessage = accelCalibration != null && accelCalibration.isCalibrating()
                 ? accelCalibration.getMessage()
@@ -672,6 +674,12 @@ public class CommonApiUtils {
         if (drone == null)
             return;
         drone.getParameterManager().refreshParameters();
+    }
+
+    public static void requestParameter(MavLinkDrone drone, String name) {
+        if(drone == null) return;
+
+        drone.getParameterManager().readParameter(name);
     }
 
     public static void writeParameters(MavLinkDrone drone, Parameters parameters) {

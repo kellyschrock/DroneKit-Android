@@ -1,5 +1,7 @@
 package org.droidplanner.services.android.impl.core.drone.variables;
 
+import android.util.Log;
+
 import com.MAVLink.enums.MAV_TYPE;
 import com.o3dr.services.android.lib.drone.property.VehicleMode;
 
@@ -60,8 +62,12 @@ public enum ApmModes implements BaseMode<ApmModes> {
 	VTOL_LOITER(19, "QLOITER", MAV_TYPE.MAV_TYPE_VTOL_DUOROTOR),
 	VTOL_LAND(20, "QLAND", MAV_TYPE.MAV_TYPE_VTOL_DUOROTOR),
 	VTOL_RTL(21, "QRTL", MAV_TYPE.MAV_TYPE_VTOL_DUOROTOR),
+	VTOL_AUTOTUNE(22, "QAUTOTUNE", MAV_TYPE.MAV_TYPE_VTOL_DUOROTOR),
+	VTOL_ACRO(23, "QACRO", MAV_TYPE.MAV_TYPE_VTOL_DUOROTOR),
 
 	UNKNOWN(-1, "Unknown", MAV_TYPE.MAV_TYPE_GENERIC);
+
+	private static final String TAG = ApmModes.class.getSimpleName();
 
 	private final long number;
     private final String name;
@@ -91,7 +97,9 @@ public enum ApmModes implements BaseMode<ApmModes> {
 		return type;
 	}
 
-	public static ApmModes getMode(long i, int type) {
+	public static ApmModes getMode(long customMode, int type) {
+		Log.v(TAG, String.format("getMode(%d, %d)", customMode, type));
+
         if (isCopter(type)) {
             type = MAV_TYPE.MAV_TYPE_QUADROTOR;
         } else if (isVtol(type)) {
@@ -99,7 +107,7 @@ public enum ApmModes implements BaseMode<ApmModes> {
 		}
 
 		for (ApmModes mode : ApmModes.values()) {
-			if (i == mode.getNumber() && type == mode.getType()) {
+			if (customMode == mode.getNumber() && type == mode.getType()) {
 				return mode;
 			}
 		}
@@ -122,20 +130,29 @@ public enum ApmModes implements BaseMode<ApmModes> {
 	}
 
 	public static List<ApmModes> getModeList(int type) {
+		final List<ApmModes> output = new ArrayList<>();
+
+		boolean vtolType = false;
 
 		if (isCopter(type)) {
 			type = MAV_TYPE.MAV_TYPE_QUADROTOR;
 		} else if (isVtol(type)) {
 			type = MAV_TYPE.MAV_TYPE_VTOL_DUOROTOR;
+			vtolType = true;
 		}
 
-		List<ApmModes> modeList = new ArrayList<>();
 		for (ApmModes mode : ApmModes.values()) {
-			if (mode.getType() == type) {
-				modeList.add(mode);
+			if(vtolType) {
+				if (mode.getType() == type || mode.getType() == MAV_TYPE.MAV_TYPE_FIXED_WING) {
+					output.add(mode);
+				}
+			} else {
+				if (mode.getType() == type) {
+					output.add(mode);
+				}
 			}
 		}
-		return modeList;
+		return output;
 	}
 
 	public static List<VehicleMode> getUserModesForType(int type) {
@@ -296,6 +313,14 @@ public enum ApmModes implements BaseMode<ApmModes> {
 
 			case ROVER_INITIALIZING:
 				return VehicleMode.ROVER_INITIALIZING;
+
+			case VTOL_ACRO: return VehicleMode.VTOL_ACRO;
+			case VTOL_AUTOTUNE: return VehicleMode.VTOL_AUTOTUNE;
+			case VTOL_LAND: return VehicleMode.VTOL_LAND;
+			case VTOL_LOITER: return VehicleMode.VTOL_LOITER;
+			case VTOL_STABILIZE: return VehicleMode.VTOL_STABILIZE;
+			case VTOL_RTL: return VehicleMode.VTOL_RTL;
+			case VTOL_HOVER: return VehicleMode.VTOL_HOVER;
 
 			default:
 			case UNKNOWN:

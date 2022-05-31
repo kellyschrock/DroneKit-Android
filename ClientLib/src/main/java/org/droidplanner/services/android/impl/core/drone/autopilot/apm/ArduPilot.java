@@ -304,6 +304,13 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
                 CommonApiUtils.refreshParameters(this);
                 return true;
 
+            case ParameterActions.ACTION_REQUEST_PARAMETER:
+                final String name = data.getString(ParameterActions.EXTRA_PARAM_NAME);
+                if(name != null) {
+                    CommonApiUtils.requestParameter(this, name);
+                }
+                return true;
+
             case ParameterActions.ACTION_WRITE_PARAMETERS:
                 data.setClassLoader(com.o3dr.services.android.lib.drone.property.Parameters.class.getClassLoader());
                 com.o3dr.services.android.lib.drone.property.Parameters parameters = data.getParcelable(ParameterActions.EXTRA_PARAMETERS);

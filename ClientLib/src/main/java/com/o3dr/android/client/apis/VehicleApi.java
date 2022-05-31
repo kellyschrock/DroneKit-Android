@@ -19,8 +19,10 @@ import static com.o3dr.services.android.lib.drone.action.ConnectionActions.ACTIO
 import static com.o3dr.services.android.lib.drone.action.ConnectionActions.ACTION_DISCONNECT;
 import static com.o3dr.services.android.lib.drone.action.ConnectionActions.EXTRA_CONNECT_PARAMETER;
 import static com.o3dr.services.android.lib.drone.action.ParameterActions.ACTION_REFRESH_PARAMETERS;
+import static com.o3dr.services.android.lib.drone.action.ParameterActions.ACTION_REQUEST_PARAMETER;
 import static com.o3dr.services.android.lib.drone.action.ParameterActions.ACTION_WRITE_PARAMETERS;
 import static com.o3dr.services.android.lib.drone.action.ParameterActions.EXTRA_PARAMETERS;
+import static com.o3dr.services.android.lib.drone.action.ParameterActions.EXTRA_PARAM_NAME;
 import static com.o3dr.services.android.lib.drone.action.StateActions.ACTION_ARM;
 import static com.o3dr.services.android.lib.drone.action.StateActions.ACTION_ENABLE_RETURN_TO_ME;
 import static com.o3dr.services.android.lib.drone.action.StateActions.ACTION_SET_VEHICLE_HOME;
@@ -143,6 +145,12 @@ public class VehicleApi extends Api {
      */
     public void refreshParameters() {
         drone.performAsyncAction(new Action(ACTION_REFRESH_PARAMETERS));
+    }
+
+    public void requestParameter(String name) {
+        Bundle params = new Bundle();
+        params.putString(EXTRA_PARAM_NAME, name);
+        drone.performAsyncAction(new Action(ACTION_REQUEST_PARAMETER, params));
     }
 
     /**

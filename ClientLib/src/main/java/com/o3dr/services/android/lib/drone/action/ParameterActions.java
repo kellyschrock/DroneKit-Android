@@ -11,7 +11,9 @@ public class ParameterActions {
     private ParameterActions(){}
 
     public static final String ACTION_REFRESH_PARAMETERS = Utils.PACKAGE_NAME + ".action.REFRESH_PARAMETERS";
+    public static final String ACTION_REQUEST_PARAMETER = Utils.PACKAGE_NAME + ".action.REQUEST_PARAMETER";
 
     public static final String ACTION_WRITE_PARAMETERS = Utils.PACKAGE_NAME + ".action.WRITE_PARAMETERS";
     public static final String EXTRA_PARAMETERS = "extra_parameters";
+    public static final String EXTRA_PARAM_NAME = "extra_param_name";
 }

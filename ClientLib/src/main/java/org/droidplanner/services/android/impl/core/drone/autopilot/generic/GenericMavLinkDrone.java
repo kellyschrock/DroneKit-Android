@@ -24,11 +24,13 @@ import com.MAVLink.common.msg_mission_current;
 import com.MAVLink.common.msg_mission_item;
 import com.MAVLink.common.msg_mission_item_reached;
 import com.MAVLink.common.msg_nav_controller_output;
+import com.MAVLink.common.msg_param_value;
 import com.MAVLink.common.msg_radio_status;
 import com.MAVLink.common.msg_sys_status;
 import com.MAVLink.common.msg_vibration;
 import com.MAVLink.enums.MAV_MODE_FLAG;
 import com.MAVLink.enums.MAV_STATE;
+import com.MAVLink.enums.MAV_TYPE;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.action.CapabilityActions;
@@ -144,6 +146,7 @@ public class GenericMavLinkDrone implements MavLinkDrone {
     protected final SolexCCState solexCCState = new SolexCCState();
 
     protected final Handler handler;
+    protected boolean isVTOL = false;
 
     private final String droneId;
     private String droneIpAddress = null;
@@ -599,7 +602,7 @@ public class GenericMavLinkDrone implements MavLinkDrone {
                 return altitude;
 
             case AttributeType.STATE:
-                return CommonApiUtils.getAPMState(this, isConnected(), vibration, getSysid(), getCompid());
+                return CommonApiUtils.getAPMState(this, isConnected(), vibration, getSysid(), getCompid(), isVTOL);
 
             case AttributeType.MAVLINK_STATS:
                 return mavlinkStats;
@@ -668,6 +671,10 @@ public class GenericMavLinkDrone implements MavLinkDrone {
                 msg_heartbeat msg_heart = (msg_heartbeat) message;
                 processHeartbeat(msg_heart);
                 updateConnectionStats();
+                break;
+
+            case msg_param_value.MAVLINK_MSG_ID_PARAM_VALUE:
+                processParamValue((msg_param_value)message);
                 break;
 
             case msg_vibration.MAVLINK_MSG_ID_VIBRATION:
@@ -798,17 +805,31 @@ public class GenericMavLinkDrone implements MavLinkDrone {
     }
 
     protected void processHeartbeat(msg_heartbeat msg_heart) {
+//        Log.v(TAG, String.format("heartbeat: type=%d", msg_heart.type));
+
         if(Type.isVehicle(msg_heart.type)) {
             setType(msg_heart.type);
             checkIfFlying(msg_heart);
             processState(msg_heart);
             processVehicleMode(msg_heart);
         } else if(isFromAirCommander(msg_heart)) {
-            Log.v(TAG, "It's aircommander!");
             final Bundle attrs = new Bundle();
             attrs.putInt("sysid", msg_heart.sysid);
             attrs.putInt("compid", msg_heart.compid);
             notifyAttributeListener(AttributeEvent.AIRCOMMANDER_HEARTBEAT, attrs);
+        }
+    }
+
+    protected void processParamValue(msg_param_value msg_param) {
+//        Log.v(TAG, String.format("param_value: %s=%.2f", msg_param.getParam_Id(), msg_param.param_value));
+
+        final String name = msg_param.getParam_Id();
+        if("Q_ENABLE".equalsIgnoreCase(name)) {
+            isVTOL = msg_param.param_value != 0;
+
+            if(isVTOL) {
+                Log.v(TAG, "I am a VTOL vehicle");
+            }
         }
     }
 
@@ -817,12 +838,19 @@ public class GenericMavLinkDrone implements MavLinkDrone {
     }
 
     protected void processVehicleMode(msg_heartbeat msg_heart) {
-        final ApmModes newMode = ApmModes.getMode(msg_heart.custom_mode, msg_heart.type);
+        final short type = (isVTOL)? MAV_TYPE.MAV_TYPE_VTOL_DUOROTOR: msg_heart.type;
+
+        ApmModes newMode = ApmModes.getMode(msg_heart.custom_mode, type);
+
+        // Because VTOL modes are weird, check to see if this is just a normal plane mode
+        if(newMode == ApmModes.UNKNOWN && isVTOL) {
+            newMode = ApmModes.getMode(msg_heart.custom_mode, msg_heart.type);
+        }
 
         if(newMode != ApmModes.UNKNOWN) {
 //            Log.v(TAG, String.format("Got mode %s for mav type %d", newMode.getName(), msg_heart.type));
             state.setMode(newMode);
-            state.setVehicleType(msg_heart.type);
+            state.setVehicleType((isVTOL)? MAV_TYPE.MAV_TYPE_VTOL_QUADROTOR: msg_heart.type);
         } else {
             Timber.w("Did not find mode (%d) for mav type %d", msg_heart.custom_mode, msg_heart.type);
         }
