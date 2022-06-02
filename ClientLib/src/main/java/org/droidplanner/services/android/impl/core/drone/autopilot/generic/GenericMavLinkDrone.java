@@ -25,6 +25,7 @@ import com.MAVLink.common.msg_mission_item;
 import com.MAVLink.common.msg_mission_item_reached;
 import com.MAVLink.common.msg_nav_controller_output;
 import com.MAVLink.common.msg_param_value;
+import com.MAVLink.common.msg_position_target_global_int;
 import com.MAVLink.common.msg_radio_status;
 import com.MAVLink.common.msg_sys_status;
 import com.MAVLink.common.msg_vibration;
@@ -58,6 +59,7 @@ import com.o3dr.services.android.lib.drone.property.Parameters;
 import com.o3dr.services.android.lib.drone.property.RangeFinder;
 import com.o3dr.services.android.lib.drone.property.Signal;
 import com.o3dr.services.android.lib.drone.property.Speed;
+import com.o3dr.services.android.lib.drone.property.TargetPosition;
 import com.o3dr.services.android.lib.drone.property.VehicleMode;
 import com.o3dr.services.android.lib.drone.property.Vibration;
 import com.o3dr.services.android.lib.drone.property.SolexCCState;
@@ -92,9 +94,6 @@ import org.droidplanner.services.android.impl.core.model.AutopilotWarningParser;
 import org.droidplanner.services.android.impl.utils.CommonApiUtils;
 import org.droidplanner.services.android.impl.utils.prefs.DroidPlannerPrefs;
 import org.droidplanner.services.android.impl.utils.video.VideoManager;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import timber.log.Timber;
 
@@ -144,6 +143,7 @@ public class GenericMavLinkDrone implements MavLinkDrone {
     protected final MavlinkConnectionStats mavlinkStats = new MavlinkConnectionStats();
     protected final RangeFinder rangeFinder = new RangeFinder();
     protected final SolexCCState solexCCState = new SolexCCState();
+    protected final TargetPosition targetPosition = new TargetPosition();
 
     protected final Handler handler;
     protected boolean isVTOL = false;
@@ -638,6 +638,9 @@ public class GenericMavLinkDrone implements MavLinkDrone {
 
             case AttributeType.SOLEXCC_STATE:
                 return solexCCState;
+
+            case AttributeType.TARGET_POSITION:
+                return targetPosition;
         }
 
         return null;
@@ -652,6 +655,10 @@ public class GenericMavLinkDrone implements MavLinkDrone {
         onHeartbeat(message);
 
         switch (message.msgid) {
+            case msg_position_target_global_int.MAVLINK_MSG_ID_POSITION_TARGET_GLOBAL_INT:
+                processPositionTargetGlobalInt((msg_position_target_global_int)message);
+                break;
+
             case msg_radio_status.MAVLINK_MSG_ID_RADIO_STATUS:
                 msg_radio_status m_radio_status = (msg_radio_status) message;
                 processSignalUpdate(m_radio_status.rxerrors, m_radio_status.fixed, m_radio_status.rssi,
@@ -812,6 +819,14 @@ public class GenericMavLinkDrone implements MavLinkDrone {
             checkIfFlying(msg_heart);
             processState(msg_heart);
             processVehicleMode(msg_heart);
+
+            // If no update to the target position in the last 5s, clear it.
+            final long now = System.currentTimeMillis();
+            if((now - targetPosition.getLastUpdate()) > 5000) {
+                targetPosition.clear();
+                notifyAttributeListener(AttributeEvent.TARGET_POSITION_CLEARED);
+            }
+
         } else if(isFromAirCommander(msg_heart)) {
             final Bundle attrs = new Bundle();
             attrs.putInt("sysid", msg_heart.sysid);
@@ -826,10 +841,6 @@ public class GenericMavLinkDrone implements MavLinkDrone {
         final String name = msg_param.getParam_Id();
         if("Q_ENABLE".equalsIgnoreCase(name)) {
             isVTOL = msg_param.param_value != 0;
-
-            if(isVTOL) {
-                Log.v(TAG, "I am a VTOL vehicle");
-            }
         }
     }
 
@@ -1013,6 +1024,19 @@ public class GenericMavLinkDrone implements MavLinkDrone {
 
     protected void processAltitude(msg_altitude msg) {
 
+    }
+
+    protected void processPositionTargetGlobalInt(msg_position_target_global_int msg) {
+        final double lat = msg.lat_int / 1e7;
+        final double lng = msg.lon_int / 1e7;
+        final double alt = (double)msg.alt;
+        final double yaw = (double)msg.yaw;
+
+        if(!targetPosition.isEqualTo(lat, lng, alt, yaw)) {
+            targetPosition.update(lat, msg.lon_int / 1e7, (double)msg.alt, yaw, System.currentTimeMillis());
+
+            notifyAttributeListener(AttributeEvent.TARGET_POSITION_UPDATED);
+        }
     }
 
     protected void processSignalUpdate(int rxerrors, int fixed, short rssi, short remrssi, short txbuf,

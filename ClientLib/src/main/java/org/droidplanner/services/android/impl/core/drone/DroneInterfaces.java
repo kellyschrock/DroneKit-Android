@@ -199,6 +199,10 @@ public class DroneInterfaces {
          * A mission item has been reached.
          */
         MISSION_WP_REACHED,
+
+        TARGET_POSITION_UPDATED,
+
+        TARGET_POSITION_CLEARED,
     }
 
     public interface OnDroneListener<T extends Drone> {

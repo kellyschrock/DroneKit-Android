@@ -34,6 +34,7 @@ import com.o3dr.services.android.lib.drone.property.Signal;
 import com.o3dr.services.android.lib.drone.property.SolexCCState;
 import com.o3dr.services.android.lib.drone.property.Speed;
 import com.o3dr.services.android.lib.drone.property.State;
+import com.o3dr.services.android.lib.drone.property.TargetPosition;
 import com.o3dr.services.android.lib.drone.property.Type;
 import com.o3dr.services.android.lib.gcs.follow.FollowState;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
@@ -389,6 +390,9 @@ public class Drone {
 
             case AttributeType.SOLEXCC_STATE:
                 return (T) new SolexCCState();
+
+            case AttributeType.TARGET_POSITION:
+                return (T) new TargetPosition();
 
             case AttributeType.CAMERA:
             case SoloAttributes.SOLO_STATE:

@@ -139,4 +139,5 @@ public class AttributeType {
 
     public static final String SOLEXCC_STATE = PACKAGE_NAME + ".SOLEXCC_STATE";
 
+    public static final String TARGET_POSITION = PACKAGE_NAME + ".TARGET_POSITION";
 }
