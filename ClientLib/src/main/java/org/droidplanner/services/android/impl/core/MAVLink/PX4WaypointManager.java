@@ -37,7 +37,7 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
     static final String TAG = PX4WaypointManager.class.getSimpleName();
 
     private static final long TIMEOUT = 15000; //ms
-    private static final int RETRY_LIMIT = 3;
+    private static final int RETRY_LIMIT = 5;
 
     private int retryTracker = 0;
 
@@ -281,10 +281,11 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
     }
 
     @Override
-    public boolean processTimeOut(int mTimeOutCount) {
+    public boolean processTimeOut(int retryCount) {
+        Log.v(TAG, String.format("processTimeout(%d)", retryCount));
 
         // If max retry is reached, set state to IDLE. No more retry.
-        if (mTimeOutCount >= RETRY_LIMIT) {
+        if (retryCount >= RETRY_LIMIT) {
             setState(WaypointStates.IDLE);
             doWaypointEvent(WaypointEvent_Type.WP_TIMED_OUT, retryIndex, RETRY_LIMIT);
             return false;
