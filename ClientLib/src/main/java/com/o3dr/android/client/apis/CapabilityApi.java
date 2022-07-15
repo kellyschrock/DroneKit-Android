@@ -86,16 +86,15 @@ public class CapabilityApi extends Api {
                 break;
 
             // Disabling this. Some brand-new Samsungs don't report a valid SDK version, causing video streaming to fail.
-//            case FeatureIds.SOLO_VIDEO_STREAMING:
-//                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
-//                    drone.post(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            resultListener.onFeatureSupportResult(featureId, FEATURE_UNSUPPORTED, null);
-//                        }
-//                    });
-//                    break;
-//                }
+            // Just return SUPPORTED.
+            case FeatureIds.SOLO_VIDEO_STREAMING:
+                drone.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        resultListener.onFeatureSupportResult(featureId, FEATURE_SUPPORTED, null);
+                    }
+                });
+                break;
 
             //********FALL THROUGH ***********//
             case FeatureIds.COMPASS_CALIBRATION:
