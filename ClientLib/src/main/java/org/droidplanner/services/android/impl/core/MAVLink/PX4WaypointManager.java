@@ -36,8 +36,8 @@ import timber.log.Timber;
 public class PX4WaypointManager extends DroneVariable implements IWaypointManager {
     static final String TAG = PX4WaypointManager.class.getSimpleName();
 
-    private static final long TIMEOUT = 15000; //ms
-    private static final int RETRY_LIMIT = 5;
+    private static final long TIMEOUT = 12000; //ms
+    private static final int RETRY_LIMIT = 10;
 
     private int retryTracker = 0;
 
@@ -126,14 +126,14 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
             doBeginWaypointEvent(WaypointEvent_Type.WP_UPLOAD);
             mission.clear();
             mission.addAll(data);
-            sendClearAll();
+            // sendClearAll();
 
             writeIndex = 0;
             setState(WaypointStates.WRITING_WP_COUNT);
             Log.v(TAG, "sendWaypointCount()");
 
-            MavLinkWaypoint.sendWaypointCount(myDrone, 0, MAV_MISSION_TYPE.MAV_MISSION_TYPE_FENCE);
-            MavLinkWaypoint.sendWaypointCount(myDrone, 0, MAV_MISSION_TYPE.MAV_MISSION_TYPE_RALLY);
+            // MavLinkWaypoint.sendWaypointCount(myDrone, 0, MAV_MISSION_TYPE.MAV_MISSION_TYPE_FENCE);
+            // MavLinkWaypoint.sendWaypointCount(myDrone, 0, MAV_MISSION_TYPE.MAV_MISSION_TYPE_RALLY);
             MavLinkWaypoint.sendWaypointCount(myDrone, mission.size(), MAV_MISSION_TYPE.MAV_MISSION_TYPE_MISSION);
 
             startWatchdog();
