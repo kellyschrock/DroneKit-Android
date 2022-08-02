@@ -1,5 +1,6 @@
 package org.droidplanner.services.android.impl.core.drone.autopilot;
 
+import android.content.Context;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.o3dr.services.android.lib.drone.property.SolexCCState;
 
@@ -21,6 +22,8 @@ public interface MavLinkDrone extends Drone {
     String PACKAGE_NAME = "org.droidplanner.services.android.core.drone.autopilot";
 
     String ACTION_REQUEST_HOME_UPDATE = PACKAGE_NAME + ".action.REQUEST_HOME_UPDATE";
+
+    Context getContext();
 
     boolean isConnectionAlive();
 

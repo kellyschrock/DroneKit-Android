@@ -1,5 +1,6 @@
 package org.droidplanner.services.android.impl.core.MAVLink;
 
+import android.util.Log;
 import com.MAVLink.common.msg_mission_ack;
 import com.MAVLink.common.msg_mission_count;
 import com.MAVLink.common.msg_mission_request;
@@ -48,6 +49,7 @@ public class MavLinkWaypoint {
 		msg.count = count;
 		msg.isMavlink2 = false;
 		msg.mission_type = (short)countType;
+
 		drone.getMavClient().sendMessage(msg, null);
 	}
 

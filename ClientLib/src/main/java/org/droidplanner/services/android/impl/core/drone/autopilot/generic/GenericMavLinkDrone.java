@@ -113,6 +113,7 @@ public class GenericMavLinkDrone implements MavLinkDrone {
     }
 
     private final DataLink.DataLinkProvider<MAVLinkMessage> mavClient;
+    private final Context context;
 
     protected final VideoManager videoMgr;
 
@@ -153,6 +154,7 @@ public class GenericMavLinkDrone implements MavLinkDrone {
 
     public GenericMavLinkDrone(String droneId, Context context, Handler handler, DataLink.DataLinkProvider<MAVLinkMessage> mavClient,
                                AutopilotWarningParser warningParser, LogMessageListener logListener) {
+        this.context = context;
         this.droneId = droneId;
         this.handler = handler;
         this.mavClient = mavClient;
@@ -173,6 +175,11 @@ public class GenericMavLinkDrone implements MavLinkDrone {
     @Override
     public String getId(){
         return droneId;
+    }
+
+    @Override
+    public Context getContext() {
+        return this.context;
     }
 
     public String getDroneIpAddress() { return droneIpAddress; }

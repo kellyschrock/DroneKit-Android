@@ -17,6 +17,11 @@ import com.MAVLink.common.msg_mission_set_current;
 import com.MAVLink.enums.MAV_FRAME;
 import com.MAVLink.enums.MAV_MISSION_TYPE;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces.OnWaypointManagerListener;
 import org.droidplanner.services.android.impl.core.drone.DroneVariable;
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
@@ -111,10 +116,27 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
      *
      * @param data waypoints to be written
      */
+    private File logFile = null;
 
     @Override
     public void writeWaypoints(List<msg_mission_item> data) {
         Timber.d("writeWaypoints(): data=%s", data);
+
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+        final File root = myDrone.getContext().getExternalFilesDir(null);
+        final File dir = new File(root, "missionupload");
+
+        boolean makeOutputFile = true;
+        if(!dir.exists()) {
+            if(!dir.mkdirs()) {
+                Log.e(TAG, String.format("Unable to create directory %s", dir.getAbsolutePath()));
+                makeOutputFile = false;
+            }
+        }
+
+        if(makeOutputFile) {
+            logFile = new File(dir, String.format("%s.log", sdf.format(new java.util.Date())));
+        }
 
         // ensure that WPManager is not doing anything else
         if (state != WaypointStates.IDLE) {
@@ -126,14 +148,11 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
             doBeginWaypointEvent(WaypointEvent_Type.WP_UPLOAD);
             mission.clear();
             mission.addAll(data);
-            // sendClearAll();
 
             writeIndex = 0;
             setState(WaypointStates.WRITING_WP_COUNT);
             Log.v(TAG, "sendWaypointCount()");
 
-            // MavLinkWaypoint.sendWaypointCount(myDrone, 0, MAV_MISSION_TYPE.MAV_MISSION_TYPE_FENCE);
-            // MavLinkWaypoint.sendWaypointCount(myDrone, 0, MAV_MISSION_TYPE.MAV_MISSION_TYPE_RALLY);
             MavLinkWaypoint.sendWaypointCount(myDrone, mission.size(), MAV_MISSION_TYPE.MAV_MISSION_TYPE_MISSION);
 
             startWatchdog();
@@ -226,10 +245,12 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
             case WRITING_WP_COUNT:
                 Timber.d("WRITING_WP_COUNT");
                 setState(WaypointStates.WRITING_WP);
+                // FALL THROUGH
             case WRITING_WP:
                 switch(msg.msgid) {
                     case msg_mission_request.MAVLINK_MSG_ID_MISSION_REQUEST: {
                         Log.v(TAG, "got " + msg);
+                        logToFile(String.format("Vehicle <- %s", msg));
 
                         startWatchdog();
                         processWaypointToSend((msg_mission_request) msg);
@@ -239,6 +260,7 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
 
                     case msg_mission_request_int.MAVLINK_MSG_ID_MISSION_REQUEST_INT: {
                         Log.v(TAG, "got " + msg);
+                        logToFile(String.format("Vehicle <- %s", msg));
 
                         startWatchdog();
                         processWaypointToSend((msg_mission_request_int) msg);
@@ -254,10 +276,10 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
             case WAITING_WRITE_ACK:
                 Timber.d("WAITING_WRITE_ACK");
                 if (msg.msgid == msg_mission_ack.MAVLINK_MSG_ID_MISSION_ACK) {
+                    logToFile(String.format("Vehicle <- %s", msg));
+
                     msg_mission_ack ack = (msg_mission_ack)msg;
                     Timber.d("Got MISSION_ACK: type=%d", ack.type);
-
-//                    sendMissionSetCurrent();
 
                     stopWatchdog();
                     myDrone.getMission().onWriteWaypoints((msg_mission_ack) msg);
@@ -343,6 +365,7 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
 
 //        Log.v(TAG, String.format("Send MISSION_ITEM seq=%d", item.seq));
         Log.v(TAG, String.format("Send MISSION_ITEM %s", item));
+        logToFile(String.format("Client -> %s", item.toString()));
 
         myDrone.getMavClient().sendMessage(item, null);
 
@@ -378,6 +401,7 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
         item.z = src.z;
 
         Timber.d("send item %s", item);
+        logToFile(String.format("Client -> %s", item));
 
         myDrone.getMavClient().sendMessage(item, null);
 
@@ -485,5 +509,26 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
     private void setState(WaypointStates state) {
         Timber.d("setState(%s)", state);
         this.state = state;
+    }
+
+    private void logToFile(String line) {
+        if(logFile != null) {
+            try {
+                final String filename = logFile.getAbsolutePath();
+                Log.v("Waypoint", "filename=" + filename);
+
+                final FileWriter writer = new FileWriter(filename, true);
+                final BufferedWriter bw = new BufferedWriter(writer);
+                try {
+                    bw.write(line);
+                    bw.newLine();
+                } finally {
+                    bw.flush();
+                    bw.close();
+                }
+            } catch(IOException ex) {
+                Log.e("Waypoint", ex.getMessage(), ex);
+            }
+        }
     }
 }
