@@ -5,6 +5,7 @@ import android.os.Handler;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.common.msg_heartbeat;
 
+import com.MAVLink.enums.MAV_COMPONENT;
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces.DroneEventsType;
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces.OnDroneListener;
 import org.droidplanner.services.android.impl.core.drone.DroneVariable;
@@ -63,10 +64,10 @@ public class HeartBeat extends DroneVariable implements OnDroneListener<MavLinkD
 
     public void onHeartbeat(MAVLinkMessage msg) {
         msg_heartbeat heartBeatMsg = msg instanceof msg_heartbeat ? (msg_heartbeat) msg : null;
-        if(heartBeatMsg != null){
-            sysid = validateToUnsignedByteRange(msg.sysid);
-            compid = validateToUnsignedByteRange(msg.compid);
-            mMavlinkVersion = heartBeatMsg.mavlink_version;
+        if(heartBeatMsg != null && heartBeatMsg.compid == MAV_COMPONENT.MAV_COMP_ID_AUTOPILOT1) {
+            this.sysid = validateToUnsignedByteRange(msg.sysid);
+            this.compid = validateToUnsignedByteRange(msg.compid);
+            this.mMavlinkVersion = heartBeatMsg.mavlink_version;
         }
 
         switch (heartbeatState) {
