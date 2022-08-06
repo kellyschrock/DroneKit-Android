@@ -306,6 +306,12 @@ public class APMWaypointManager extends DroneVariable implements IWaypointManage
         item.target_system = myDrone.getSysid();
         item.target_component = myDrone.getCompid();
 
+        // This is how it's supposed to work.
+        if(msg.sysid != 0 && msg.compid != 0) {
+            item.target_system = (short)msg.sysid;
+            item.target_component = (short)msg.compid;
+        }
+
         Timber.d("send item %s", item);
 
         myDrone.getMavClient().sendMessage(item, null);

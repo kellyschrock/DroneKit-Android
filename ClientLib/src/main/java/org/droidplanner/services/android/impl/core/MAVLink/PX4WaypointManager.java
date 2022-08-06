@@ -363,6 +363,10 @@ public class PX4WaypointManager extends DroneVariable implements IWaypointManage
         item.target_system = myDrone.getSysid();
         item.target_component = myDrone.getCompid();
 
+        // This is what it's supposed to do, not the above.
+        item.target_system = (short)msg.sysid;
+        item.target_component = (short)msg.compid;
+
 //        Log.v(TAG, String.format("Send MISSION_ITEM seq=%d", item.seq));
         Log.v(TAG, String.format("Send MISSION_ITEM %s", item));
         logToFile(String.format("Client -> %s", item.toString()));
