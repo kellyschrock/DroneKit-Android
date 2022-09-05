@@ -23,5 +23,6 @@ public abstract class MAVLinkMessage implements Serializable {
     public int msgid;
     public boolean isMavlink2;
     public abstract MAVLinkPacket pack();
-    public abstract void unpack(MAVLinkPayload payload);
+    public abstract void unpack(com.MAVLink.Messages.MAVLinkPayload payload);
+    public String name() { return getClass().getSimpleName(); }
 }

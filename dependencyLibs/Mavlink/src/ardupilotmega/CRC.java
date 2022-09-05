@@ -248,7 +248,19 @@ public class CRC {
         MAVLINK_MESSAGE_CRCS.put(11032, 85);
         MAVLINK_MESSAGE_CRCS.put(42000, 227);
         MAVLINK_MESSAGE_CRCS.put(42001, 239);
-        
+
+        // remoteid
+        MAVLINK_MESSAGE_CRCS.put(12900, 114);
+        MAVLINK_MESSAGE_CRCS.put(12901, 254);
+        MAVLINK_MESSAGE_CRCS.put(12902, 140);
+        MAVLINK_MESSAGE_CRCS.put(12903, 249);
+        MAVLINK_MESSAGE_CRCS.put(12904, 77);
+        MAVLINK_MESSAGE_CRCS.put(12905, 49);
+        MAVLINK_MESSAGE_CRCS.put(12915, 94);
+        MAVLINK_MESSAGE_CRCS.put(12918, 139);
+        MAVLINK_MESSAGE_CRCS.put(12919, 7);
+        MAVLINK_MESSAGE_CRCS.put(12920, 20);
+
     }
 
     /**
@@ -297,4 +309,3 @@ public class CRC {
     }
 
 }
-        

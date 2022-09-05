@@ -6,6 +6,242 @@
         
 package com.MAVLink;
 
+import com.MAVLink.ardupilotmega.msg_adap_tuning;
+import com.MAVLink.ardupilotmega.msg_ahrs;
+import com.MAVLink.ardupilotmega.msg_ahrs2;
+import com.MAVLink.ardupilotmega.msg_ahrs3;
+import com.MAVLink.ardupilotmega.msg_airspeed_autocal;
+import com.MAVLink.ardupilotmega.msg_aoa_ssa;
+import com.MAVLink.ardupilotmega.msg_ap_adc;
+import com.MAVLink.ardupilotmega.msg_autopilot_version_request;
+import com.MAVLink.ardupilotmega.msg_battery2;
+import com.MAVLink.ardupilotmega.msg_camera_feedback;
+import com.MAVLink.ardupilotmega.msg_camera_status;
+import com.MAVLink.ardupilotmega.msg_compassmot_status;
+import com.MAVLink.ardupilotmega.msg_data16;
+import com.MAVLink.ardupilotmega.msg_data32;
+import com.MAVLink.ardupilotmega.msg_data64;
+import com.MAVLink.ardupilotmega.msg_data96;
+import com.MAVLink.ardupilotmega.msg_deepstall;
+import com.MAVLink.ardupilotmega.msg_device_op_read;
+import com.MAVLink.ardupilotmega.msg_device_op_read_reply;
+import com.MAVLink.ardupilotmega.msg_device_op_write;
+import com.MAVLink.ardupilotmega.msg_device_op_write_reply;
+import com.MAVLink.ardupilotmega.msg_digicam_configure;
+import com.MAVLink.ardupilotmega.msg_digicam_control;
+import com.MAVLink.ardupilotmega.msg_efi_status;
+import com.MAVLink.ardupilotmega.msg_ekf_status_report;
+import com.MAVLink.ardupilotmega.msg_esc_telemetry_1_to_4;
+import com.MAVLink.ardupilotmega.msg_esc_telemetry_5_to_8;
+import com.MAVLink.ardupilotmega.msg_esc_telemetry_9_to_12;
+import com.MAVLink.ardupilotmega.msg_fence_fetch_point;
+import com.MAVLink.ardupilotmega.msg_fence_point;
+import com.MAVLink.ardupilotmega.msg_gimbal_control;
+import com.MAVLink.ardupilotmega.msg_gimbal_report;
+import com.MAVLink.ardupilotmega.msg_gimbal_torque_cmd_report;
+import com.MAVLink.ardupilotmega.msg_gopro_get_request;
+import com.MAVLink.ardupilotmega.msg_gopro_get_response;
+import com.MAVLink.ardupilotmega.msg_gopro_heartbeat;
+import com.MAVLink.ardupilotmega.msg_gopro_set_request;
+import com.MAVLink.ardupilotmega.msg_gopro_set_response;
+import com.MAVLink.ardupilotmega.msg_hwstatus;
+import com.MAVLink.ardupilotmega.msg_led_control;
+import com.MAVLink.ardupilotmega.msg_limits_status;
+import com.MAVLink.ardupilotmega.msg_mag_cal_progress;
+import com.MAVLink.ardupilotmega.msg_mag_cal_report;
+import com.MAVLink.ardupilotmega.msg_meminfo;
+import com.MAVLink.ardupilotmega.msg_mount_configure;
+import com.MAVLink.ardupilotmega.msg_mount_control;
+import com.MAVLink.ardupilotmega.msg_mount_status;
+import com.MAVLink.ardupilotmega.msg_pid_tuning;
+import com.MAVLink.ardupilotmega.msg_radio;
+import com.MAVLink.ardupilotmega.msg_rally_fetch_point;
+import com.MAVLink.ardupilotmega.msg_rally_point;
+import com.MAVLink.ardupilotmega.msg_rangefinder;
+import com.MAVLink.ardupilotmega.msg_remote_log_block_status;
+import com.MAVLink.ardupilotmega.msg_remote_log_data_block;
+import com.MAVLink.ardupilotmega.msg_rpm;
+import com.MAVLink.ardupilotmega.msg_sensor_offsets;
+import com.MAVLink.ardupilotmega.msg_set_mag_offsets;
+import com.MAVLink.ardupilotmega.msg_simstate;
+import com.MAVLink.ardupilotmega.msg_vision_position_delta;
+import com.MAVLink.ardupilotmega.msg_wind;
+import com.MAVLink.common.msg_actuator_control_target;
+import com.MAVLink.common.msg_actuator_output_status;
+import com.MAVLink.common.msg_adsb_vehicle;
+import com.MAVLink.common.msg_altitude;
+import com.MAVLink.common.msg_att_pos_mocap;
+import com.MAVLink.common.msg_attitude;
+import com.MAVLink.common.msg_attitude_quaternion;
+import com.MAVLink.common.msg_attitude_quaternion_cov;
+import com.MAVLink.common.msg_attitude_target;
+import com.MAVLink.common.msg_auth_key;
+import com.MAVLink.common.msg_autopilot_version;
+import com.MAVLink.common.msg_battery_status;
+import com.MAVLink.common.msg_button_change;
+import com.MAVLink.common.msg_camera_capture_status;
+import com.MAVLink.common.msg_camera_image_captured;
+import com.MAVLink.common.msg_camera_information;
+import com.MAVLink.common.msg_camera_settings;
+import com.MAVLink.common.msg_camera_trigger;
+import com.MAVLink.common.msg_change_operator_control;
+import com.MAVLink.common.msg_change_operator_control_ack;
+import com.MAVLink.common.msg_collision;
+import com.MAVLink.common.msg_command_ack;
+import com.MAVLink.common.msg_command_int;
+import com.MAVLink.common.msg_command_long;
+import com.MAVLink.common.msg_control_system_state;
+import com.MAVLink.common.msg_data_stream;
+import com.MAVLink.common.msg_data_transmission_handshake;
+import com.MAVLink.common.msg_debug;
+import com.MAVLink.common.msg_debug_float_array;
+import com.MAVLink.common.msg_debug_vect;
+import com.MAVLink.common.msg_distance_sensor;
+import com.MAVLink.common.msg_encapsulated_data;
+import com.MAVLink.common.msg_estimator_status;
+import com.MAVLink.common.msg_extended_sys_state;
+import com.MAVLink.common.msg_fence_status;
+import com.MAVLink.common.msg_file_transfer_protocol;
+import com.MAVLink.common.msg_flight_information;
+import com.MAVLink.common.msg_follow_target;
+import com.MAVLink.common.msg_global_position_int;
+import com.MAVLink.common.msg_global_position_int_cov;
+import com.MAVLink.common.msg_global_vision_position_estimate;
+import com.MAVLink.common.msg_gps2_raw;
+import com.MAVLink.common.msg_gps2_rtk;
+import com.MAVLink.common.msg_gps_global_origin;
+import com.MAVLink.common.msg_gps_inject_data;
+import com.MAVLink.common.msg_gps_input;
+import com.MAVLink.common.msg_gps_raw_int;
+import com.MAVLink.common.msg_gps_rtcm_data;
+import com.MAVLink.common.msg_gps_rtk;
+import com.MAVLink.common.msg_gps_status;
+import com.MAVLink.common.msg_heartbeat;
+import com.MAVLink.common.msg_high_latency;
+import com.MAVLink.common.msg_highres_imu;
+import com.MAVLink.common.msg_hil_actuator_controls;
+import com.MAVLink.common.msg_hil_controls;
+import com.MAVLink.common.msg_hil_gps;
+import com.MAVLink.common.msg_hil_optical_flow;
+import com.MAVLink.common.msg_hil_rc_inputs_raw;
+import com.MAVLink.common.msg_hil_sensor;
+import com.MAVLink.common.msg_hil_state;
+import com.MAVLink.common.msg_hil_state_quaternion;
+import com.MAVLink.common.msg_home_position;
+import com.MAVLink.common.msg_isbd_link_status;
+import com.MAVLink.common.msg_landing_target;
+import com.MAVLink.common.msg_local_position_ned;
+import com.MAVLink.common.msg_local_position_ned_cov;
+import com.MAVLink.common.msg_local_position_ned_system_global_offset;
+import com.MAVLink.common.msg_log_data;
+import com.MAVLink.common.msg_log_entry;
+import com.MAVLink.common.msg_log_erase;
+import com.MAVLink.common.msg_log_request_data;
+import com.MAVLink.common.msg_log_request_end;
+import com.MAVLink.common.msg_log_request_list;
+import com.MAVLink.common.msg_logging_ack;
+import com.MAVLink.common.msg_logging_data;
+import com.MAVLink.common.msg_logging_data_acked;
+import com.MAVLink.common.msg_manual_control;
+import com.MAVLink.common.msg_manual_setpoint;
+import com.MAVLink.common.msg_memory_vect;
+import com.MAVLink.common.msg_message_interval;
+import com.MAVLink.common.msg_mission_ack;
+import com.MAVLink.common.msg_mission_clear_all;
+import com.MAVLink.common.msg_mission_count;
+import com.MAVLink.common.msg_mission_current;
+import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.common.msg_mission_item_int;
+import com.MAVLink.common.msg_mission_item_reached;
+import com.MAVLink.common.msg_mission_request;
+import com.MAVLink.common.msg_mission_request_int;
+import com.MAVLink.common.msg_mission_request_list;
+import com.MAVLink.common.msg_mission_request_partial_list;
+import com.MAVLink.common.msg_mission_set_current;
+import com.MAVLink.common.msg_mission_write_partial_list;
+import com.MAVLink.common.msg_mount_orientation;
+import com.MAVLink.common.msg_named_value_float;
+import com.MAVLink.common.msg_named_value_int;
+import com.MAVLink.common.msg_nav_controller_output;
+import com.MAVLink.common.msg_obstacle_distance;
+import com.MAVLink.common.msg_odometry;
+import com.MAVLink.common.msg_optical_flow;
+import com.MAVLink.common.msg_optical_flow_rad;
+import com.MAVLink.common.msg_param_map_rc;
+import com.MAVLink.common.msg_param_request_list;
+import com.MAVLink.common.msg_param_request_read;
+import com.MAVLink.common.msg_param_set;
+import com.MAVLink.common.msg_param_value;
+import com.MAVLink.common.msg_ping;
+import com.MAVLink.common.msg_play_tune;
+import com.MAVLink.common.msg_position_target_global_int;
+import com.MAVLink.common.msg_position_target_local_ned;
+import com.MAVLink.common.msg_power_status;
+import com.MAVLink.common.msg_radio_status;
+import com.MAVLink.common.msg_raw_imu;
+import com.MAVLink.common.msg_raw_pressure;
+import com.MAVLink.common.msg_rc_channels;
+import com.MAVLink.common.msg_rc_channels_override;
+import com.MAVLink.common.msg_rc_channels_raw;
+import com.MAVLink.common.msg_rc_channels_scaled;
+import com.MAVLink.common.msg_request_data_stream;
+import com.MAVLink.common.msg_resource_request;
+import com.MAVLink.common.msg_safety_allowed_area;
+import com.MAVLink.common.msg_safety_set_allowed_area;
+import com.MAVLink.common.msg_scaled_imu;
+import com.MAVLink.common.msg_scaled_imu2;
+import com.MAVLink.common.msg_scaled_imu3;
+import com.MAVLink.common.msg_scaled_pressure;
+import com.MAVLink.common.msg_scaled_pressure2;
+import com.MAVLink.common.msg_scaled_pressure3;
+import com.MAVLink.common.msg_serial_control;
+import com.MAVLink.common.msg_servo_output_raw;
+import com.MAVLink.common.msg_set_actuator_control_target;
+import com.MAVLink.common.msg_set_attitude_target;
+import com.MAVLink.common.msg_set_gps_global_origin;
+import com.MAVLink.common.msg_set_home_position;
+import com.MAVLink.common.msg_set_mode;
+import com.MAVLink.common.msg_set_position_target_global_int;
+import com.MAVLink.common.msg_set_position_target_local_ned;
+import com.MAVLink.common.msg_setup_signing;
+import com.MAVLink.common.msg_sim_state;
+import com.MAVLink.common.msg_statustext;
+import com.MAVLink.common.msg_statustext_long;
+import com.MAVLink.common.msg_storage_information;
+import com.MAVLink.common.msg_sys_status;
+import com.MAVLink.common.msg_system_time;
+import com.MAVLink.common.msg_terrain_check;
+import com.MAVLink.common.msg_terrain_data;
+import com.MAVLink.common.msg_terrain_report;
+import com.MAVLink.common.msg_terrain_request;
+import com.MAVLink.common.msg_timesync;
+import com.MAVLink.common.msg_uavcan_node_info;
+import com.MAVLink.common.msg_uavcan_node_status;
+import com.MAVLink.common.msg_v2_extension;
+import com.MAVLink.common.msg_vfr_hud;
+import com.MAVLink.common.msg_vibration;
+import com.MAVLink.common.msg_vicon_position_estimate;
+import com.MAVLink.common.msg_vision_position_estimate;
+import com.MAVLink.common.msg_vision_speed_estimate;
+import com.MAVLink.common.msg_wheel_distance;
+import com.MAVLink.common.msg_wifi_config_ap;
+import com.MAVLink.common.msg_wind_cov;
+import com.MAVLink.herelink_custom.msg_set_video_stream_settings;
+import com.MAVLink.herelink_custom.msg_video_stream_information;
+import com.MAVLink.icarous.msg_icarous_heartbeat;
+import com.MAVLink.icarous.msg_icarous_kinematic_bands;
+import com.MAVLink.remoteid.msg_open_drone_id_arm_status;
+import com.MAVLink.remoteid.msg_open_drone_id_authentication;
+import com.MAVLink.remoteid.msg_open_drone_id_basic_id;
+import com.MAVLink.remoteid.msg_open_drone_id_location;
+import com.MAVLink.remoteid.msg_open_drone_id_message_pack;
+import com.MAVLink.remoteid.msg_open_drone_id_operator_id;
+import com.MAVLink.remoteid.msg_open_drone_id_self_id;
+import com.MAVLink.remoteid.msg_open_drone_id_system;
+import com.MAVLink.remoteid.msg_open_drone_id_system_update;
+import com.MAVLink.uAvionix.msg_uavionix_adsb_out_cfg;
+import com.MAVLink.uAvionix.msg_uavionix_adsb_out_dynamic;
+import com.MAVLink.uAvionix.msg_uavionix_adsb_transceiver_health_report;
 import java.io.Serializable;
 import com.MAVLink.Messages.MAVLinkPayload;
 import com.MAVLink.Messages.MAVLinkMessage;
@@ -16,6 +252,7 @@ import com.MAVLink.common.*;
 import com.MAVLink.uAvionix.*;
 import com.MAVLink.icarous.*;
 import com.MAVLink.herelink_custom.*;
+import com.MAVLink.remoteid.*;
 
 /**
  * Common interface for all MAVLink Messages
@@ -71,7 +308,7 @@ public class MAVLinkPacket implements Serializable {
     public static final int MAVLINK2_HEADER_LEN = 10;
     public static final int MAVLINK1_NONPAYLOAD_LEN = MAVLINK1_HEADER_LEN + 2;
     public static final int MAVLINK2_NONPAYLOAD_LEN = MAVLINK2_HEADER_LEN + 2;
-    public static final int MAVLINK2_NONPAYLOAD_SIGNED_LEN = MAVLINK2_HEADER_LEN + 2 + Signature.MAX_SIGNATURE_SIZE;
+    public static final int MAVLINK2_NONPAYLOAD_SIGNED_LEN = MAVLINK2_HEADER_LEN + 2 + com.MAVLink.Signature.MAX_SIGNATURE_SIZE;
 
     static final boolean V = false;
     static void logv(String str) {
@@ -965,12 +1202,38 @@ public class MAVLinkPacket implements Serializable {
              
             case msg_icarous_kinematic_bands.MAVLINK_MSG_ID_ICAROUS_KINEMATIC_BANDS:
                 return  new msg_icarous_kinematic_bands(this);
-            
+
+            case msg_open_drone_id_arm_status.MAVLINK_MSG_ID_OPEN_DRONE_ID_ARM_STATUS:
+                return new msg_open_drone_id_arm_status(this);
+
+            case msg_open_drone_id_authentication.MAVLINK_MSG_ID_OPEN_DRONE_ID_AUTHENTICATION:
+                return new msg_open_drone_id_authentication(this);
+
+            case msg_open_drone_id_basic_id.MAVLINK_MSG_ID_OPEN_DRONE_ID_BASIC_ID:
+                return new msg_open_drone_id_basic_id(this);
+
+            case msg_open_drone_id_location.MAVLINK_MSG_ID_OPEN_DRONE_ID_LOCATION:
+                return new msg_open_drone_id_location(this);
+
+            case msg_open_drone_id_message_pack.MAVLINK_MSG_ID_OPEN_DRONE_ID_MESSAGE_PACK:
+                return new msg_open_drone_id_message_pack(this);
+
+            case msg_open_drone_id_operator_id.MAVLINK_MSG_ID_OPEN_DRONE_ID_OPERATOR_ID:
+                return new msg_open_drone_id_operator_id(this);
+
+            case msg_open_drone_id_self_id.MAVLINK_MSG_ID_OPEN_DRONE_ID_SELF_ID:
+                return new msg_open_drone_id_self_id(this);
+
+            case msg_open_drone_id_system.MAVLINK_MSG_ID_OPEN_DRONE_ID_SYSTEM:
+                return new msg_open_drone_id_system(this);
+
+            case msg_open_drone_id_system_update.MAVLINK_MSG_ID_OPEN_DRONE_ID_SYSTEM_UPDATE:
+                return new msg_open_drone_id_system_update(this);
+
             default:
                 return null;
         }
     }
 
 }
-        
         

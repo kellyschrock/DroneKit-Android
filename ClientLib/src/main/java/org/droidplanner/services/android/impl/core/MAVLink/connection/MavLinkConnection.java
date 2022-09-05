@@ -7,8 +7,11 @@ import android.util.Log;
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.Messages.MAVLinkStats;
 import com.MAVLink.Parser;
+import com.MAVLink.common.msg_param_request_list;
+import com.MAVLink.remoteid.msg_open_drone_id_operator_id;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 
+import java.util.Arrays;
 import org.droidplanner.services.android.impl.core.model.Logger;
 
 import java.io.BufferedOutputStream;
@@ -22,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import timber.log.Timber;
 
 /**
  * Base for mavlink connection implementations.
@@ -356,7 +360,22 @@ public abstract class MavLinkConnection {
     public void sendMavPacket(MAVLinkPacket packet) {
 //        mLogger.logInfo(TAG, String.format("sendMavPacket(): packet=%s", toString(packet)));
 
+        if(!packet.isMavlink2 && packet.msgid >= Byte.MAX_VALUE) {
+            Timber.d("Non-mavlink2 packet (msgid %d) set to mavlink2", packet.msgid);
+            packet.isMavlink2 = true;
+        }
+
         final byte[] packetData = packet.encodePacket();
+
+//        switch(packet.msgid) {
+//            case msg_open_drone_id_operator_id.MAVLINK_MSG_ID_OPEN_DRONE_ID_OPERATOR_ID:
+//            case msg_param_request_list.MAVLINK_MSG_ID_PARAM_REQUEST_LIST:
+//            {
+//                Log.v("DIPSHIT", String.format("PACKET FOR msgid %d (mavlink2=%s): %s", packet.msgid, packet.isMavlink2, Arrays.toString(packetData)));
+//                break;
+//            }
+//        }
+
         if (!mPacketsToSend.offer(packetData)) {
             mLogger.logErr(TAG, "Unable to send mavlink packet. Packet queue is full!");
         } else {

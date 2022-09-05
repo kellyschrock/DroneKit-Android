@@ -49,4 +49,15 @@ public class msg_do_change_speed extends MAVLinkMessage {
         this.target_speed = msg.getShort();
         this.throttle_percent = msg.getShort();
     }
+
+    @Override
+    public String toString() {
+        return "msg_do_change_speed{" +
+            "target_system=" + target_system +
+            ", target_component=" + target_component +
+            ", speed_type=" + speed_type +
+            ", target_speed=" + target_speed +
+            ", throttle_percent=" + throttle_percent +
+            '}';
+    }
 }

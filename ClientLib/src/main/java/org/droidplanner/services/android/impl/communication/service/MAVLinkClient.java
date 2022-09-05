@@ -267,6 +267,10 @@ public class MAVLinkClient implements DataLink.DataLinkProvider<MAVLinkMessage> 
         packet.compid = compId;
         packet.seq = packetSeqNumber;
 
+        if(message.msgid >= Byte.MAX_VALUE && message.isMavlink2 == false) {
+            message.isMavlink2 = true;
+        }
+
         packetSeqNumber = (packetSeqNumber + 1) % (MAX_PACKET_SEQUENCE + 1);
 
         mavlinkConn.sendMavPacket(packet);
