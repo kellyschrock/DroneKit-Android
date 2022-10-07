@@ -46,7 +46,7 @@ public class SolexCCStateCheck {
                     listener.onSolexCCState(state);
 
                 } catch(Throwable ex) {
-                    Log.e(TAG, ex.getMessage(), ex);
+                    Log.v(TAG, "SolexCC not available");
                     listener.onSolexCCState(null);
                 }
             }
