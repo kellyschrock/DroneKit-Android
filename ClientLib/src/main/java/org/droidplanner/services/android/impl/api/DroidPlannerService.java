@@ -295,6 +295,7 @@ public class DroidPlannerService extends Service {
 
         final NotificationChannel channel = new NotificationChannel(chanId, name, NotificationManager.IMPORTANCE_NONE);
         channel.setLightColor(Color.BLUE);
+        channel.setShowBadge(false);
         channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
         final NotificationManager service = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         service.createNotificationChannel(channel);
