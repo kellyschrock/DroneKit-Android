@@ -15,8 +15,8 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -57,11 +57,6 @@ public class DroidPlannerService extends Service {
     public static final String EXTRA_API_INSTANCE_APP_ID = "extra_api_instance_app_id";
 
     /**
-     * Used to broadcast service events.
-     */
-    private LocalBroadcastManager lbm;
-
-    /**
      * Stores drone api instances per connected client. The client are denoted by their app id.
      */
     final ConcurrentHashMap<String, DroneApi> droneApiStore = new ConcurrentHashMap<>();
@@ -92,7 +87,6 @@ public class DroidPlannerService extends Service {
 
         DroneApi droneApi = new DroneApi(this, listener, appId);
         droneApiStore.put(appId, droneApi);
-        lbm.sendBroadcast(new Intent(ACTION_DRONE_CREATED));
         updateForegroundNotification();
         Timber.d("registerDroneApi(): droneApi=%s", droneApi);
 
@@ -113,7 +107,6 @@ public class DroidPlannerService extends Service {
         if (droneApi != null) {
             Timber.d("Releasing drone api instance for " + appId);
             droneApi.destroy();
-            lbm.sendBroadcast(new Intent(ACTION_DRONE_DESTROYED));
             updateForegroundNotification();
         }
     }
@@ -228,7 +221,6 @@ public class DroidPlannerService extends Service {
 
         droneAccess = new DroneAccess(this);
         dpServices = new DPServices(this);
-        lbm = LocalBroadcastManager.getInstance(context);
         this.cameraInfoLoader = new CameraInfoLoader(context);
 
         updateForegroundNotification();
