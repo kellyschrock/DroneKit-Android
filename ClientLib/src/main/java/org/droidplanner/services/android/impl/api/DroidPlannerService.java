@@ -247,10 +247,10 @@ public class DroidPlannerService extends Service {
             //Put the service in the foreground
             final Notification.Builder notifBuilder = new Notification.Builder(context)
                     .setContentTitle("Dronekit-Android")
-                    .setPriority(Notification.PRIORITY_MIN)
                     .setSmallIcon(R.drawable.ic_stat_notify)
                     .setCategory(Notification.CATEGORY_SERVICE)
                     .setChannelId(channelId)
+                    .setBadgeIconType(Notification.BADGE_ICON_NONE)
                     ;
 
             final int connectedCount = droneApiStore.size();
@@ -293,12 +293,12 @@ public class DroidPlannerService extends Service {
     private String createNotificationChannel(String chanId, CharSequence name) {
         Timber.d("createNotificationChannel(%s, %s)", chanId, name);
 
-        final NotificationChannel channel = new NotificationChannel(chanId, name, NotificationManager.IMPORTANCE_NONE);
-        channel.setLightColor(Color.BLUE);
+        final NotificationChannel channel = new NotificationChannel(chanId, name, NotificationManager.IMPORTANCE_LOW);
+        channel.setDescription("Background connection service");
         channel.setShowBadge(false);
-        channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
         final NotificationManager service = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         service.createNotificationChannel(channel);
+
         return chanId;
     }
 

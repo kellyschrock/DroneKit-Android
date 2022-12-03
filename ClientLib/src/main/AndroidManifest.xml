@@ -41,7 +41,9 @@
             android:name="org.droidplanner.services.android.impl.ui.activity.UsbIntentReceiver"
             android:launchMode="singleInstance"
             android:noHistory="true"
-            android:excludeFromRecents="true">
+            android:excludeFromRecents="true"
+            android:exported="true"
+            >
             <!-- USB connection  intent -->
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"/>
