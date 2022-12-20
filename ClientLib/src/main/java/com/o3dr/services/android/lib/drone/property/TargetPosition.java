@@ -34,6 +34,10 @@ public class TargetPosition implements DroneAttribute {
         this.lastUpdate = when;
     }
 
+    public void updateTime(long when) {
+        this.lastUpdate = when;
+    }
+
     public boolean isEqualTo(double lat, double lng, double alt, double yaw) {
         return coordinate.getLatitude() == lat &&
             coordinate.getLongitude() == lng &&

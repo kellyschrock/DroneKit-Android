@@ -1,8 +1,8 @@
 package org.droidplanner.services.android.impl.utils.connection;
 
-import android.support.v4.util.Pair;
 import android.text.TextUtils;
 
+import android.util.Pair;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;

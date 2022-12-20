@@ -21,7 +21,6 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -335,14 +334,14 @@ public class WifiConnectionHandler {
     private boolean hasNetworkChangeStatePermissions() {
         boolean hasPerms = false;
 
-        for(String perm: new String[] {
-                Manifest.permission.CHANGE_NETWORK_STATE
-        }) {
-            if(ContextCompat.checkSelfPermission(context, perm) == PackageManager.PERMISSION_GRANTED) {
-                hasPerms = true;
-                break;
-            }
-        }
+//        for(String perm: new String[] {
+//                Manifest.permission.CHANGE_NETWORK_STATE
+//        }) {
+//            if(ContextCompat.checkSelfPermission(context, perm) == PackageManager.PERMISSION_GRANTED) {
+//                hasPerms = true;
+//                break;
+//            }
+//        }
 
         if(!hasPerms) {
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -356,15 +355,15 @@ public class WifiConnectionHandler {
     private boolean hasLocationPermissions() {
         boolean hasPerms = false;
 
-        for(String perm: new String[] {
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-        }) {
-            if(ContextCompat.checkSelfPermission(context, perm) == PackageManager.PERMISSION_GRANTED) {
-                hasPerms = true;
-                break;
-            }
-        }
+//        for(String perm: new String[] {
+//                Manifest.permission.ACCESS_FINE_LOCATION,
+//                Manifest.permission.ACCESS_COARSE_LOCATION
+//        }) {
+//            if(ContextCompat.checkSelfPermission(context, perm) == PackageManager.PERMISSION_GRANTED) {
+//                hasPerms = true;
+//                break;
+//            }
+//        }
 
         return hasPerms;
     }

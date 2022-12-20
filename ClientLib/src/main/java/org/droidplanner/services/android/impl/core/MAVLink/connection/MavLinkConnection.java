@@ -1,9 +1,9 @@
 package org.droidplanner.services.android.impl.core.MAVLink.connection;
 
 import android.os.Bundle;
-import android.support.v4.util.Pair;
 import android.util.Log;
 
+import android.util.Pair;
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.Messages.MAVLinkStats;
 import com.MAVLink.Parser;

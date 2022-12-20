@@ -829,7 +829,7 @@ public class GenericMavLinkDrone implements MavLinkDrone {
 
             // If no update to the target position in the last 5s, clear it.
             final long now = System.currentTimeMillis();
-            if((now - targetPosition.getLastUpdate()) > 5000) {
+            if((now - targetPosition.getLastUpdate()) > 3000) {
                 targetPosition.clear();
                 notifyAttributeListener(AttributeEvent.TARGET_POSITION_CLEARED);
             }
@@ -1039,11 +1039,15 @@ public class GenericMavLinkDrone implements MavLinkDrone {
         final double alt = (double)msg.alt;
         final double yaw = (double)msg.yaw;
 
+//        Log.v(TAG, String.format("target pos: %.4f/%.4f", lat, lng));
+
         if(!targetPosition.isEqualTo(lat, lng, alt, yaw)) {
             targetPosition.update(lat, msg.lon_int / 1e7, (double)msg.alt, yaw, System.currentTimeMillis());
 
             notifyAttributeListener(AttributeEvent.TARGET_POSITION_UPDATED);
         }
+
+        targetPosition.updateTime(System.currentTimeMillis());
     }
 
     protected void processSignalUpdate(int rxerrors, int fixed, short rssi, short remrssi, short txbuf,

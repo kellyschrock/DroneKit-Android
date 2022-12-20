@@ -117,8 +117,7 @@ dependencies {
 
     implementation 'org.droidplanner.android:usb-serial-android:0.1.0'
 
-    implementation 'com.android.support:localbroadcastmanager:28.0.0'
-//    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
+//    implementation "com.android.support:localbroadcastmanager:${support_lib_version}"
 
 //    debugimplementation project(':Mavlink')
 //    sitlimplementation project(':Mavlink')
