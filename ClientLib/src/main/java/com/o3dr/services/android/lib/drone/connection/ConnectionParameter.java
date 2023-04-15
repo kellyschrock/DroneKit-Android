@@ -202,7 +202,8 @@ public class ConnectionParameter implements Parcelable {
         paramsBundle.putString(ConnectionType.EXTRA_SOLO_LINK_ID, ssidWithoutQuotes);
         paramsBundle.putString(ConnectionType.EXTRA_SOLO_LINK_PASSWORD, password);
 
-        return new ConnectionParameter(ConnectionType.TYPE_SOLO, paramsBundle, params.getTLogLoggingUri(), null);
+        // TODO: TYPE_SOLO doesn't seem to work with SolexNG?
+        return new ConnectionParameter(ConnectionType.TYPE_UDP, paramsBundle, params.getTLogLoggingUri(), null);
     }
 
     private ConnectionParameter(@ConnectionType.Type int connectionType, Bundle paramsBundle){

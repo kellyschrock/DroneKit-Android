@@ -68,6 +68,8 @@ import com.o3dr.services.android.lib.model.ICommandListener;
 import com.o3dr.services.android.lib.model.action.Action;
 import com.o3dr.services.android.lib.util.MathUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.droidplanner.services.android.impl.communication.model.DataLink;
 import org.droidplanner.services.android.impl.core.MAVLink.IWaypointManager;
 import org.droidplanner.services.android.impl.core.MAVLink.MavLinkCommands;
@@ -257,6 +259,35 @@ public class GenericMavLinkDrone implements MavLinkDrone {
     @Override
     public String getFirmwareVersion() {
         return type.getFirmwareVersion();
+    }
+
+    @Override
+    public byte[] getFirmwareVersionBytes() {
+        final String version = getFirmwareVersion();
+
+        if(version != null) {
+            try {
+                final String[] parts = version.split("\\.");
+
+                final List<Byte> b = new ArrayList<>();
+                for(String part: parts) {
+                    b.add(Byte.valueOf(part));
+                }
+
+                if(!b.isEmpty()) {
+                    final byte[] result = new byte[b.size()];
+                    for(int i = 0, size = b.size(); i < size; ++i) {
+                        result[i] = b.get(i);
+                    }
+
+                    return result;
+                }
+            } catch(Throwable ex) {
+                Log.e(TAG, ex.getMessage(), ex);
+            }
+        }
+
+        return new byte[] { 0, 0, 0 };
     }
 
     protected void setFirmwareVersion(String message) {
@@ -803,6 +834,14 @@ public class GenericMavLinkDrone implements MavLinkDrone {
         apVersion.setBoardVersion(msg.board_version);
         apVersion.setProductId(msg.product_id);
         apVersion.setVendorId(msg.vendor_id);
+
+        final byte main = (byte)(msg.flight_sw_version >> 24);
+        final byte sub = (byte)((msg.flight_sw_version >> 16) & 0xff);
+        final byte rev = (byte)((msg.flight_sw_version >> 8) & 0xff);
+
+        apVersion.flightSwVersionBytes[0] = main;
+        apVersion.flightSwVersionBytes[1] = sub;
+        apVersion.flightSwVersionBytes[2] = rev;
 
         notifyAttributeListener(AttributeEvent.AUTOPILOT_VERSION);
     }

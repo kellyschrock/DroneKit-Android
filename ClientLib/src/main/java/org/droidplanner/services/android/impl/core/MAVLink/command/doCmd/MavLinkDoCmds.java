@@ -1,5 +1,7 @@
 package org.droidplanner.services.android.impl.core.MAVLink.command.doCmd;
 
+import android.util.Log;
+import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.ardupilotmega.msg_digicam_control;
 import com.MAVLink.ardupilotmega.msg_mount_control;
 import com.MAVLink.common.msg_command_long;
@@ -7,11 +9,16 @@ import com.MAVLink.common.msg_mission_set_current;
 import com.MAVLink.enums.GRIPPER_ACTIONS;
 import com.MAVLink.enums.MAV_CMD;
 
+import com.MAVLink.enums.MAV_MOUNT_MODE;
+import com.o3dr.services.android.lib.util.version.VersionUtils;
+import java.util.Arrays;
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.model.ICommandListener;
 
 public class MavLinkDoCmds {
+
+    private static final String TAG = MavLinkDoCmds.class.getSimpleName();
 
     public static void setVehicleHome(MavLinkDrone drone, LatLongAlt location, ICommandListener listener){
         if(drone == null || location == null)
@@ -165,12 +172,29 @@ public class MavLinkDoCmds {
         if (drone == null)
             return;
 
-        msg_mount_control msg = new msg_mount_control();
-        msg.target_system = drone.getSysid();
-        msg.target_component = drone.getCompid();
-        msg.input_a = (int) (pitch * 100);
-        msg.input_b = (int) (roll * 100);
-        msg.input_c = (int) (yaw * 100);
+//        Log.v(TAG, String.format("set gimbal: %f, %f, %f", pitch, roll, yaw));
+
+
+        final MAVLinkMessage msg;
+
+        final byte[] versionBytes = drone.getFirmwareVersionBytes();
+        if(versionBytes[0] >= 4) {
+            final msg_command_long cmd = new msg_command_long();
+            cmd.command = MAV_CMD.MAV_CMD_DO_MOUNT_CONTROL;
+            cmd.param1 = pitch;
+            cmd.param2 = roll;
+            cmd.param3 = yaw;
+            cmd.param7 = MAV_MOUNT_MODE.MAV_MOUNT_MODE_MAVLINK_TARGETING;
+            msg = cmd;
+        } else {
+            final msg_mount_control mount = new msg_mount_control();
+            mount.target_system = drone.getSysid();
+            mount.target_component = drone.getCompid();
+            mount.input_a = (int) (pitch * 100);
+            mount.input_b = (int) (roll * 100);
+            mount.input_c = (int) (yaw * 100);
+            msg = mount;
+        }
 
         drone.getMavClient().sendMessage(msg, listener);
     }

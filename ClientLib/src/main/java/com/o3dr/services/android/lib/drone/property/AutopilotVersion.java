@@ -1,6 +1,7 @@
 package com.o3dr.services.android.lib.drone.property;
 
 import android.os.Parcel;
+import java.util.Arrays;
 
 /**
  * Stores information about the drone's various versions.
@@ -21,6 +22,8 @@ public class AutopilotVersion implements DroneAttribute {
      * Firmware version number
      */
     public long flightSwVersion;
+
+    public final byte[] flightSwVersionBytes = new byte[3];
 
     /**
      * Middleware version number
@@ -129,6 +132,11 @@ public class AutopilotVersion implements DroneAttribute {
         this.productId = productId;
     }
 
+    public String toFirmwareVersionString() {
+        final byte[] bytes = this.flightSwVersionBytes;
+        return String.format("%d.%d.%d", bytes[0], bytes[1], bytes[2]);
+    }
+
     @Override
     public String toString() {
         return "AutopilotVersion{" +
@@ -140,6 +148,7 @@ public class AutopilotVersion implements DroneAttribute {
                 ", boardVersion=" + boardVersion +
                 ", vendorId=" + vendorId +
                 ", productId=" + productId +
+                ", flightSwVersionBytes=" + Arrays.toString(flightSwVersionBytes) +
                 '}';
     }
 
@@ -158,6 +167,7 @@ public class AutopilotVersion implements DroneAttribute {
         dest.writeLong(boardVersion);
         dest.writeInt(vendorId);
         dest.writeInt(productId);
+        dest.writeByteArray(flightSwVersionBytes);
     }
 
     private AutopilotVersion(Parcel in) {
@@ -169,6 +179,7 @@ public class AutopilotVersion implements DroneAttribute {
         this.boardVersion = in.readLong();
         this.vendorId = in.readInt();
         this.productId = in.readInt();
+        in.readByteArray(this.flightSwVersionBytes);
     }
 
     public static final Creator<AutopilotVersion> CREATOR = new Creator<AutopilotVersion>() {

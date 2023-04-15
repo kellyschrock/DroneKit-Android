@@ -61,6 +61,8 @@ public interface MavLinkDrone extends Drone {
 
     public String getFirmwareVersion();
 
+    public byte[] getFirmwareVersionBytes();
+
     public Camera getCamera();
 
     public SolexCCState getSolexCCState();

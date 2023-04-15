@@ -13,6 +13,8 @@ import com.MAVLink.ardupilotmega.msg_mag_cal_report;
 import com.MAVLink.ardupilotmega.msg_mount_configure;
 import com.MAVLink.ardupilotmega.msg_mount_status;
 import com.MAVLink.ardupilotmega.msg_radio;
+import com.MAVLink.common.msg_autopilot_version;
+import com.MAVLink.common.msg_command_long;
 import com.MAVLink.common.msg_named_value_int;
 import com.MAVLink.common.msg_raw_imu;
 import com.MAVLink.common.msg_rc_channels_raw;
@@ -20,6 +22,7 @@ import com.MAVLink.common.msg_servo_output_raw;
 import com.MAVLink.common.msg_statustext;
 import com.MAVLink.common.msg_sys_status;
 import com.MAVLink.common.msg_vfr_hud;
+import com.MAVLink.enums.MAV_CMD;
 import com.MAVLink.enums.MAV_MOUNT_MODE;
 import com.MAVLink.enums.MAV_SYS_STATUS_SENSOR;
 import com.github.zafarkhaja.semver.Version;
@@ -388,13 +391,29 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
 
                 Parameter mountParam = getParameterManager().getParameter("MNT_MODE");
                 if (mountParam == null) {
-                    msg_mount_configure msg = new msg_mount_configure();
-                    msg.target_system = getSysid();
-                    msg.target_component = getCompid();
-                    msg.mount_mode = (byte) mountMode;
-                    msg.stab_pitch = 0;
-                    msg.stab_roll = 0;
-                    msg.stab_yaw = 0;
+                    final byte[] versionBytes = getFirmwareVersionBytes();
+                    final MAVLinkMessage msg;
+                    if (versionBytes[0] >= 4) {
+                        msg_command_long cmd = new msg_command_long();
+                        cmd.command = MAV_CMD.MAV_CMD_DO_MOUNT_CONFIGURE;
+                        cmd.target_system = getSysid();
+                        cmd.target_component = getCompid();
+                        cmd.param1 = mountMode;
+                        cmd.param2 = 0; // stab_roll
+                        cmd.param3 = 0; // stab_pitch
+                        cmd.param4 = 0; // stab_yaw
+                        msg = cmd;
+                    } else {
+                        final msg_mount_configure mount = new msg_mount_configure();
+                        mount.target_system = getSysid();
+                        mount.target_component = getCompid();
+                        mount.mount_mode = (byte) mountMode;
+                        mount.stab_pitch = 0;
+                        mount.stab_roll = 0;
+                        mount.stab_yaw = 0;
+                        msg = mount;
+                    }
+
                     getMavClient().sendMessage(msg, listener);
                 } else {
                     MavLinkParameters.sendParameter(this, "MNT_MODE", 1, mountMode);
@@ -404,6 +423,12 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
             default:
                 return super.executeAsyncAction(action, listener);
         }
+    }
+
+    @Override
+    protected void processAutopilotVersion(msg_autopilot_version msg) {
+        super.processAutopilotVersion(msg);
+        setFirmwareVersion(apVersion.toFirmwareVersionString());
     }
 
     @Override

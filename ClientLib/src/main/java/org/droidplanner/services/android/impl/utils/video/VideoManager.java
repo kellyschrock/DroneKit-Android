@@ -163,7 +163,9 @@ public class VideoManager implements IpConnectionListener {
                 this.linkPort = udpPort;
             } catch(UnknownHostException ex) {
                 Timber.e(ex, ex.getMessage());
-                listener.onLinkDisconnected();
+                if(listener != null) {
+                    listener.onLinkDisconnected();
+                }
                 handler.removeCallbacks(reconnectTask);
                 return;
             }
@@ -238,7 +240,9 @@ public class VideoManager implements IpConnectionListener {
                 @Override
                 public void run() {
                     try {
-                        listener.onSuccess();
+                        if(listener != null) {
+                            listener.onSuccess();
+                        }
                     } catch (RemoteException e) {
                         Log.e(TAG, e.getMessage(), e);
                     }
@@ -253,7 +257,9 @@ public class VideoManager implements IpConnectionListener {
                 @Override
                 public void run() {
                     try {
-                        listener.onTimeout();
+                        if(listener != null) {
+                            listener.onTimeout();
+                        }
                     } catch (RemoteException e) {
                         Log.e(TAG, e.getMessage(), e);
                     }
@@ -268,7 +274,9 @@ public class VideoManager implements IpConnectionListener {
                 @Override
                 public void run() {
                     try {
-                        listener.onError(error);
+                        if(listener != null) {
+                            listener.onError(error);
+                        }
                     } catch (RemoteException e) {
                         Log.e(TAG, e.getMessage(), e);
                     }
