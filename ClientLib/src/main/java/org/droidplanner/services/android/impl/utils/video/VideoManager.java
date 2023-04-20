@@ -18,6 +18,9 @@ import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError
 import com.o3dr.services.android.lib.model.ICommandListener;
 
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
@@ -329,6 +332,18 @@ public class VideoManager implements IpConnectionListener {
 
         // UDP IP is optional. May not actually be necessary.
         final String udpIP = videoProps.getString(CameraActions.EXTRA_VIDEO_PROPS_UDP_IP, null);
+
+        if(udpIP != null) {
+            try {
+                final byte[] message = "hi".getBytes();
+                final DatagramSocket sock = new DatagramSocket();
+                final DatagramPacket p = new DatagramPacket(
+                    message, message.length, InetAddress.getByName(udpIP), udpPort);
+                sock.send(p);
+            } catch(Throwable ex) {
+                Log.e(TAG, ex.getMessage(), ex);
+            }
+        }
 
         if (newVideoTag == null)
             newVideoTag = "";
