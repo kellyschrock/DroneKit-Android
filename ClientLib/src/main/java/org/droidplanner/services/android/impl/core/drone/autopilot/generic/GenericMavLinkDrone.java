@@ -271,7 +271,12 @@ public class GenericMavLinkDrone implements MavLinkDrone {
 
                 final List<Byte> b = new ArrayList<>();
                 for(String part: parts) {
-                    b.add(Byte.valueOf(part));
+                    try {
+                        b.add(Byte.valueOf(part));
+                    } catch(java.lang.NumberFormatException e) {
+                        Log.e(TAG, e.getMessage(), e);
+                        b.add((byte)0);
+                    }
                 }
 
                 if(!b.isEmpty()) {
