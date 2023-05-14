@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
-
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.ardupilotmega.msg_camera_feedback;
 import com.MAVLink.ardupilotmega.msg_mag_cal_progress;
@@ -31,34 +30,28 @@ import com.o3dr.services.android.lib.drone.action.StateActions;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEvent;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEventExtra;
 import com.o3dr.services.android.lib.drone.attribute.AttributeType;
-import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
 import com.o3dr.services.android.lib.drone.mission.action.MissionActions;
 import com.o3dr.services.android.lib.drone.property.DroneAttribute;
 import com.o3dr.services.android.lib.drone.property.Parameter;
-
-import org.droidplanner.services.android.impl.core.MAVLink.IWaypointManager;
-import org.droidplanner.services.android.impl.core.MAVLink.PX4WaypointManager;
-import org.droidplanner.services.android.impl.core.drone.autopilot.apm.APMConstants;
-import org.droidplanner.services.android.impl.core.drone.variables.Px4Mode;
-
 import com.o3dr.services.android.lib.drone.property.VehicleMode;
 import com.o3dr.services.android.lib.gcs.action.CalibrationActions;
 import com.o3dr.services.android.lib.model.AbstractCommandListener;
 import com.o3dr.services.android.lib.model.ICommandListener;
 import com.o3dr.services.android.lib.model.action.Action;
-
 import org.droidplanner.services.android.impl.communication.model.DataLink;
+import org.droidplanner.services.android.impl.core.MAVLink.IWaypointManager;
 import org.droidplanner.services.android.impl.core.MAVLink.MavLinkCommands;
 import org.droidplanner.services.android.impl.core.MAVLink.MavLinkParameters;
-import org.droidplanner.services.android.impl.core.MAVLink.APMWaypointManager;
+import org.droidplanner.services.android.impl.core.MAVLink.PX4WaypointManager;
 import org.droidplanner.services.android.impl.core.MAVLink.command.doCmd.MavLinkDoCmds;
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces;
 import org.droidplanner.services.android.impl.core.drone.LogMessageListener;
+import org.droidplanner.services.android.impl.core.drone.autopilot.apm.APMConstants;
 import org.droidplanner.services.android.impl.core.drone.autopilot.generic.GenericMavLinkDrone;
 import org.droidplanner.services.android.impl.core.drone.variables.Camera;
 import org.droidplanner.services.android.impl.core.drone.variables.GuidedPoint;
 import org.droidplanner.services.android.impl.core.drone.variables.Magnetometer;
-import org.droidplanner.services.android.impl.core.drone.variables.Px4Util;
+import org.droidplanner.services.android.impl.core.drone.variables.Px4Mode;
 import org.droidplanner.services.android.impl.core.drone.variables.RC;
 import org.droidplanner.services.android.impl.core.drone.variables.Type;
 import org.droidplanner.services.android.impl.core.drone.variables.calibration.AccelCalibration;
@@ -67,10 +60,6 @@ import org.droidplanner.services.android.impl.core.firmware.FirmwareType;
 import org.droidplanner.services.android.impl.core.mission.Mission;
 import org.droidplanner.services.android.impl.core.model.AutopilotWarningParser;
 import org.droidplanner.services.android.impl.utils.CommonApiUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import timber.log.Timber;
 
 /**

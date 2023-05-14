@@ -38,7 +38,7 @@ import timber.log.Timber;
  * via the MAV link. The function processMessage must be called with every new
  * MAV Message.
  */
-public class PX4WaypointManager extends DroneVariable implements IWaypointManager {
+public class PX4WaypointManager extends DroneVariable implements IWaypointManager<msg_mission_item> {
     static final String TAG = PX4WaypointManager.class.getSimpleName();
 
     private static final long TIMEOUT = 12000; //ms

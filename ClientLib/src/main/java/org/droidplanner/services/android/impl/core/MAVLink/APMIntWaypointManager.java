@@ -1,24 +1,22 @@
 package org.droidplanner.services.android.impl.core.MAVLink;
 
 import android.os.Handler;
-
+import android.util.Log;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.common.msg_mission_ack;
 import com.MAVLink.common.msg_mission_count;
 import com.MAVLink.common.msg_mission_current;
-import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.common.msg_mission_item_int;
 import com.MAVLink.common.msg_mission_item_reached;
 import com.MAVLink.common.msg_mission_request;
+import com.MAVLink.common.msg_mission_request_int;
 import com.MAVLink.enums.MAV_MISSION_TYPE;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces.OnWaypointManagerListener;
 import org.droidplanner.services.android.impl.core.drone.DroneVariable;
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
-
-import java.util.ArrayList;
-import java.util.List;
-import android.util.Log;
-
+import org.droidplanner.services.android.impl.core.mission.MissionItemConvert;
 import timber.log.Timber;
 
 /**
@@ -28,8 +26,8 @@ import timber.log.Timber;
  * via the MAV link. The function processMessage must be called with every new
  * MAV Message.
  */
-public class APMWaypointManager extends DroneVariable implements IWaypointManager<msg_mission_item> {
-    static final String TAG = APMWaypointManager.class.getSimpleName();
+public class APMIntWaypointManager extends DroneVariable implements IWaypointManager<msg_mission_item_int> {
+    static final String TAG = APMIntWaypointManager.class.getSimpleName();
 
     private static final long TIMEOUT = 15000; //ms
     private static final int RETRY_LIMIT = 3;
@@ -57,7 +55,7 @@ public class APMWaypointManager extends DroneVariable implements IWaypointManage
         }
     };
 
-    public APMWaypointManager(MavLinkDrone drone, Handler handler) {
+    public APMIntWaypointManager(MavLinkDrone drone, Handler handler) {
         super(drone);
         this.watchdog = handler;
     }
@@ -106,8 +104,8 @@ public class APMWaypointManager extends DroneVariable implements IWaypointManage
      */
 
     @Override
-    public void writeWaypoints(List<msg_mission_item> data) {
-        Log.v(TAG, "writeWaypoints()");
+    public void writeWaypoints(List<msg_mission_item_int> data) {
+        Log.v(TAG, "writeWaypoints(): state=" + state);
 
         // ensure that WPManager is not doing anything else
         if (state != WaypointStates.IDLE)
@@ -119,7 +117,7 @@ public class APMWaypointManager extends DroneVariable implements IWaypointManage
             mission.addAll(data);
             writeIndex = 0;
             state = WaypointStates.WRITING_WP_COUNT;
-            Log.v(TAG, "sendWaypointCount()");
+            Log.v(TAG, "sendWaypointCount(): mission.size=" + mission.size());
 
             MavLinkWaypoint.sendWaypointCount(myDrone, mission.size(), MAV_MISSION_TYPE.MAV_MISSION_TYPE_MISSION);
 
@@ -163,7 +161,7 @@ public class APMWaypointManager extends DroneVariable implements IWaypointManage
     /**
      * list of waypoints used when writing or receiving
      */
-    private List<msg_mission_item> mission = new ArrayList<msg_mission_item>();
+    private List<msg_mission_item_int> mission = new ArrayList<>();
 
     /**
      * Try to process a Mavlink message if it is a mission related message
@@ -173,12 +171,15 @@ public class APMWaypointManager extends DroneVariable implements IWaypointManage
      */
     @Override
     public boolean processMessage(MAVLinkMessage msg) {
+//        Log.v(TAG, String.format("processMessage(): %s", msg.name()));
+
         switch (state) {
             default:
             case IDLE:
                 break;
 
             case READ_REQUEST:
+//                Log.v(TAG, "READ_REQUEST");
                 if (msg.msgid == msg_mission_count.MAVLINK_MSG_ID_MISSION_COUNT) {
                     waypointCount = ((msg_mission_count) msg).count;
                     mission.clear();
@@ -190,9 +191,10 @@ public class APMWaypointManager extends DroneVariable implements IWaypointManage
                 break;
 
             case READING_WP:
-                if (msg.msgid == msg_mission_item.MAVLINK_MSG_ID_MISSION_ITEM) {
+//                Log.v(TAG, "READING_WP");
+                if (msg.msgid == msg_mission_item_int.MAVLINK_MSG_ID_MISSION_ITEM_INT) {
                     startWatchdog();
-                    processReceivedWaypoint((msg_mission_item) msg);
+                    processReceivedWaypoint((msg_mission_item_int) msg);
                     doWaypointEvent(WaypointEvent_Type.WP_DOWNLOAD, readIndex + 1, waypointCount);
                     if (mission.size() < waypointCount) {
                         MavLinkWaypoint.requestWayPoint(myDrone, mission.size());
@@ -200,7 +202,7 @@ public class APMWaypointManager extends DroneVariable implements IWaypointManage
                         stopWatchdog();
                         state = WaypointStates.IDLE;
                         MavLinkWaypoint.sendAck(myDrone);
-                        myDrone.getMission().onMissionReceived(mission);
+                        myDrone.getMission().onMissionReceived(MissionItemConvert.toMissionItems(mission));
                         doEndWaypointEvent(WaypointEvent_Type.WP_DOWNLOAD);
                     }
                     return true;
@@ -210,14 +212,33 @@ public class APMWaypointManager extends DroneVariable implements IWaypointManage
             case WRITING_WP_COUNT:
                 state = WaypointStates.WRITING_WP;
             case WRITING_WP:
-                if (msg.msgid == msg_mission_request.MAVLINK_MSG_ID_MISSION_REQUEST) {
-                    Log.v(TAG, "got MISSION_REQUEST");
+                switch(msg.msgid) {
+                    case msg_mission_request.MAVLINK_MSG_ID_MISSION_REQUEST: {
+                        Log.v(TAG, "got MISSION_REQUEST");
 
-                    startWatchdog();
-                    processWaypointToSend((msg_mission_request) msg);
-                    doWaypointEvent(WaypointEvent_Type.WP_UPLOAD, writeIndex + 1, mission.size());
-                    return true;
+                        startWatchdog();
+                        processWaypointToSend((msg_mission_request) msg);
+                        doWaypointEvent(WaypointEvent_Type.WP_UPLOAD, writeIndex + 1, mission.size());
+                        return true;
+                    }
+
+                    case msg_mission_request_int.MAVLINK_MSG_ID_MISSION_REQUEST_INT: {
+                        Log.v(TAG, "got MISSION_REQUEST");
+
+                        startWatchdog();
+
+                        final msg_mission_request ask = new msg_mission_request();
+                        ask.mission_type = ((msg_mission_request)msg).mission_type;
+                        ask.seq = ((msg_mission_request)msg).seq;
+                        ask.target_component = ((msg_mission_request)msg).target_component;
+                        ask.target_system = ((msg_mission_request)msg).target_system;
+
+                        processWaypointToSend(ask);
+                        doWaypointEvent(WaypointEvent_Type.WP_UPLOAD, writeIndex + 1, mission.size());
+                        return true;
+                    }
                 }
+
                 break;
 
             case WAITING_WRITE_ACK:
@@ -294,11 +315,13 @@ public class APMWaypointManager extends DroneVariable implements IWaypointManage
     }
 
     private void processWaypointToSend(msg_mission_request msg) {
+        Log.v(TAG, "processWaypointToSend(): msg=" + msg);
+
         /*
          * Log.d("TIMEOUT", "Write Msg: " + String.valueOf(msg.seq));
 		 */
         writeIndex = msg.seq;
-        msg_mission_item item = mission.get(writeIndex);
+        msg_mission_item_int item = mission.get(writeIndex);
         Log.v(TAG, String.format("processWaypointToSend(): item=%s", item));
 
         item.isMavlink2 = false;
@@ -321,7 +344,7 @@ public class APMWaypointManager extends DroneVariable implements IWaypointManage
         }
     }
 
-    private void processReceivedWaypoint(msg_mission_item msg) {
+    private void processReceivedWaypoint(msg_mission_item_int msg) {
 		/*
 		 * Log.d("TIMEOUT", "Read Last/Curr: " + String.valueOf(readIndex) + "/"
 		 * + String.valueOf(msg.seq));

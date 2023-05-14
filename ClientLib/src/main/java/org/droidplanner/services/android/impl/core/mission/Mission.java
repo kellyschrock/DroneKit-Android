@@ -4,11 +4,10 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.MAVLink.common.msg_mission_ack;
-import com.MAVLink.common.msg_mission_count;
 import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.common.msg_mission_item_int;
 import com.MAVLink.enums.MAV_CMD;
 import com.MAVLink.enums.MAV_FRAME;
-import com.MAVLink.enums.MAV_MISSION_TYPE;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.attribute.AttributeType;
@@ -19,6 +18,7 @@ import com.o3dr.services.android.lib.drone.property.Parameter;
 
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces.DroneEventsType;
 import org.droidplanner.services.android.impl.core.drone.DroneVariable;
+import org.droidplanner.services.android.impl.core.drone.MissionConfig;
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
 import org.droidplanner.services.android.impl.core.drone.autopilot.apm.APMConstants;
 import org.droidplanner.services.android.impl.core.drone.autopilot.generic.GenericMavLinkDrone;
@@ -30,7 +30,6 @@ import org.droidplanner.services.android.impl.core.mission.commands.DoJumpImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.EpmGripperImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.LoiterTimeImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.LoiterToAltImpl;
-import org.droidplanner.services.android.impl.core.mission.commands.MissionCMD;
 import org.droidplanner.services.android.impl.core.mission.commands.ReturnToHomeImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.SetRelayImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.SetServoImpl;
@@ -335,9 +334,15 @@ public class Mission extends DroneVariable<GenericMavLinkDrone> {
      * Sends the mission to the drone using the mavlink protocol.
      */
     public void sendMissionToAPM() {
-        List<msg_mission_item> msgMissionItems = getAPMMsgMissionItems();
-        myDrone.getWaypointManager().writeWaypoints(msgMissionItems);
-        updateComponentItems(msgMissionItems);
+        if(MissionConfig.TYPE == MissionConfig.TYPE_INT) {
+            List<msg_mission_item_int> msgMissionItems = getAPMIntMsgMissionItems();
+            myDrone.getWaypointManager().writeWaypoints(msgMissionItems);
+            updateComponentIntItems(msgMissionItems);
+        } else {
+            List<msg_mission_item> items = getAPMMsgMissionItems();
+            myDrone.getWaypointManager().writeWaypoints(items);
+            updateComponentItems(items);
+        }
     }
 
     public void sendMissionToPX4(MavLinkDrone drone) {
@@ -363,6 +368,18 @@ public class Mission extends DroneVariable<GenericMavLinkDrone> {
         componentItems.addAll(processMavLinkMessages(msgMissionItems));
     }
 
+    private void updateComponentIntItems(List<msg_mission_item_int> msgMissionItems) {
+        componentItems.clear();
+        if(msgMissionItems == null || msgMissionItems.isEmpty()) {
+            return;
+        }
+        msg_mission_item_int firstItem = msgMissionItems.get(0);
+        if(firstItem.seq == APMConstants.HOME_WAYPOINT_INDEX) {
+            msgMissionItems.remove(0); // Remove Home waypoint
+        }
+        componentItems.addAll(processMavLinkMessages(MissionItemConvert.toMissionItems(msgMissionItems)));
+    }
+
     public msg_mission_item packHomeMavlink() {
         Home home = (Home) myDrone.getAttribute(AttributeType.HOME);
         LatLongAlt coordinate = home.getCoordinate();
@@ -377,6 +394,26 @@ public class Mission extends DroneVariable<GenericMavLinkDrone> {
         if (home.isValid()) {
             mavMsg.x = (float) coordinate.getLatitude();
             mavMsg.y = (float) coordinate.getLongitude();
+            mavMsg.z = (float) coordinate.getAltitude();
+        }
+
+        return mavMsg;
+    }
+
+    public msg_mission_item_int packHomeMavlinkInt() {
+        Home home = (Home) myDrone.getAttribute(AttributeType.HOME);
+        LatLongAlt coordinate = home.getCoordinate();
+
+        msg_mission_item_int mavMsg = new msg_mission_item_int();
+        mavMsg.autocontinue = 1;
+        mavMsg.command = MAV_CMD.MAV_CMD_NAV_WAYPOINT;
+        mavMsg.current = 0;
+        mavMsg.frame = MAV_FRAME.MAV_FRAME_GLOBAL;
+        mavMsg.target_system = myDrone.getSysid();
+        mavMsg.target_component = myDrone.getCompid();
+        if (home.isValid()) {
+            mavMsg.x = (int)(coordinate.getLatitude() * 1e7);
+            mavMsg.y = (int)(coordinate.getLongitude() * 1e7);
             mavMsg.z = (float) coordinate.getAltitude();
         }
 
@@ -398,6 +435,27 @@ public class Mission extends DroneVariable<GenericMavLinkDrone> {
                 msg_item.isMavlink2 = false;
                 msg_item.mission_type = 0;
                 data.add(msg_item);
+            }
+        }
+        return data;
+    }
+
+    public List<msg_mission_item_int> getAPMIntMsgMissionItems() {
+        List<msg_mission_item_int> data = new ArrayList<>();
+        int waypointCount = 0;
+        msg_mission_item_int home = packHomeMavlinkInt();
+        home.seq = waypointCount++;
+        data.add(home);
+
+        int size = items.size();
+        for (int i = 0; i < size; i++) {
+            MissionItemImpl item = items.get(i);
+
+            for(msg_mission_item msg_item: item.packMissionItem()){
+                msg_item.seq = waypointCount++;
+                msg_item.isMavlink2 = false;
+                msg_item.mission_type = 0;
+                data.add(MissionItemConvert.toMissionItemInt(msg_item));
             }
         }
         return data;

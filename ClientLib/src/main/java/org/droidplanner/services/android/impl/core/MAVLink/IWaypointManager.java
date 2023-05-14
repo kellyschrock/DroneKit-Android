@@ -7,7 +7,7 @@ import org.droidplanner.services.android.impl.core.drone.DroneInterfaces;
 
 import java.util.List;
 
-public interface IWaypointManager {
+public interface IWaypointManager<ItemType> {
     enum WaypointStates {
         IDLE, READ_REQUEST, READING_WP, WRITING_WP_COUNT, WRITING_WP, WAITING_WRITE_ACK
     }
@@ -20,7 +20,7 @@ public interface IWaypointManager {
 
     void getWaypoints();
 
-    void writeWaypoints(List<msg_mission_item> data);
+    void writeWaypoints(List<ItemType> data);
 
     void setCurrentWaypoint(int i);
 

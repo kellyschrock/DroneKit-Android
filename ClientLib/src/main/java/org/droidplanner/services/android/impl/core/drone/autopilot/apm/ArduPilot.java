@@ -47,6 +47,7 @@ import com.o3dr.services.android.lib.model.ICommandListener;
 import com.o3dr.services.android.lib.model.action.Action;
 
 import org.droidplanner.services.android.impl.communication.model.DataLink;
+import org.droidplanner.services.android.impl.core.MAVLink.APMIntWaypointManager;
 import org.droidplanner.services.android.impl.core.MAVLink.IWaypointManager;
 import org.droidplanner.services.android.impl.core.MAVLink.MavLinkCommands;
 import org.droidplanner.services.android.impl.core.MAVLink.MavLinkParameters;
@@ -54,6 +55,7 @@ import org.droidplanner.services.android.impl.core.MAVLink.APMWaypointManager;
 import org.droidplanner.services.android.impl.core.MAVLink.command.doCmd.MavLinkDoCmds;
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces;
 import org.droidplanner.services.android.impl.core.drone.LogMessageListener;
+import org.droidplanner.services.android.impl.core.drone.MissionConfig;
 import org.droidplanner.services.android.impl.core.drone.autopilot.apm.variables.APMHeartBeat;
 import org.droidplanner.services.android.impl.core.drone.autopilot.generic.GenericMavLinkDrone;
 import org.droidplanner.services.android.impl.core.drone.variables.ApmModes;
@@ -103,7 +105,9 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
 
         super(droneId, context, handler, mavClient, warningParser, logListener);
 
-        this.waypointManager = new APMWaypointManager(this, handler);
+        this.waypointManager = (MissionConfig.TYPE == MissionConfig.TYPE_INT)?
+            new APMIntWaypointManager(this, handler):
+            new APMWaypointManager(this, handler);
 
         rc = new RC(this);
         this.mission = new Mission(this);
