@@ -98,7 +98,7 @@ public enum ApmModes implements BaseMode<ApmModes> {
 	}
 
 	public static ApmModes getMode(long customMode, int type) {
-		Log.v(TAG, String.format("getMode(%d, %d)", customMode, type));
+//		Log.v(TAG, String.format("getMode(%d, %d)", customMode, type));
 
         if (isCopter(type)) {
             type = MAV_TYPE.MAV_TYPE_QUADROTOR;

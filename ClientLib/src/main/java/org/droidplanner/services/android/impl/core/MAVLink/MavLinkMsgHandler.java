@@ -37,7 +37,7 @@ public class MavLinkMsgHandler {
                 return;
             }
 
-            Timber.d("Message is from component %d", msg.compid);
+//            Timber.d("Message is from component %d", msg.compid);
 //            return;
         }
 
