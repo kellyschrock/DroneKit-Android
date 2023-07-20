@@ -6,6 +6,7 @@ import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.common.msg_mission_ack;
 import com.MAVLink.common.msg_mission_count;
 import com.MAVLink.common.msg_mission_current;
+import com.MAVLink.common.msg_mission_item;
 import com.MAVLink.common.msg_mission_item_int;
 import com.MAVLink.common.msg_mission_item_reached;
 import com.MAVLink.common.msg_mission_request;
@@ -182,30 +183,32 @@ public class APMIntWaypointManager extends DroneVariable implements IWaypointMan
 //                Log.v(TAG, "READ_REQUEST");
                 if (msg.msgid == msg_mission_count.MAVLINK_MSG_ID_MISSION_COUNT) {
                     waypointCount = ((msg_mission_count) msg).count;
+                    Log.v(TAG, "Got a mission count at least");
                     mission.clear();
                     startWatchdog();
-                    MavLinkWaypoint.requestWayPoint(myDrone, mission.size());
+                    MavLinkWaypoint.requestWayPointInt(myDrone, mission.size());
                     state = WaypointStates.READING_WP;
                     return true;
                 }
                 break;
 
             case READING_WP:
-//                Log.v(TAG, "READING_WP");
-                if (msg.msgid == msg_mission_item_int.MAVLINK_MSG_ID_MISSION_ITEM_INT) {
-                    startWatchdog();
-                    processReceivedWaypoint((msg_mission_item_int) msg);
-                    doWaypointEvent(WaypointEvent_Type.WP_DOWNLOAD, readIndex + 1, waypointCount);
-                    if (mission.size() < waypointCount) {
-                        MavLinkWaypoint.requestWayPoint(myDrone, mission.size());
-                    } else {
-                        stopWatchdog();
-                        state = WaypointStates.IDLE;
-                        MavLinkWaypoint.sendAck(myDrone);
-                        myDrone.getMission().onMissionReceived(MissionItemConvert.toMissionItems(mission));
-                        doEndWaypointEvent(WaypointEvent_Type.WP_DOWNLOAD);
+                switch(msg.msgid) {
+                    case msg_mission_item_int.MAVLINK_MSG_ID_MISSION_ITEM_INT: {
+                        startWatchdog();
+                        processReceivedWaypoint((msg_mission_item_int) msg);
+                        doWaypointEvent(WaypointEvent_Type.WP_DOWNLOAD, readIndex + 1, waypointCount);
+                        if (mission.size() < waypointCount) {
+                            MavLinkWaypoint.requestWayPointInt(myDrone, mission.size());
+                        } else {
+                            stopWatchdog();
+                            state = WaypointStates.IDLE;
+                            MavLinkWaypoint.sendAck(myDrone);
+                            myDrone.getMission().onMissionReceived(MissionItemConvert.toMissionItems(mission));
+                            doEndWaypointEvent(WaypointEvent_Type.WP_DOWNLOAD);
+                        }
+                        return true;
                     }
-                    return true;
                 }
                 break;
 
@@ -345,6 +348,7 @@ public class APMIntWaypointManager extends DroneVariable implements IWaypointMan
     }
 
     private void processReceivedWaypoint(msg_mission_item_int msg) {
+//        Log.v(TAG, String.format("processReceivedWaypoint(): %s", msg));
 		/*
 		 * Log.d("TIMEOUT", "Read Last/Curr: " + String.valueOf(readIndex) + "/"
 		 * + String.valueOf(msg.seq));

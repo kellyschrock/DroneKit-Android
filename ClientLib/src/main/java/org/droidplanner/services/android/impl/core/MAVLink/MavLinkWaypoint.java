@@ -4,6 +4,7 @@ import android.util.Log;
 import com.MAVLink.common.msg_mission_ack;
 import com.MAVLink.common.msg_mission_count;
 import com.MAVLink.common.msg_mission_request;
+import com.MAVLink.common.msg_mission_request_int;
 import com.MAVLink.common.msg_mission_request_list;
 import com.MAVLink.common.msg_mission_set_current;
 import com.MAVLink.enums.MAV_MISSION_RESULT;
@@ -25,6 +26,16 @@ public class MavLinkWaypoint {
 
 	public static void requestWayPoint(MavLinkDrone drone, int index) {
 		msg_mission_request msg = new msg_mission_request();
+		msg.target_system = drone.getSysid();
+		msg.target_component = drone.getCompid();
+		msg.seq = index;
+		msg.isMavlink2 = false;
+		msg.mission_type = 0;
+		drone.getMavClient().sendMessage(msg, null);
+	}
+
+	public static void requestWayPointInt(MavLinkDrone drone, int index) {
+		msg_mission_request_int msg = new msg_mission_request_int();
 		msg.target_system = drone.getSysid();
 		msg.target_component = drone.getCompid();
 		msg.seq = index;

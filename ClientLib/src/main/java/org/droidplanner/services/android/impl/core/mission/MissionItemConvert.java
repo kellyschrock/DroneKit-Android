@@ -22,7 +22,7 @@ public class MissionItemConvert {
         item.param4 = input.param4;
         item.x = (float)(input.x / 1e7);
         item.y = (float)(input.y / 1e7);
-        item.x = input.z;
+        item.z = input.z;
         item.seq = input.seq;
         return item;
     }
