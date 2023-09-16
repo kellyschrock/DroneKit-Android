@@ -360,7 +360,8 @@ public abstract class MavLinkConnection {
     public void sendMavPacket(MAVLinkPacket packet) {
 //        mLogger.logInfo(TAG, String.format("sendMavPacket(): packet=%s", toString(packet)));
 
-        if(!packet.isMavlink2 && packet.msgid >= Byte.MAX_VALUE) {
+        // Next time, leave a comment for weird shit like this so I know what it's for!!
+        if(!packet.isMavlink2 && packet.msgid >= 255) {
             Timber.d("Non-mavlink2 packet (msgid %d) set to mavlink2", packet.msgid);
             packet.isMavlink2 = true;
         }

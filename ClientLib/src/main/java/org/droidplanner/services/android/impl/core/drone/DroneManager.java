@@ -4,10 +4,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
-
+import androidx.annotation.Nullable;
 import com.o3dr.services.android.lib.drone.action.ControlActions;
 import com.o3dr.services.android.lib.drone.action.GimbalActions;
 import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
@@ -18,7 +17,7 @@ import com.o3dr.services.android.lib.drone.property.Parameter;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 import com.o3dr.services.android.lib.model.ICommandListener;
 import com.o3dr.services.android.lib.model.action.Action;
-
+import java.util.concurrent.ConcurrentHashMap;
 import org.droidplanner.services.android.impl.api.DroneApi;
 import org.droidplanner.services.android.impl.communication.model.DataLink;
 import org.droidplanner.services.android.impl.core.drone.autopilot.Drone;
@@ -26,8 +25,6 @@ import org.droidplanner.services.android.impl.core.drone.autopilot.apm.solo.Ardu
 import org.droidplanner.services.android.impl.core.drone.autopilot.apm.solo.SoloComp;
 import org.droidplanner.services.android.impl.core.drone.manager.MavLinkDroneManager;
 import org.droidplanner.services.android.impl.utils.CommonApiUtils;
-
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Bridge between the communication channel, the drone instance(s), and the connected client(s).

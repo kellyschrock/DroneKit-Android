@@ -80,7 +80,7 @@ class UsbCDCConnection extends UsbConnection.UsbConnectionImpl {
 
     protected UsbCDCConnection(Context context, UsbConnection parentConn, int baudRate) {
         super(context, parentConn, baudRate);
-        this.usbPermissionIntent = PendingIntent.getBroadcast(context, 0, new Intent(ACTION_USB_PERMISSION), 0);
+        this.usbPermissionIntent = PendingIntent.getBroadcast(context, 0, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_IMMUTABLE);
     }
 
     private void registerUsbPermissionBroadcastReceiver() {

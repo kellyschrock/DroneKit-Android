@@ -4,14 +4,13 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 
+import androidx.annotation.Nullable;
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.ardupilotmega.msg_mag_cal_progress;
 import com.MAVLink.ardupilotmega.msg_mag_cal_report;
 import com.MAVLink.common.msg_command_ack;
-import com.google.android.gms.location.LocationRequest;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.drone.action.GimbalActions;
 import com.o3dr.services.android.lib.drone.action.StateActions;
@@ -169,8 +168,9 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
         }
 
         this.followMe = new Follow(this, handler, new FusedLocation(context, handler));
-        this.returnToMe = new ReturnToMe(this, new FusedLocation(context, handler,
-                LocationRequest.PRIORITY_HIGH_ACCURACY, 1000L, 1000L, ReturnToMe.UPDATE_MINIMAL_DISPLACEMENT), this);
+        // ANDROIDX:
+//        this.returnToMe = new ReturnToMe(this, new FusedLocation(context, handler,
+//                LocationRequest.PRIORITY_HIGH_ACCURACY, 1000L, 1000L, ReturnToMe.UPDATE_MINIMAL_DISPLACEMENT), this);
 
         StreamRates streamRates = drone.getStreamRates();
         if (streamRates != null) {

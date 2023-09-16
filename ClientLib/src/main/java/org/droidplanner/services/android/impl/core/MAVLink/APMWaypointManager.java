@@ -31,8 +31,8 @@ import timber.log.Timber;
 public class APMWaypointManager extends DroneVariable implements IWaypointManager<msg_mission_item> {
     static final String TAG = APMWaypointManager.class.getSimpleName();
 
-    private static final long TIMEOUT = 15000; //ms
-    private static final int RETRY_LIMIT = 3;
+    private static final long TIMEOUT = 5000; //ms
+    private static final int RETRY_LIMIT = 15;
 
     private int retryTracker = 0;
 
@@ -119,8 +119,9 @@ public class APMWaypointManager extends DroneVariable implements IWaypointManage
             mission.addAll(data);
             writeIndex = 0;
             state = WaypointStates.WRITING_WP_COUNT;
-            Log.v(TAG, "sendWaypointCount()");
+            retryTracker = 0;
 
+            Timber.d("sendWaypointCount()");
             MavLinkWaypoint.sendWaypointCount(myDrone, mission.size(), MAV_MISSION_TYPE.MAV_MISSION_TYPE_MISSION);
 
             startWatchdog();
@@ -208,7 +209,14 @@ public class APMWaypointManager extends DroneVariable implements IWaypointManage
                 break;
 
             case WRITING_WP_COUNT:
-                state = WaypointStates.WRITING_WP;
+                if (msg.msgid == msg_mission_request.MAVLINK_MSG_ID_MISSION_REQUEST) {
+                    // WRONG! How stupid is this?
+                    Timber.d("Got message %s writing WP count", msg);
+                    state = WaypointStates.WRITING_WP;
+                } else {
+                    break;
+                }
+                // FALL THROUGH
             case WRITING_WP:
                 if (msg.msgid == msg_mission_request.MAVLINK_MSG_ID_MISSION_REQUEST) {
                     Log.v(TAG, "got MISSION_REQUEST");
@@ -247,10 +255,12 @@ public class APMWaypointManager extends DroneVariable implements IWaypointManage
     }
 
     @Override
-    public boolean processTimeOut(int mTimeOutCount) {
+    public boolean processTimeOut(int timeoutCount) {
+        Timber.d("processTimeout(): timeouts=%d, state=%s", timeoutCount, state);
 
         // If max retry is reached, set state to IDLE. No more retry.
-        if (mTimeOutCount >= RETRY_LIMIT) {
+        if (timeoutCount >= RETRY_LIMIT) {
+            Timber.d("Beyond the retry limit, giving up");
             state = WaypointStates.IDLE;
             doWaypointEvent(WaypointEvent_Type.WP_TIMED_OUT, retryIndex, RETRY_LIMIT);
             return false;
@@ -262,6 +272,7 @@ public class APMWaypointManager extends DroneVariable implements IWaypointManage
         switch (state) {
             default:
             case IDLE:
+                Timber.d("Huh? Timed out while idle!");
                 break;
 
             case READ_REQUEST:
@@ -275,11 +286,13 @@ public class APMWaypointManager extends DroneVariable implements IWaypointManage
                 break;
 
             case WRITING_WP_COUNT:
+                Timber.d("send waypoints again");
                 MavLinkWaypoint.sendWaypointCount(myDrone, mission.size(), MAV_MISSION_TYPE.MAV_MISSION_TYPE_MISSION);
                 break;
 
             case WRITING_WP:
                 // Log.d("TIMEOUT", "re Write Msg: " + String.valueOf(writeIndex));
+                Timber.d("rewrite item %d", writeIndex);
                 if (writeIndex < mission.size()) {
                     myDrone.getMavClient().sendMessage(mission.get(writeIndex), null);
                 }

@@ -16,8 +16,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.o3dr.android.client.R;
@@ -259,9 +257,9 @@ public class DroidPlannerService extends Service {
         } else {
             Log.v(TAG, "Using old-style notifications");
             //Put the service in the foreground
-            final NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(context)
+            final Notification.Builder notifBuilder = new Notification.Builder(context)
                     .setContentTitle("Dronekit-Android")
-                    .setPriority(NotificationCompat.PRIORITY_MIN)
+                    .setPriority(Notification.PRIORITY_MIN)
                     .setSmallIcon(R.drawable.ic_stat_notify)
                     .setCategory(Notification.CATEGORY_SERVICE)
                     ;

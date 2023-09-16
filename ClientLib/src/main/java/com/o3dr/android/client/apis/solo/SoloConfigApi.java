@@ -2,6 +2,7 @@ package com.o3dr.android.client.apis.solo;
 
 import android.os.Bundle;
 
+import android.util.Log;
 import com.MAVLink.ardupilotmega.msg_led_control;
 import com.o3dr.android.client.Drone;
 import com.o3dr.android.client.utils.TxPowerComplianceCountries;
@@ -34,6 +35,7 @@ import static com.o3dr.services.android.lib.drone.companion.solo.action.SoloConf
  * Created by Fredia Huya-Kouadio on 7/31/15.
  */
 public class SoloConfigApi extends SoloApi {
+    private static final String TAG = SoloConfigApi.class.getSimpleName();
 
     private static final ConcurrentHashMap<Drone, SoloConfigApi> soloConfigApiCache = new ConcurrentHashMap<>();
     private static final Builder<SoloConfigApi> apiBuilder = new Builder<SoloConfigApi>() {
@@ -141,6 +143,8 @@ public class SoloConfigApi extends SoloApi {
         msg_led_control led = new msg_led_control();
         led.instance = (short)instance;
         led.pattern = (short)pattern; // actually, macro
+
+        Log.v(TAG, String.format("setLedColor(): instance=%d pattern=%d", instance, pattern));
 
         Bundle params = new Bundle();
         params.putParcelable(EXTRA_MAVLINK_MESSAGE, new MavlinkMessageWrapper(led));

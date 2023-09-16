@@ -1,9 +1,9 @@
 package com.o3dr.android.client.apis;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.view.Surface;
 
+import androidx.annotation.NonNull;
 import com.o3dr.android.client.Drone;
 import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
 import com.o3dr.services.android.lib.model.AbstractCommandListener;

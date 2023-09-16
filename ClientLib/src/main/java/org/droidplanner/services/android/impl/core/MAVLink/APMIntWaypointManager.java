@@ -6,7 +6,6 @@ import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.common.msg_mission_ack;
 import com.MAVLink.common.msg_mission_count;
 import com.MAVLink.common.msg_mission_current;
-import com.MAVLink.common.msg_mission_item;
 import com.MAVLink.common.msg_mission_item_int;
 import com.MAVLink.common.msg_mission_item_reached;
 import com.MAVLink.common.msg_mission_request;
@@ -30,8 +29,8 @@ import timber.log.Timber;
 public class APMIntWaypointManager extends DroneVariable implements IWaypointManager<msg_mission_item_int> {
     static final String TAG = APMIntWaypointManager.class.getSimpleName();
 
-    private static final long TIMEOUT = 15000; //ms
-    private static final int RETRY_LIMIT = 3;
+    private static final long TIMEOUT = 5000; //ms
+    private static final int RETRY_LIMIT = 15;
 
     private int retryTracker = 0;
 
@@ -213,7 +212,14 @@ public class APMIntWaypointManager extends DroneVariable implements IWaypointMan
                 break;
 
             case WRITING_WP_COUNT:
-                state = WaypointStates.WRITING_WP;
+                if (msg.msgid == msg_mission_request.MAVLINK_MSG_ID_MISSION_REQUEST) {
+                    // WRONG! How stupid is this?
+                    Timber.d("Got message %s writing WP count", msg);
+                    state = WaypointStates.WRITING_WP;
+                } else {
+                    break;
+                }
+                // FALL THROUGH
             case WRITING_WP:
                 switch(msg.msgid) {
                     case msg_mission_request.MAVLINK_MSG_ID_MISSION_REQUEST: {
@@ -271,10 +277,11 @@ public class APMIntWaypointManager extends DroneVariable implements IWaypointMan
     }
 
     @Override
-    public boolean processTimeOut(int mTimeOutCount) {
+    public boolean processTimeOut(int timeouts) {
+        Timber.d("processTimeout(): timeouts=%d, state=%s", timeouts, state);
 
         // If max retry is reached, set state to IDLE. No more retry.
-        if (mTimeOutCount >= RETRY_LIMIT) {
+        if (timeouts >= RETRY_LIMIT) {
             state = WaypointStates.IDLE;
             doWaypointEvent(WaypointEvent_Type.WP_TIMED_OUT, retryIndex, RETRY_LIMIT);
             return false;

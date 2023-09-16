@@ -51,6 +51,8 @@ public enum ApmModes implements BaseMode<ApmModes> {
 	ROVER_LOITER(5, "LOITER", MAV_TYPE.MAV_TYPE_GROUND_ROVER),
 	ROVER_FOLLOW(6, "FOLLOW", MAV_TYPE.MAV_TYPE_GROUND_ROVER),
 	ROVER_SIMPLE(7, "SIMPLE", MAV_TYPE.MAV_TYPE_GROUND_ROVER),
+	ROVER_DOCK(8, "DOCK", MAV_TYPE.MAV_TYPE_GROUND_ROVER),
+	ROVER_CIRCLE(9, "CIRCLE", MAV_TYPE.MAV_TYPE_GROUND_ROVER),
 	ROVER_AUTO(10, "AUTO", MAV_TYPE.MAV_TYPE_GROUND_ROVER),
 	ROVER_RTL(11, "RTL", MAV_TYPE.MAV_TYPE_GROUND_ROVER),
 	ROVER_SMARTRTL(12, "SMART_RTL", MAV_TYPE.MAV_TYPE_GROUND_ROVER),
@@ -287,32 +289,20 @@ public enum ApmModes implements BaseMode<ApmModes> {
 			case ROTOR_SMART_RTL:
 				return VehicleMode.COPTER_SMART_RTL;
 
-			case ROVER_MANUAL:
-				return VehicleMode.ROVER_MANUAL;
-
-			case ROVER_STEERING:
-				return VehicleMode.ROVER_STEERING;
-
-			case ROVER_HOLD:
-				return VehicleMode.ROVER_HOLD;
-
-			case ROVER_AUTO:
-				return VehicleMode.ROVER_AUTO;
-
-			case ROVER_RTL:
-				return VehicleMode.ROVER_RTL;
-
-			case ROVER_SMARTRTL:
-				return VehicleMode.ROVER_SMART_RTL;
-
-			case ROVER_ACRO:
-				return VehicleMode.ROVER_ACRO;
-
-			case ROVER_GUIDED:
-				return VehicleMode.ROVER_GUIDED;
-
-			case ROVER_INITIALIZING:
-				return VehicleMode.ROVER_INITIALIZING;
+			case ROVER_MANUAL: return VehicleMode.ROVER_MANUAL;
+			case ROVER_ACRO: return VehicleMode.ROVER_ACRO;
+			case ROVER_STEERING: return VehicleMode.ROVER_STEERING;
+			case ROVER_HOLD: return VehicleMode.ROVER_HOLD;
+			case ROVER_LOITER: return VehicleMode.ROVER_LOITER;
+			case ROVER_FOLLOW: return VehicleMode.ROVER_FOLLOW;
+			case ROVER_SIMPLE: return VehicleMode.ROVER_SIMPLE;
+			case ROVER_DOCK: return VehicleMode.ROVER_DOCK;
+			case ROVER_CIRCLE: return VehicleMode.ROVER_CIRCLE;
+			case ROVER_AUTO: return VehicleMode.ROVER_AUTO;
+			case ROVER_RTL: return VehicleMode.ROVER_RTL;
+			case ROVER_SMARTRTL: return VehicleMode.ROVER_SMART_RTL;
+			case ROVER_GUIDED: return VehicleMode.ROVER_GUIDED;
+			case ROVER_INITIALIZING: return VehicleMode.ROVER_INITIALIZING;
 
 			case VTOL_ACRO: return VehicleMode.VTOL_ACRO;
 			case VTOL_AUTOTUNE: return VehicleMode.VTOL_AUTOTUNE;

@@ -1,7 +1,7 @@
 package com.o3dr.android.client.interfaces;
 
-import android.support.annotation.NonNull;
 
+import androidx.annotation.NonNull;
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 

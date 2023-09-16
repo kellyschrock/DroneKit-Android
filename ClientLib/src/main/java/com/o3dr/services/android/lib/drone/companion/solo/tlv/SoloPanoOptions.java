@@ -1,7 +1,7 @@
 package com.o3dr.services.android.lib.drone.companion.solo.tlv;
 
 import android.os.Parcel;
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 import java.nio.ByteBuffer;
 

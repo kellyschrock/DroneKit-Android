@@ -1,7 +1,7 @@
 package com.o3dr.services.android.lib.drone.companion.solo.tlv;
 
 import android.os.Parcel;
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 import java.nio.ByteBuffer;
 
@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
  */
 public class SoloFollowOptionsV2 extends SoloFollowOptions {
 
-    @IntDef ({
+    @IntDef({
         FOLLOW_PREFERENCE_NONE,
         FOLLOW_PREFERENCE_ORBIT,
         FOLLOW_PREFERENCE_FREE_LOOK,

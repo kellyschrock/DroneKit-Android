@@ -1,7 +1,7 @@
 package com.o3dr.android.client.apis;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.MAVLink.enums.MAV_MOUNT_MODE;
 import com.o3dr.android.client.Drone;

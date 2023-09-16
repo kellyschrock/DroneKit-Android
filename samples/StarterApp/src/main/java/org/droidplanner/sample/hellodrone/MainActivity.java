@@ -1,12 +1,12 @@
 package org.droidplanner.sample.hellodrone;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Surface;
 import android.view.TextureView;
@@ -53,7 +53,7 @@ import java.util.List;
 
 import static com.o3dr.android.client.apis.ExperimentalApi.getApi;
 
-public class MainActivity extends AppCompatActivity implements DroneListener, TowerListener, LinkListener {
+public class MainActivity extends Activity implements DroneListener, TowerListener, LinkListener {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private Drone drone;

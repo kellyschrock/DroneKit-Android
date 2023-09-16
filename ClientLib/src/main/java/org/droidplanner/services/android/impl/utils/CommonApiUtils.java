@@ -965,6 +965,8 @@ public class CommonApiUtils {
             Timber.e(e, e.getMessage());
         }
 
+        Timber.d("sendMavlinkMessage(): %s", message);
+
         drone.getMavClient().sendMessage(message, null);
     }
 

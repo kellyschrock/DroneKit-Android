@@ -4,9 +4,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import androidx.annotation.Nullable;
 import org.droidplanner.services.android.impl.communication.connection.AndroidMavLinkConnection;
 
 import timber.log.Timber;
