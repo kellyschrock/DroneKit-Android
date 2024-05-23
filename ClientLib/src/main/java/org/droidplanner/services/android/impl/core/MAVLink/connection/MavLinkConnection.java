@@ -368,15 +368,6 @@ public abstract class MavLinkConnection {
 
         final byte[] packetData = packet.encodePacket();
 
-//        switch(packet.msgid) {
-//            case msg_open_drone_id_operator_id.MAVLINK_MSG_ID_OPEN_DRONE_ID_OPERATOR_ID:
-//            case msg_param_request_list.MAVLINK_MSG_ID_PARAM_REQUEST_LIST:
-//            {
-//                Log.v("DIPSHIT", String.format("PACKET FOR msgid %d (mavlink2=%s): %s", packet.msgid, packet.isMavlink2, Arrays.toString(packetData)));
-//                break;
-//            }
-//        }
-
         if (!mPacketsToSend.offer(packetData)) {
             mLogger.logErr(TAG, "Unable to send mavlink packet. Packet queue is full!");
         } else {
