@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Enumeration of VTOL states
  */
 public class MAV_VTOL_STATE {

@@ -9,7 +9,9 @@ package com.MAVLink.uAvionix;
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
-        
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
+
 /**
  * Transceiver heartbeat with health report (updated every 10s)
  */
@@ -19,11 +21,12 @@ public class msg_uavionix_adsb_transceiver_health_report extends MAVLinkMessage 
     public static final int MAVLINK_MSG_LENGTH = 1;
     private static final long serialVersionUID = MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT;
 
-
-      
+    
     /**
      * ADS-B transponder messages
      */
+    @Description("ADS-B transponder messages")
+    @Units("")
     public short rfHealth;
     
 
@@ -31,15 +34,16 @@ public class msg_uavionix_adsb_transceiver_health_report extends MAVLinkMessage 
      * Generates the payload for a mavlink message for a message of this type
      * @return
      */
+    @Override
     public MAVLinkPacket pack() {
         MAVLinkPacket packet = new MAVLinkPacket(MAVLINK_MSG_LENGTH,isMavlink2);
-        packet.sysid = 255;
-        packet.compid = 190;
+        packet.sysid = sysid;
+        packet.compid = compid;
         packet.msgid = MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT;
-        
+
         packet.payload.putUnsignedByte(rfHealth);
         
-        if(isMavlink2) {
+        if (isMavlink2) {
             
         }
         return packet;
@@ -50,12 +54,13 @@ public class msg_uavionix_adsb_transceiver_health_report extends MAVLinkMessage 
      *
      * @param payload The message to decode
      */
+    @Override
     public void unpack(MAVLinkPayload payload) {
         payload.resetIndex();
-        
+
         this.rfHealth = payload.getUnsignedByte();
         
-        if(isMavlink2) {
+        if (isMavlink2) {
             
         }
     }
@@ -64,7 +69,30 @@ public class msg_uavionix_adsb_transceiver_health_report extends MAVLinkMessage 
      * Constructor for a new message, just initializes the msgid
      */
     public msg_uavionix_adsb_transceiver_health_report() {
-        msgid = MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT;
+        this.msgid = MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT;
+    }
+
+    /**
+     * Constructor for a new message, initializes msgid and all payload variables
+     */
+    public msg_uavionix_adsb_transceiver_health_report( short rfHealth) {
+        this.msgid = MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT;
+
+        this.rfHealth = rfHealth;
+        
+    }
+
+    /**
+     * Constructor for a new message, initializes everything
+     */
+    public msg_uavionix_adsb_transceiver_health_report( short rfHealth, int sysid, int compid, boolean isMavlink2) {
+        this.msgid = MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT;
+        this.sysid = sysid;
+        this.compid = compid;
+        this.isMavlink2 = isMavlink2;
+
+        this.rfHealth = rfHealth;
+        
     }
 
     /**
@@ -73,19 +101,29 @@ public class msg_uavionix_adsb_transceiver_health_report extends MAVLinkMessage 
      *
      */
     public msg_uavionix_adsb_transceiver_health_report(MAVLinkPacket mavLinkPacket) {
+        this.msgid = MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT;
+
         this.sysid = mavLinkPacket.sysid;
         this.compid = mavLinkPacket.compid;
-        this.msgid = MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT;
         this.isMavlink2 = mavLinkPacket.isMavlink2;
-        unpack(mavLinkPacket.payload);        
+        unpack(mavLinkPacket.payload);
     }
 
       
     /**
      * Returns a string with the MSG name and data
      */
+    @Override
     public String toString() {
         return "MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT - sysid:"+sysid+" compid:"+compid+" rfHealth:"+rfHealth+"";
+    }
+
+    /**
+     * Returns a human-readable string of the name of the message
+     */
+    @Override
+    public String name() {
+        return "MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT";
     }
 }
         

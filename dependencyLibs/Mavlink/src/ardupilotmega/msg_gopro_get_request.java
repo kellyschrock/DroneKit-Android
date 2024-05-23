@@ -9,7 +9,9 @@ package com.MAVLink.ardupilotmega;
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
-        
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
+
 /**
  * Request a GOPRO_COMMAND response from the GoPro.
  */
@@ -19,21 +21,26 @@ public class msg_gopro_get_request extends MAVLinkMessage {
     public static final int MAVLINK_MSG_LENGTH = 3;
     private static final long serialVersionUID = MAVLINK_MSG_ID_GOPRO_GET_REQUEST;
 
-
-      
+    
     /**
      * System ID.
      */
+    @Description("System ID.")
+    @Units("")
     public short target_system;
-      
+    
     /**
      * Component ID.
      */
+    @Description("Component ID.")
+    @Units("")
     public short target_component;
-      
+    
     /**
      * Command ID.
      */
+    @Description("Command ID.")
+    @Units("")
     public short cmd_id;
     
 
@@ -41,19 +48,18 @@ public class msg_gopro_get_request extends MAVLinkMessage {
      * Generates the payload for a mavlink message for a message of this type
      * @return
      */
+    @Override
     public MAVLinkPacket pack() {
         MAVLinkPacket packet = new MAVLinkPacket(MAVLINK_MSG_LENGTH,isMavlink2);
-        packet.sysid = 255;
-        packet.compid = 190;
+        packet.sysid = sysid;
+        packet.compid = compid;
         packet.msgid = MAVLINK_MSG_ID_GOPRO_GET_REQUEST;
-        
+
         packet.payload.putUnsignedByte(target_system);
-        
         packet.payload.putUnsignedByte(target_component);
-        
         packet.payload.putUnsignedByte(cmd_id);
         
-        if(isMavlink2) {
+        if (isMavlink2) {
             
         }
         return packet;
@@ -64,16 +70,15 @@ public class msg_gopro_get_request extends MAVLinkMessage {
      *
      * @param payload The message to decode
      */
+    @Override
     public void unpack(MAVLinkPayload payload) {
         payload.resetIndex();
-        
+
         this.target_system = payload.getUnsignedByte();
-        
         this.target_component = payload.getUnsignedByte();
-        
         this.cmd_id = payload.getUnsignedByte();
         
-        if(isMavlink2) {
+        if (isMavlink2) {
             
         }
     }
@@ -82,7 +87,34 @@ public class msg_gopro_get_request extends MAVLinkMessage {
      * Constructor for a new message, just initializes the msgid
      */
     public msg_gopro_get_request() {
-        msgid = MAVLINK_MSG_ID_GOPRO_GET_REQUEST;
+        this.msgid = MAVLINK_MSG_ID_GOPRO_GET_REQUEST;
+    }
+
+    /**
+     * Constructor for a new message, initializes msgid and all payload variables
+     */
+    public msg_gopro_get_request( short target_system, short target_component, short cmd_id) {
+        this.msgid = MAVLINK_MSG_ID_GOPRO_GET_REQUEST;
+
+        this.target_system = target_system;
+        this.target_component = target_component;
+        this.cmd_id = cmd_id;
+        
+    }
+
+    /**
+     * Constructor for a new message, initializes everything
+     */
+    public msg_gopro_get_request( short target_system, short target_component, short cmd_id, int sysid, int compid, boolean isMavlink2) {
+        this.msgid = MAVLINK_MSG_ID_GOPRO_GET_REQUEST;
+        this.sysid = sysid;
+        this.compid = compid;
+        this.isMavlink2 = isMavlink2;
+
+        this.target_system = target_system;
+        this.target_component = target_component;
+        this.cmd_id = cmd_id;
+        
     }
 
     /**
@@ -91,19 +123,29 @@ public class msg_gopro_get_request extends MAVLinkMessage {
      *
      */
     public msg_gopro_get_request(MAVLinkPacket mavLinkPacket) {
+        this.msgid = MAVLINK_MSG_ID_GOPRO_GET_REQUEST;
+
         this.sysid = mavLinkPacket.sysid;
         this.compid = mavLinkPacket.compid;
-        this.msgid = MAVLINK_MSG_ID_GOPRO_GET_REQUEST;
         this.isMavlink2 = mavLinkPacket.isMavlink2;
-        unpack(mavLinkPacket.payload);        
+        unpack(mavLinkPacket.payload);
     }
 
           
     /**
      * Returns a string with the MSG name and data
      */
+    @Override
     public String toString() {
         return "MAVLINK_MSG_ID_GOPRO_GET_REQUEST - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" target_component:"+target_component+" cmd_id:"+cmd_id+"";
+    }
+
+    /**
+     * Returns a human-readable string of the name of the message
+     */
+    @Override
+    public String name() {
+        return "MAVLINK_MSG_ID_GOPRO_GET_REQUEST";
     }
 }
         

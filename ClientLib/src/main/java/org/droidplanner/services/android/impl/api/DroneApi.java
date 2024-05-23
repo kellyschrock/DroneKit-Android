@@ -11,8 +11,8 @@ import android.view.Surface;
 
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.ardupilotmega.msg_mag_cal_progress;
-import com.MAVLink.ardupilotmega.msg_mag_cal_report;
-import com.MAVLink.common.msg_heartbeat;
+import com.MAVLink.common.msg_mag_cal_report;
+import com.MAVLink.minimal.msg_heartbeat;
 import com.MAVLink.enums.MAV_COMPONENT;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.action.CameraActions;

@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Enumeration of battery functions
  */
 public class MAV_BATTERY_FUNCTION {

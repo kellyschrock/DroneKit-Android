@@ -9,7 +9,9 @@ package com.MAVLink.icarous;
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
-        
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
+
 /**
  * Kinematic multi bands (track) output from Daidalus
  */
@@ -19,86 +21,117 @@ public class msg_icarous_kinematic_bands extends MAVLinkMessage {
     public static final int MAVLINK_MSG_LENGTH = 46;
     private static final long serialVersionUID = MAVLINK_MSG_ID_ICAROUS_KINEMATIC_BANDS;
 
-
-      
+    
     /**
      * min angle (degrees)
      */
+    @Description("min angle (degrees)")
+    @Units("deg")
     public float min1;
-      
+    
     /**
      * max angle (degrees)
      */
+    @Description("max angle (degrees)")
+    @Units("deg")
     public float max1;
-      
+    
     /**
      * min angle (degrees)
      */
+    @Description("min angle (degrees)")
+    @Units("deg")
     public float min2;
-      
+    
     /**
      * max angle (degrees)
      */
+    @Description("max angle (degrees)")
+    @Units("deg")
     public float max2;
-      
+    
     /**
      * min angle (degrees)
      */
+    @Description("min angle (degrees)")
+    @Units("deg")
     public float min3;
-      
+    
     /**
      * max angle (degrees)
      */
+    @Description("max angle (degrees)")
+    @Units("deg")
     public float max3;
-      
+    
     /**
      * min angle (degrees)
      */
+    @Description("min angle (degrees)")
+    @Units("deg")
     public float min4;
-      
+    
     /**
      * max angle (degrees)
      */
+    @Description("max angle (degrees)")
+    @Units("deg")
     public float max4;
-      
+    
     /**
      * min angle (degrees)
      */
+    @Description("min angle (degrees)")
+    @Units("deg")
     public float min5;
-      
+    
     /**
      * max angle (degrees)
      */
+    @Description("max angle (degrees)")
+    @Units("deg")
     public float max5;
-      
+    
     /**
      * Number of track bands
      */
+    @Description("Number of track bands")
+    @Units("")
     public byte numBands;
-      
+    
     /**
      * See the TRACK_BAND_TYPES enum.
      */
+    @Description("See the TRACK_BAND_TYPES enum.")
+    @Units("")
     public short type1;
-      
+    
     /**
      * See the TRACK_BAND_TYPES enum.
      */
+    @Description("See the TRACK_BAND_TYPES enum.")
+    @Units("")
     public short type2;
-      
+    
     /**
      * See the TRACK_BAND_TYPES enum.
      */
+    @Description("See the TRACK_BAND_TYPES enum.")
+    @Units("")
     public short type3;
-      
+    
     /**
      * See the TRACK_BAND_TYPES enum.
      */
+    @Description("See the TRACK_BAND_TYPES enum.")
+    @Units("")
     public short type4;
-      
+    
     /**
      * See the TRACK_BAND_TYPES enum.
      */
+    @Description("See the TRACK_BAND_TYPES enum.")
+    @Units("")
     public short type5;
     
 
@@ -106,45 +139,31 @@ public class msg_icarous_kinematic_bands extends MAVLinkMessage {
      * Generates the payload for a mavlink message for a message of this type
      * @return
      */
+    @Override
     public MAVLinkPacket pack() {
         MAVLinkPacket packet = new MAVLinkPacket(MAVLINK_MSG_LENGTH,isMavlink2);
-        packet.sysid = 255;
-        packet.compid = 190;
+        packet.sysid = sysid;
+        packet.compid = compid;
         packet.msgid = MAVLINK_MSG_ID_ICAROUS_KINEMATIC_BANDS;
-        
+
         packet.payload.putFloat(min1);
-        
         packet.payload.putFloat(max1);
-        
         packet.payload.putFloat(min2);
-        
         packet.payload.putFloat(max2);
-        
         packet.payload.putFloat(min3);
-        
         packet.payload.putFloat(max3);
-        
         packet.payload.putFloat(min4);
-        
         packet.payload.putFloat(max4);
-        
         packet.payload.putFloat(min5);
-        
         packet.payload.putFloat(max5);
-        
         packet.payload.putByte(numBands);
-        
         packet.payload.putUnsignedByte(type1);
-        
         packet.payload.putUnsignedByte(type2);
-        
         packet.payload.putUnsignedByte(type3);
-        
         packet.payload.putUnsignedByte(type4);
-        
         packet.payload.putUnsignedByte(type5);
         
-        if(isMavlink2) {
+        if (isMavlink2) {
             
         }
         return packet;
@@ -155,42 +174,28 @@ public class msg_icarous_kinematic_bands extends MAVLinkMessage {
      *
      * @param payload The message to decode
      */
+    @Override
     public void unpack(MAVLinkPayload payload) {
         payload.resetIndex();
-        
+
         this.min1 = payload.getFloat();
-        
         this.max1 = payload.getFloat();
-        
         this.min2 = payload.getFloat();
-        
         this.max2 = payload.getFloat();
-        
         this.min3 = payload.getFloat();
-        
         this.max3 = payload.getFloat();
-        
         this.min4 = payload.getFloat();
-        
         this.max4 = payload.getFloat();
-        
         this.min5 = payload.getFloat();
-        
         this.max5 = payload.getFloat();
-        
         this.numBands = payload.getByte();
-        
         this.type1 = payload.getUnsignedByte();
-        
         this.type2 = payload.getUnsignedByte();
-        
         this.type3 = payload.getUnsignedByte();
-        
         this.type4 = payload.getUnsignedByte();
-        
         this.type5 = payload.getUnsignedByte();
         
-        if(isMavlink2) {
+        if (isMavlink2) {
             
         }
     }
@@ -199,7 +204,60 @@ public class msg_icarous_kinematic_bands extends MAVLinkMessage {
      * Constructor for a new message, just initializes the msgid
      */
     public msg_icarous_kinematic_bands() {
-        msgid = MAVLINK_MSG_ID_ICAROUS_KINEMATIC_BANDS;
+        this.msgid = MAVLINK_MSG_ID_ICAROUS_KINEMATIC_BANDS;
+    }
+
+    /**
+     * Constructor for a new message, initializes msgid and all payload variables
+     */
+    public msg_icarous_kinematic_bands( float min1, float max1, float min2, float max2, float min3, float max3, float min4, float max4, float min5, float max5, byte numBands, short type1, short type2, short type3, short type4, short type5) {
+        this.msgid = MAVLINK_MSG_ID_ICAROUS_KINEMATIC_BANDS;
+
+        this.min1 = min1;
+        this.max1 = max1;
+        this.min2 = min2;
+        this.max2 = max2;
+        this.min3 = min3;
+        this.max3 = max3;
+        this.min4 = min4;
+        this.max4 = max4;
+        this.min5 = min5;
+        this.max5 = max5;
+        this.numBands = numBands;
+        this.type1 = type1;
+        this.type2 = type2;
+        this.type3 = type3;
+        this.type4 = type4;
+        this.type5 = type5;
+        
+    }
+
+    /**
+     * Constructor for a new message, initializes everything
+     */
+    public msg_icarous_kinematic_bands( float min1, float max1, float min2, float max2, float min3, float max3, float min4, float max4, float min5, float max5, byte numBands, short type1, short type2, short type3, short type4, short type5, int sysid, int compid, boolean isMavlink2) {
+        this.msgid = MAVLINK_MSG_ID_ICAROUS_KINEMATIC_BANDS;
+        this.sysid = sysid;
+        this.compid = compid;
+        this.isMavlink2 = isMavlink2;
+
+        this.min1 = min1;
+        this.max1 = max1;
+        this.min2 = min2;
+        this.max2 = max2;
+        this.min3 = min3;
+        this.max3 = max3;
+        this.min4 = min4;
+        this.max4 = max4;
+        this.min5 = min5;
+        this.max5 = max5;
+        this.numBands = numBands;
+        this.type1 = type1;
+        this.type2 = type2;
+        this.type3 = type3;
+        this.type4 = type4;
+        this.type5 = type5;
+        
     }
 
     /**
@@ -208,19 +266,29 @@ public class msg_icarous_kinematic_bands extends MAVLinkMessage {
      *
      */
     public msg_icarous_kinematic_bands(MAVLinkPacket mavLinkPacket) {
+        this.msgid = MAVLINK_MSG_ID_ICAROUS_KINEMATIC_BANDS;
+
         this.sysid = mavLinkPacket.sysid;
         this.compid = mavLinkPacket.compid;
-        this.msgid = MAVLINK_MSG_ID_ICAROUS_KINEMATIC_BANDS;
         this.isMavlink2 = mavLinkPacket.isMavlink2;
-        unpack(mavLinkPacket.payload);        
+        unpack(mavLinkPacket.payload);
     }
 
                                     
     /**
      * Returns a string with the MSG name and data
      */
+    @Override
     public String toString() {
         return "MAVLINK_MSG_ID_ICAROUS_KINEMATIC_BANDS - sysid:"+sysid+" compid:"+compid+" min1:"+min1+" max1:"+max1+" min2:"+min2+" max2:"+max2+" min3:"+min3+" max3:"+max3+" min4:"+min4+" max4:"+max4+" min5:"+min5+" max5:"+max5+" numBands:"+numBands+" type1:"+type1+" type2:"+type2+" type3:"+type3+" type4:"+type4+" type5:"+type5+"";
+    }
+
+    /**
+     * Returns a human-readable string of the name of the message
+     */
+    @Override
+    public String name() {
+        return "MAVLINK_MSG_ID_ICAROUS_KINEMATIC_BANDS";
     }
 }
         

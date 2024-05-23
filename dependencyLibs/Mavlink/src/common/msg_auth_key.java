@@ -9,7 +9,9 @@ package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
-        
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
+
 /**
  * Emit an encrypted signature / key identifying this system. PLEASE NOTE: This protocol has been kept simple, so transmitting the key requires an encrypted channel for true safety.
  */
@@ -19,11 +21,12 @@ public class msg_auth_key extends MAVLinkMessage {
     public static final int MAVLINK_MSG_LENGTH = 32;
     private static final long serialVersionUID = MAVLINK_MSG_ID_AUTH_KEY;
 
-
-      
+    
     /**
      * key
      */
+    @Description("key")
+    @Units("")
     public byte key[] = new byte[32];
     
 
@@ -31,19 +34,20 @@ public class msg_auth_key extends MAVLinkMessage {
      * Generates the payload for a mavlink message for a message of this type
      * @return
      */
+    @Override
     public MAVLinkPacket pack() {
         MAVLinkPacket packet = new MAVLinkPacket(MAVLINK_MSG_LENGTH,isMavlink2);
-        packet.sysid = 255;
-        packet.compid = 190;
+        packet.sysid = sysid;
+        packet.compid = compid;
         packet.msgid = MAVLINK_MSG_ID_AUTH_KEY;
-        
+
         
         for (int i = 0; i < key.length; i++) {
             packet.payload.putByte(key[i]);
         }
                     
         
-        if(isMavlink2) {
+        if (isMavlink2) {
             
         }
         return packet;
@@ -54,16 +58,17 @@ public class msg_auth_key extends MAVLinkMessage {
      *
      * @param payload The message to decode
      */
+    @Override
     public void unpack(MAVLinkPayload payload) {
         payload.resetIndex();
+
         
-         
         for (int i = 0; i < this.key.length; i++) {
             this.key[i] = payload.getByte();
         }
                 
         
-        if(isMavlink2) {
+        if (isMavlink2) {
             
         }
     }
@@ -72,7 +77,30 @@ public class msg_auth_key extends MAVLinkMessage {
      * Constructor for a new message, just initializes the msgid
      */
     public msg_auth_key() {
-        msgid = MAVLINK_MSG_ID_AUTH_KEY;
+        this.msgid = MAVLINK_MSG_ID_AUTH_KEY;
+    }
+
+    /**
+     * Constructor for a new message, initializes msgid and all payload variables
+     */
+    public msg_auth_key( byte[] key) {
+        this.msgid = MAVLINK_MSG_ID_AUTH_KEY;
+
+        this.key = key;
+        
+    }
+
+    /**
+     * Constructor for a new message, initializes everything
+     */
+    public msg_auth_key( byte[] key, int sysid, int compid, boolean isMavlink2) {
+        this.msgid = MAVLINK_MSG_ID_AUTH_KEY;
+        this.sysid = sysid;
+        this.compid = compid;
+        this.isMavlink2 = isMavlink2;
+
+        this.key = key;
+        
     }
 
     /**
@@ -81,11 +109,12 @@ public class msg_auth_key extends MAVLinkMessage {
      *
      */
     public msg_auth_key(MAVLinkPacket mavLinkPacket) {
+        this.msgid = MAVLINK_MSG_ID_AUTH_KEY;
+
         this.sysid = mavLinkPacket.sysid;
         this.compid = mavLinkPacket.compid;
-        this.msgid = MAVLINK_MSG_ID_AUTH_KEY;
         this.isMavlink2 = mavLinkPacket.isMavlink2;
-        unpack(mavLinkPacket.payload);        
+        unpack(mavLinkPacket.payload);
     }
 
      
@@ -104,7 +133,7 @@ public class msg_auth_key extends MAVLinkMessage {
     }
 
     /**
-    * Gets the message, formated as a string
+    * Gets the message, formatted as a string
     */
     public String getKey() {
         StringBuffer buf = new StringBuffer();
@@ -121,8 +150,17 @@ public class msg_auth_key extends MAVLinkMessage {
     /**
      * Returns a string with the MSG name and data
      */
+    @Override
     public String toString() {
         return "MAVLINK_MSG_ID_AUTH_KEY - sysid:"+sysid+" compid:"+compid+" key:"+key+"";
+    }
+
+    /**
+     * Returns a human-readable string of the name of the message
+     */
+    @Override
+    public String name() {
+        return "MAVLINK_MSG_ID_AUTH_KEY";
     }
 }
         

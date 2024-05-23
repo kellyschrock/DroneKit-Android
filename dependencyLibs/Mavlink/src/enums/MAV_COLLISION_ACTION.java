@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Possible actions an aircraft can take to avoid a collision.
  */
 public class MAV_COLLISION_ACTION {

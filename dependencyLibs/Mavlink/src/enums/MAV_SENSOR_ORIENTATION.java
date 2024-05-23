@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Enumeration of sensor orientation, according to its rotations
  */
 public class MAV_SENSOR_ORIENTATION {

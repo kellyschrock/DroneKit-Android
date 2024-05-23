@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Enumeration of distance sensor types
  */
 public class MAV_DISTANCE_SENSOR {

@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Camera Modes.
  */
 public class CAMERA_MODE {

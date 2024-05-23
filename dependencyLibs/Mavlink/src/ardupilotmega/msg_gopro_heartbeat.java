@@ -9,7 +9,9 @@ package com.MAVLink.ardupilotmega;
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
-        
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
+
 /**
  * Heartbeat from a HeroBus attached GoPro.
  */
@@ -19,21 +21,26 @@ public class msg_gopro_heartbeat extends MAVLinkMessage {
     public static final int MAVLINK_MSG_LENGTH = 3;
     private static final long serialVersionUID = MAVLINK_MSG_ID_GOPRO_HEARTBEAT;
 
-
-      
+    
     /**
      * Status.
      */
+    @Description("Status.")
+    @Units("")
     public short status;
-      
+    
     /**
      * Current capture mode.
      */
+    @Description("Current capture mode.")
+    @Units("")
     public short capture_mode;
-      
+    
     /**
      * Additional status bits.
      */
+    @Description("Additional status bits.")
+    @Units("")
     public short flags;
     
 
@@ -41,19 +48,18 @@ public class msg_gopro_heartbeat extends MAVLinkMessage {
      * Generates the payload for a mavlink message for a message of this type
      * @return
      */
+    @Override
     public MAVLinkPacket pack() {
         MAVLinkPacket packet = new MAVLinkPacket(MAVLINK_MSG_LENGTH,isMavlink2);
-        packet.sysid = 255;
-        packet.compid = 190;
+        packet.sysid = sysid;
+        packet.compid = compid;
         packet.msgid = MAVLINK_MSG_ID_GOPRO_HEARTBEAT;
-        
+
         packet.payload.putUnsignedByte(status);
-        
         packet.payload.putUnsignedByte(capture_mode);
-        
         packet.payload.putUnsignedByte(flags);
         
-        if(isMavlink2) {
+        if (isMavlink2) {
             
         }
         return packet;
@@ -64,16 +70,15 @@ public class msg_gopro_heartbeat extends MAVLinkMessage {
      *
      * @param payload The message to decode
      */
+    @Override
     public void unpack(MAVLinkPayload payload) {
         payload.resetIndex();
-        
+
         this.status = payload.getUnsignedByte();
-        
         this.capture_mode = payload.getUnsignedByte();
-        
         this.flags = payload.getUnsignedByte();
         
-        if(isMavlink2) {
+        if (isMavlink2) {
             
         }
     }
@@ -82,7 +87,34 @@ public class msg_gopro_heartbeat extends MAVLinkMessage {
      * Constructor for a new message, just initializes the msgid
      */
     public msg_gopro_heartbeat() {
-        msgid = MAVLINK_MSG_ID_GOPRO_HEARTBEAT;
+        this.msgid = MAVLINK_MSG_ID_GOPRO_HEARTBEAT;
+    }
+
+    /**
+     * Constructor for a new message, initializes msgid and all payload variables
+     */
+    public msg_gopro_heartbeat( short status, short capture_mode, short flags) {
+        this.msgid = MAVLINK_MSG_ID_GOPRO_HEARTBEAT;
+
+        this.status = status;
+        this.capture_mode = capture_mode;
+        this.flags = flags;
+        
+    }
+
+    /**
+     * Constructor for a new message, initializes everything
+     */
+    public msg_gopro_heartbeat( short status, short capture_mode, short flags, int sysid, int compid, boolean isMavlink2) {
+        this.msgid = MAVLINK_MSG_ID_GOPRO_HEARTBEAT;
+        this.sysid = sysid;
+        this.compid = compid;
+        this.isMavlink2 = isMavlink2;
+
+        this.status = status;
+        this.capture_mode = capture_mode;
+        this.flags = flags;
+        
     }
 
     /**
@@ -91,19 +123,29 @@ public class msg_gopro_heartbeat extends MAVLinkMessage {
      *
      */
     public msg_gopro_heartbeat(MAVLinkPacket mavLinkPacket) {
+        this.msgid = MAVLINK_MSG_ID_GOPRO_HEARTBEAT;
+
         this.sysid = mavLinkPacket.sysid;
         this.compid = mavLinkPacket.compid;
-        this.msgid = MAVLINK_MSG_ID_GOPRO_HEARTBEAT;
         this.isMavlink2 = mavLinkPacket.isMavlink2;
-        unpack(mavLinkPacket.payload);        
+        unpack(mavLinkPacket.payload);
     }
 
           
     /**
      * Returns a string with the MSG name and data
      */
+    @Override
     public String toString() {
         return "MAVLINK_MSG_ID_GOPRO_HEARTBEAT - sysid:"+sysid+" compid:"+compid+" status:"+status+" capture_mode:"+capture_mode+" flags:"+flags+"";
+    }
+
+    /**
+     * Returns a human-readable string of the name of the message
+     */
+    @Override
+    public String name() {
+        return "MAVLINK_MSG_ID_GOPRO_HEARTBEAT";
     }
 }
         

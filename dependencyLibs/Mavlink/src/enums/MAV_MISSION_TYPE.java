@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Type of mission items being requested/sent in mission protocol.
  */
 public class MAV_MISSION_TYPE {

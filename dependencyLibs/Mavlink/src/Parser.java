@@ -175,14 +175,10 @@ public class Parser {
                 break;
 
             case MAVLINK_PARSE_STATE_GOT_PAYLOAD:
-                m.generateCRC(m.payload.size());
-                // Check first checksum byte
-                if (c != m.crc.getLSB()) {
+                boolean crcGen = m.generateCRC(m.payload.size());
+                // Check first checksum byte and verify the CRC was successfully generated (msg extra exists)
+                if (c != m.crc.getLSB() || !crcGen) {
                     state = MAV_states.MAVLINK_PARSE_STATE_IDLE;
-//                    if ((isMavlink2 && c == MAVLinkPacket.MAVLINK_STX_MAVLINK2) || (!isMavlink2 && c == MAVLinkPacket.MAVLINK_STX_MAVLINK1)) {
-//                        state = MAV_states.MAVLINK_PARSE_STATE_GOT_STX;
-//                        m.crc.start_checksum();
-//                    }
                     stats.crcError();
                 } else {
                     state = MAV_states.MAVLINK_PARSE_STATE_GOT_CRC1;
@@ -193,41 +189,28 @@ public class Parser {
                 // Check second checksum byte
                 if (c != m.crc.getMSB()) {
                     state = MAV_states.MAVLINK_PARSE_STATE_IDLE;
-//                    if ((isMavlink2 && c == MAVLinkPacket.MAVLINK_STX_MAVLINK2) || (!isMavlink2 && c == MAVLinkPacket.MAVLINK_STX_MAVLINK1)) {
-//                        state = MAV_states.MAVLINK_PARSE_STATE_GOT_STX;
-//                        m.crc.start_checksum();
-//                    }
                     stats.crcError();
                 } else { // crc is good
                     stats.newPacket(m);
                     
                     if (!isMavlink2 || (m.incompatFlags != 0x01)) {
-                        // MAVLink 1 and Unsigned MAVLink 2
                         // If no signature, then return the message.
                         state = MAV_states.MAVLINK_PARSE_STATE_IDLE;
                         return m;
                     } else {
-                        // MAVLink 2 - signed
-                        // Otherwise we're waiting for signature data.
-                        m.signature = new Signature();
-                        state = MAV_states.MAVLINK_PARSE_STATE_GOT_CRC2;
+                        // TODO: MAVLink 2 - signed
+                        state = MAV_states.MAVLINK_PARSE_STATE_IDLE;
+                        stats.crcError();
                     }
                 }
                 break;
                 
-            // TODO: implement signature parsing and validation
             case MAVLINK_PARSE_STATE_GOT_CRC2:
-                // MAVLink 2 only
-                m.signature.signature.put((byte) c);
-                if(m.signature.signature.position() == Signature.MAX_SIGNATURE_SIZE) {
-                    state = MAV_states.MAVLINK_PARSE_STATE_IDLE;
-                    logv(TAG, "Got a signed message");
-                    // Successfully received the message
-                    return m;
-                }
+                // TODO: implement signature parsing and validation
+                state = MAV_states.MAVLINK_PARSE_STATE_IDLE;
+                stats.crcError();
                 break;
         } // switch
-        
         return null;
     }
 }

@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Possible remote log data block statuses.
  */
 public class MAV_REMOTE_LOG_DATA_BLOCK_STATUSES {

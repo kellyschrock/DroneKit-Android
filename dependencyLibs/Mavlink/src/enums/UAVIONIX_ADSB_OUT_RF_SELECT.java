@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Transceiver RF control flags for ADS-B transponder dynamic reports
  */
 public class UAVIONIX_ADSB_OUT_RF_SELECT {

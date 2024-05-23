@@ -1,6 +1,6 @@
 package org.droidplanner.services.android.impl.core.drone.variables;
 
-import com.MAVLink.common.msg_heartbeat;
+import com.MAVLink.minimal.msg_heartbeat;
 import com.MAVLink.enums.MAV_TYPE;
 import com.o3dr.services.android.lib.drone.property.VehicleMode;
 

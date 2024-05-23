@@ -8,7 +8,7 @@ import android.util.Log;
 
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.Messages.MAVLinkMessage;
-import com.MAVLink.common.msg_heartbeat;
+import com.MAVLink.minimal.msg_heartbeat;
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
 import com.o3dr.services.android.lib.drone.connection.ConnectionType;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;

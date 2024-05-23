@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * ADSB classification for the type of vehicle emitting the transponder signal
  */
 public class ADSB_EMITTER_TYPE {

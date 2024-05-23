@@ -9,7 +9,7 @@ import android.util.Log;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.ardupilotmega.msg_camera_feedback;
 import com.MAVLink.ardupilotmega.msg_mag_cal_progress;
-import com.MAVLink.ardupilotmega.msg_mag_cal_report;
+import com.MAVLink.common.msg_mag_cal_report;
 import com.MAVLink.ardupilotmega.msg_mount_configure;
 import com.MAVLink.ardupilotmega.msg_mount_status;
 import com.MAVLink.ardupilotmega.msg_radio;

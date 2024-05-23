@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Actions that may be specified in MAV_CMD_OVERRIDE_GOTO to override mission execution.
  */
 public class MAV_GOTO {

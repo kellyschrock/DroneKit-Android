@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Enumeration of estimator types
  */
 public class MAV_ESTIMATOR_TYPE {

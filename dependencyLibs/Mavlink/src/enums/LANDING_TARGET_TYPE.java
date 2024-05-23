@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Type of landing target
  */
 public class LANDING_TARGET_TYPE {

@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Generalized UAVCAN node mode
  */
 public class UAVCAN_NODE_MODE {

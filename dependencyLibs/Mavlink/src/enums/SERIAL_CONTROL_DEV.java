@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * SERIAL_CONTROL device types
  */
 public class SERIAL_CONTROL_DEV {

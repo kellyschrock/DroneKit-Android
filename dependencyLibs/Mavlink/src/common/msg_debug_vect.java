@@ -9,7 +9,9 @@ package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
-        
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
+
 /**
  * To debug something using a named 3D vector.
  */
@@ -19,31 +21,40 @@ public class msg_debug_vect extends MAVLinkMessage {
     public static final int MAVLINK_MSG_LENGTH = 30;
     private static final long serialVersionUID = MAVLINK_MSG_ID_DEBUG_VECT;
 
-
-      
+    
     /**
-     * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude the number.
+     * Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.
      */
+    @Description("Timestamp (UNIX Epoch time or time since system boot). The receiving end can infer timestamp format (since 1.1.1970 or since system boot) by checking for the magnitude of the number.")
+    @Units("us")
     public long time_usec;
-      
+    
     /**
      * x
      */
+    @Description("x")
+    @Units("")
     public float x;
-      
+    
     /**
      * y
      */
+    @Description("y")
+    @Units("")
     public float y;
-      
+    
     /**
      * z
      */
+    @Description("z")
+    @Units("")
     public float z;
-      
+    
     /**
      * Name
      */
+    @Description("Name")
+    @Units("")
     public byte name[] = new byte[10];
     
 
@@ -51,27 +62,24 @@ public class msg_debug_vect extends MAVLinkMessage {
      * Generates the payload for a mavlink message for a message of this type
      * @return
      */
+    @Override
     public MAVLinkPacket pack() {
         MAVLinkPacket packet = new MAVLinkPacket(MAVLINK_MSG_LENGTH,isMavlink2);
-        packet.sysid = 255;
-        packet.compid = 190;
+        packet.sysid = sysid;
+        packet.compid = compid;
         packet.msgid = MAVLINK_MSG_ID_DEBUG_VECT;
-        
+
         packet.payload.putUnsignedLong(time_usec);
-        
         packet.payload.putFloat(x);
-        
         packet.payload.putFloat(y);
-        
         packet.payload.putFloat(z);
-        
         
         for (int i = 0; i < name.length; i++) {
             packet.payload.putByte(name[i]);
         }
                     
         
-        if(isMavlink2) {
+        if (isMavlink2) {
             
         }
         return packet;
@@ -82,24 +90,21 @@ public class msg_debug_vect extends MAVLinkMessage {
      *
      * @param payload The message to decode
      */
+    @Override
     public void unpack(MAVLinkPayload payload) {
         payload.resetIndex();
-        
+
         this.time_usec = payload.getUnsignedLong();
-        
         this.x = payload.getFloat();
-        
         this.y = payload.getFloat();
-        
         this.z = payload.getFloat();
         
-         
         for (int i = 0; i < this.name.length; i++) {
             this.name[i] = payload.getByte();
         }
                 
         
-        if(isMavlink2) {
+        if (isMavlink2) {
             
         }
     }
@@ -108,7 +113,38 @@ public class msg_debug_vect extends MAVLinkMessage {
      * Constructor for a new message, just initializes the msgid
      */
     public msg_debug_vect() {
-        msgid = MAVLINK_MSG_ID_DEBUG_VECT;
+        this.msgid = MAVLINK_MSG_ID_DEBUG_VECT;
+    }
+
+    /**
+     * Constructor for a new message, initializes msgid and all payload variables
+     */
+    public msg_debug_vect( long time_usec, float x, float y, float z, byte[] name) {
+        this.msgid = MAVLINK_MSG_ID_DEBUG_VECT;
+
+        this.time_usec = time_usec;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.name = name;
+        
+    }
+
+    /**
+     * Constructor for a new message, initializes everything
+     */
+    public msg_debug_vect( long time_usec, float x, float y, float z, byte[] name, int sysid, int compid, boolean isMavlink2) {
+        this.msgid = MAVLINK_MSG_ID_DEBUG_VECT;
+        this.sysid = sysid;
+        this.compid = compid;
+        this.isMavlink2 = isMavlink2;
+
+        this.time_usec = time_usec;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.name = name;
+        
     }
 
     /**
@@ -117,11 +153,12 @@ public class msg_debug_vect extends MAVLinkMessage {
      *
      */
     public msg_debug_vect(MAVLinkPacket mavLinkPacket) {
+        this.msgid = MAVLINK_MSG_ID_DEBUG_VECT;
+
         this.sysid = mavLinkPacket.sysid;
         this.compid = mavLinkPacket.compid;
-        this.msgid = MAVLINK_MSG_ID_DEBUG_VECT;
         this.isMavlink2 = mavLinkPacket.isMavlink2;
-        unpack(mavLinkPacket.payload);        
+        unpack(mavLinkPacket.payload);
     }
 
              
@@ -140,7 +177,7 @@ public class msg_debug_vect extends MAVLinkMessage {
     }
 
     /**
-    * Gets the message, formated as a string
+    * Gets the message, formatted as a string
     */
     public String getName() {
         StringBuffer buf = new StringBuffer();
@@ -157,8 +194,17 @@ public class msg_debug_vect extends MAVLinkMessage {
     /**
      * Returns a string with the MSG name and data
      */
+    @Override
     public String toString() {
         return "MAVLINK_MSG_ID_DEBUG_VECT - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" x:"+x+" y:"+y+" z:"+z+" name:"+name+"";
+    }
+
+    /**
+     * Returns a human-readable string of the name of the message
+     */
+    @Override
+    public String name() {
+        return "MAVLINK_MSG_ID_DEBUG_VECT";
     }
 }
         

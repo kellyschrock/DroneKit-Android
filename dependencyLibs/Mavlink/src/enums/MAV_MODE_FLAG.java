@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * These flags encode the MAV mode.
  */
 public class MAV_MODE_FLAG {

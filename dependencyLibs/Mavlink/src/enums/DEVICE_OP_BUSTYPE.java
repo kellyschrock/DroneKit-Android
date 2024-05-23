@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Bus types for device operations.
  */
 public class DEVICE_OP_BUSTYPE {

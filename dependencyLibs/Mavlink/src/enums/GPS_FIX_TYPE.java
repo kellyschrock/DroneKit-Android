@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Type of GPS fix
  */
 public class GPS_FIX_TYPE {

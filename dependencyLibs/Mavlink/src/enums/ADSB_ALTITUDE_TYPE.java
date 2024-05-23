@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Enumeration of the ADSB altimeter types
  */
 public class ADSB_ALTITUDE_TYPE {

@@ -6,8 +6,8 @@
 
 package com.MAVLink.enums;
 
-/** 
- * Flags in EKF_STATUS message
+/**
+ * Flags in ESTIMATOR_STATUS message
  */
 public class ESTIMATOR_STATUS_FLAGS {
    public static final int ESTIMATOR_ATTITUDE = 1; /* True if the attitude estimate is good | */

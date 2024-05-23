@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * MAVLINK component type reported in HEARTBEAT message. Flight controllers must report the type of the vehicle on which they are mounted (e.g. MAV_TYPE_OCTOROTOR). All other components must report a value appropriate for their type (e.g. a camera must use MAV_TYPE_CAMERA).
  */
 public class MAV_TYPE {
@@ -44,6 +44,15 @@ public class MAV_TYPE {
    public static final int MAV_TYPE_CHARGING_STATION = 31; /* Charging station | */
    public static final int MAV_TYPE_FLARM = 32; /* FLARM collision avoidance system | */
    public static final int MAV_TYPE_SERVO = 33; /* Servo | */
-   public static final int MAV_TYPE_ENUM_END = 34; /*  | */
+   public static final int MAV_TYPE_ODID = 34; /* Open Drone ID. See https://mavlink.io/en/services/opendroneid.html. | */
+   public static final int MAV_TYPE_DECAROTOR = 35; /* Decarotor | */
+   public static final int MAV_TYPE_BATTERY = 36; /* Battery | */
+   public static final int MAV_TYPE_PARACHUTE = 37; /* Parachute | */
+   public static final int MAV_TYPE_LOG = 38; /* Log | */
+   public static final int MAV_TYPE_OSD = 39; /* OSD | */
+   public static final int MAV_TYPE_IMU = 40; /* IMU | */
+   public static final int MAV_TYPE_GPS = 41; /* GPS | */
+   public static final int MAV_TYPE_WINCH = 42; /* Winch | */
+   public static final int MAV_TYPE_ENUM_END = 43; /*  | */
 }
             

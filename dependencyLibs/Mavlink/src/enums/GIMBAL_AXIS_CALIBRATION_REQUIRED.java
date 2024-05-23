@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * 
  */
 public class GIMBAL_AXIS_CALIBRATION_REQUIRED {

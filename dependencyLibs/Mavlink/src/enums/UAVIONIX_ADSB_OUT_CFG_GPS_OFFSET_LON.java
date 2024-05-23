@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * GPS longitudinal offset encoding
  */
 public class UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LON {

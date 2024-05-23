@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.ardupilotmega.msg_mag_cal_progress;
-import com.MAVLink.ardupilotmega.msg_mag_cal_report;
+import com.MAVLink.common.msg_mag_cal_report;
 import com.MAVLink.common.msg_command_ack;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.drone.action.GimbalActions;

@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Result of mission operation (in a MISSION_ACK message).
  */
 public class MAV_MISSION_RESULT {
@@ -14,7 +14,7 @@ public class MAV_MISSION_RESULT {
    public static final int MAV_MISSION_ERROR = 1; /* Generic error / not accepting mission commands at all right now. | */
    public static final int MAV_MISSION_UNSUPPORTED_FRAME = 2; /* Coordinate frame is not supported. | */
    public static final int MAV_MISSION_UNSUPPORTED = 3; /* Command is not supported. | */
-   public static final int MAV_MISSION_NO_SPACE = 4; /* Mission item exceeds storage space. | */
+   public static final int MAV_MISSION_NO_SPACE = 4; /* Mission items exceed storage space. | */
    public static final int MAV_MISSION_INVALID = 5; /* One of the parameters has an invalid value. | */
    public static final int MAV_MISSION_INVALID_PARAM1 = 6; /* param1 has an invalid value. | */
    public static final int MAV_MISSION_INVALID_PARAM2 = 7; /* param2 has an invalid value. | */

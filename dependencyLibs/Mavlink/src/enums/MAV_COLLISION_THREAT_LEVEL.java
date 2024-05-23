@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Aircraft-rated danger from this threat.
  */
 public class MAV_COLLISION_THREAT_LEVEL {

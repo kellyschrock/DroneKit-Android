@@ -7,8 +7,6 @@ import android.util.Pair;
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.Messages.MAVLinkStats;
 import com.MAVLink.Parser;
-import com.MAVLink.common.msg_param_request_list;
-import com.MAVLink.remoteid.msg_open_drone_id_operator_id;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 
 import java.util.Arrays;

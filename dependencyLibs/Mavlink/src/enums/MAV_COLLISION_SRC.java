@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Source of information about this collision.
  */
 public class MAV_COLLISION_SRC {

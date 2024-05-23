@@ -9,7 +9,9 @@ package com.MAVLink.ardupilotmega;
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
-        
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
+
 /**
  * Rangefinder reporting.
  */
@@ -19,16 +21,19 @@ public class msg_rangefinder extends MAVLinkMessage {
     public static final int MAVLINK_MSG_LENGTH = 8;
     private static final long serialVersionUID = MAVLINK_MSG_ID_RANGEFINDER;
 
-
-      
+    
     /**
      * Distance.
      */
+    @Description("Distance.")
+    @Units("m")
     public float distance;
-      
+    
     /**
      * Raw voltage if available, zero otherwise.
      */
+    @Description("Raw voltage if available, zero otherwise.")
+    @Units("V")
     public float voltage;
     
 
@@ -36,17 +41,17 @@ public class msg_rangefinder extends MAVLinkMessage {
      * Generates the payload for a mavlink message for a message of this type
      * @return
      */
+    @Override
     public MAVLinkPacket pack() {
         MAVLinkPacket packet = new MAVLinkPacket(MAVLINK_MSG_LENGTH,isMavlink2);
-        packet.sysid = 255;
-        packet.compid = 190;
+        packet.sysid = sysid;
+        packet.compid = compid;
         packet.msgid = MAVLINK_MSG_ID_RANGEFINDER;
-        
+
         packet.payload.putFloat(distance);
-        
         packet.payload.putFloat(voltage);
         
-        if(isMavlink2) {
+        if (isMavlink2) {
             
         }
         return packet;
@@ -57,14 +62,14 @@ public class msg_rangefinder extends MAVLinkMessage {
      *
      * @param payload The message to decode
      */
+    @Override
     public void unpack(MAVLinkPayload payload) {
         payload.resetIndex();
-        
+
         this.distance = payload.getFloat();
-        
         this.voltage = payload.getFloat();
         
-        if(isMavlink2) {
+        if (isMavlink2) {
             
         }
     }
@@ -73,7 +78,32 @@ public class msg_rangefinder extends MAVLinkMessage {
      * Constructor for a new message, just initializes the msgid
      */
     public msg_rangefinder() {
-        msgid = MAVLINK_MSG_ID_RANGEFINDER;
+        this.msgid = MAVLINK_MSG_ID_RANGEFINDER;
+    }
+
+    /**
+     * Constructor for a new message, initializes msgid and all payload variables
+     */
+    public msg_rangefinder( float distance, float voltage) {
+        this.msgid = MAVLINK_MSG_ID_RANGEFINDER;
+
+        this.distance = distance;
+        this.voltage = voltage;
+        
+    }
+
+    /**
+     * Constructor for a new message, initializes everything
+     */
+    public msg_rangefinder( float distance, float voltage, int sysid, int compid, boolean isMavlink2) {
+        this.msgid = MAVLINK_MSG_ID_RANGEFINDER;
+        this.sysid = sysid;
+        this.compid = compid;
+        this.isMavlink2 = isMavlink2;
+
+        this.distance = distance;
+        this.voltage = voltage;
+        
     }
 
     /**
@@ -82,19 +112,29 @@ public class msg_rangefinder extends MAVLinkMessage {
      *
      */
     public msg_rangefinder(MAVLinkPacket mavLinkPacket) {
+        this.msgid = MAVLINK_MSG_ID_RANGEFINDER;
+
         this.sysid = mavLinkPacket.sysid;
         this.compid = mavLinkPacket.compid;
-        this.msgid = MAVLINK_MSG_ID_RANGEFINDER;
         this.isMavlink2 = mavLinkPacket.isMavlink2;
-        unpack(mavLinkPacket.payload);        
+        unpack(mavLinkPacket.payload);
     }
 
         
     /**
      * Returns a string with the MSG name and data
      */
+    @Override
     public String toString() {
         return "MAVLINK_MSG_ID_RANGEFINDER - sysid:"+sysid+" compid:"+compid+" distance:"+distance+" voltage:"+voltage+"";
+    }
+
+    /**
+     * Returns a human-readable string of the name of the message
+     */
+    @Override
+    public String name() {
+        return "MAVLINK_MSG_ID_RANGEFINDER";
     }
 }
         

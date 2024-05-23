@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Status for ADS-B transponder dynamic input
  */
 public class UAVIONIX_ADSB_OUT_DYNAMIC_GPS_FIX {

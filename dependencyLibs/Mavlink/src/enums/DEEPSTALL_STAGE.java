@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Deepstall flight stage.
  */
 public class DEEPSTALL_STAGE {

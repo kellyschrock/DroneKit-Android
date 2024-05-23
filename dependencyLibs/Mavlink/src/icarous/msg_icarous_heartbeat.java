@@ -9,7 +9,9 @@ package com.MAVLink.icarous;
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
-        
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
+
 /**
  * ICAROUS heartbeat
  */
@@ -19,11 +21,12 @@ public class msg_icarous_heartbeat extends MAVLinkMessage {
     public static final int MAVLINK_MSG_LENGTH = 1;
     private static final long serialVersionUID = MAVLINK_MSG_ID_ICAROUS_HEARTBEAT;
 
-
-      
+    
     /**
      * See the FMS_STATE enum.
      */
+    @Description("See the FMS_STATE enum.")
+    @Units("")
     public short status;
     
 
@@ -31,15 +34,16 @@ public class msg_icarous_heartbeat extends MAVLinkMessage {
      * Generates the payload for a mavlink message for a message of this type
      * @return
      */
+    @Override
     public MAVLinkPacket pack() {
         MAVLinkPacket packet = new MAVLinkPacket(MAVLINK_MSG_LENGTH,isMavlink2);
-        packet.sysid = 255;
-        packet.compid = 190;
+        packet.sysid = sysid;
+        packet.compid = compid;
         packet.msgid = MAVLINK_MSG_ID_ICAROUS_HEARTBEAT;
-        
+
         packet.payload.putUnsignedByte(status);
         
-        if(isMavlink2) {
+        if (isMavlink2) {
             
         }
         return packet;
@@ -50,12 +54,13 @@ public class msg_icarous_heartbeat extends MAVLinkMessage {
      *
      * @param payload The message to decode
      */
+    @Override
     public void unpack(MAVLinkPayload payload) {
         payload.resetIndex();
-        
+
         this.status = payload.getUnsignedByte();
         
-        if(isMavlink2) {
+        if (isMavlink2) {
             
         }
     }
@@ -64,7 +69,30 @@ public class msg_icarous_heartbeat extends MAVLinkMessage {
      * Constructor for a new message, just initializes the msgid
      */
     public msg_icarous_heartbeat() {
-        msgid = MAVLINK_MSG_ID_ICAROUS_HEARTBEAT;
+        this.msgid = MAVLINK_MSG_ID_ICAROUS_HEARTBEAT;
+    }
+
+    /**
+     * Constructor for a new message, initializes msgid and all payload variables
+     */
+    public msg_icarous_heartbeat( short status) {
+        this.msgid = MAVLINK_MSG_ID_ICAROUS_HEARTBEAT;
+
+        this.status = status;
+        
+    }
+
+    /**
+     * Constructor for a new message, initializes everything
+     */
+    public msg_icarous_heartbeat( short status, int sysid, int compid, boolean isMavlink2) {
+        this.msgid = MAVLINK_MSG_ID_ICAROUS_HEARTBEAT;
+        this.sysid = sysid;
+        this.compid = compid;
+        this.isMavlink2 = isMavlink2;
+
+        this.status = status;
+        
     }
 
     /**
@@ -73,19 +101,29 @@ public class msg_icarous_heartbeat extends MAVLinkMessage {
      *
      */
     public msg_icarous_heartbeat(MAVLinkPacket mavLinkPacket) {
+        this.msgid = MAVLINK_MSG_ID_ICAROUS_HEARTBEAT;
+
         this.sysid = mavLinkPacket.sysid;
         this.compid = mavLinkPacket.compid;
-        this.msgid = MAVLINK_MSG_ID_ICAROUS_HEARTBEAT;
         this.isMavlink2 = mavLinkPacket.isMavlink2;
-        unpack(mavLinkPacket.payload);        
+        unpack(mavLinkPacket.payload);
     }
 
       
     /**
      * Returns a string with the MSG name and data
      */
+    @Override
     public String toString() {
         return "MAVLINK_MSG_ID_ICAROUS_HEARTBEAT - sysid:"+sysid+" compid:"+compid+" status:"+status+"";
+    }
+
+    /**
+     * Returns a human-readable string of the name of the message
+     */
+    @Override
+    public String name() {
+        return "MAVLINK_MSG_ID_ICAROUS_HEARTBEAT";
     }
 }
         

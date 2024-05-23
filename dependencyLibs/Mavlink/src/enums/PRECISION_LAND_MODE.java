@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Precision land modes (used in MAV_CMD_NAV_LAND).
  */
 public class PRECISION_LAND_MODE {

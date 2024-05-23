@@ -9,7 +9,9 @@ package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
-        
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
+
 /**
  * Power supply status
  */
@@ -19,21 +21,26 @@ public class msg_power_status extends MAVLinkMessage {
     public static final int MAVLINK_MSG_LENGTH = 6;
     private static final long serialVersionUID = MAVLINK_MSG_ID_POWER_STATUS;
 
-
-      
+    
     /**
      * 5V rail voltage.
      */
+    @Description("5V rail voltage.")
+    @Units("mV")
     public int Vcc;
-      
+    
     /**
      * Servo rail voltage.
      */
+    @Description("Servo rail voltage.")
+    @Units("mV")
     public int Vservo;
-      
+    
     /**
      * Bitmap of power supply status flags.
      */
+    @Description("Bitmap of power supply status flags.")
+    @Units("")
     public int flags;
     
 
@@ -41,19 +48,18 @@ public class msg_power_status extends MAVLinkMessage {
      * Generates the payload for a mavlink message for a message of this type
      * @return
      */
+    @Override
     public MAVLinkPacket pack() {
         MAVLinkPacket packet = new MAVLinkPacket(MAVLINK_MSG_LENGTH,isMavlink2);
-        packet.sysid = 255;
-        packet.compid = 190;
+        packet.sysid = sysid;
+        packet.compid = compid;
         packet.msgid = MAVLINK_MSG_ID_POWER_STATUS;
-        
+
         packet.payload.putUnsignedShort(Vcc);
-        
         packet.payload.putUnsignedShort(Vservo);
-        
         packet.payload.putUnsignedShort(flags);
         
-        if(isMavlink2) {
+        if (isMavlink2) {
             
         }
         return packet;
@@ -64,16 +70,15 @@ public class msg_power_status extends MAVLinkMessage {
      *
      * @param payload The message to decode
      */
+    @Override
     public void unpack(MAVLinkPayload payload) {
         payload.resetIndex();
-        
+
         this.Vcc = payload.getUnsignedShort();
-        
         this.Vservo = payload.getUnsignedShort();
-        
         this.flags = payload.getUnsignedShort();
         
-        if(isMavlink2) {
+        if (isMavlink2) {
             
         }
     }
@@ -82,7 +87,34 @@ public class msg_power_status extends MAVLinkMessage {
      * Constructor for a new message, just initializes the msgid
      */
     public msg_power_status() {
-        msgid = MAVLINK_MSG_ID_POWER_STATUS;
+        this.msgid = MAVLINK_MSG_ID_POWER_STATUS;
+    }
+
+    /**
+     * Constructor for a new message, initializes msgid and all payload variables
+     */
+    public msg_power_status( int Vcc, int Vservo, int flags) {
+        this.msgid = MAVLINK_MSG_ID_POWER_STATUS;
+
+        this.Vcc = Vcc;
+        this.Vservo = Vservo;
+        this.flags = flags;
+        
+    }
+
+    /**
+     * Constructor for a new message, initializes everything
+     */
+    public msg_power_status( int Vcc, int Vservo, int flags, int sysid, int compid, boolean isMavlink2) {
+        this.msgid = MAVLINK_MSG_ID_POWER_STATUS;
+        this.sysid = sysid;
+        this.compid = compid;
+        this.isMavlink2 = isMavlink2;
+
+        this.Vcc = Vcc;
+        this.Vservo = Vservo;
+        this.flags = flags;
+        
     }
 
     /**
@@ -91,19 +123,29 @@ public class msg_power_status extends MAVLinkMessage {
      *
      */
     public msg_power_status(MAVLinkPacket mavLinkPacket) {
+        this.msgid = MAVLINK_MSG_ID_POWER_STATUS;
+
         this.sysid = mavLinkPacket.sysid;
         this.compid = mavLinkPacket.compid;
-        this.msgid = MAVLINK_MSG_ID_POWER_STATUS;
         this.isMavlink2 = mavLinkPacket.isMavlink2;
-        unpack(mavLinkPacket.payload);        
+        unpack(mavLinkPacket.payload);
     }
 
           
     /**
      * Returns a string with the MSG name and data
      */
+    @Override
     public String toString() {
         return "MAVLINK_MSG_ID_POWER_STATUS - sysid:"+sysid+" compid:"+compid+" Vcc:"+Vcc+" Vservo:"+Vservo+" flags:"+flags+"";
+    }
+
+    /**
+     * Returns a human-readable string of the name of the message
+     */
+    @Override
+    public String name() {
+        return "MAVLINK_MSG_ID_POWER_STATUS";
     }
 }
         

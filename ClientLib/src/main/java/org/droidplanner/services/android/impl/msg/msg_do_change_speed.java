@@ -51,6 +51,9 @@ public class msg_do_change_speed extends MAVLinkMessage {
     }
 
     @Override
+    public String name() { return "do_change_speed"; }
+
+    @Override
     public String toString() {
         return "msg_do_change_speed{" +
             "target_system=" + target_system +

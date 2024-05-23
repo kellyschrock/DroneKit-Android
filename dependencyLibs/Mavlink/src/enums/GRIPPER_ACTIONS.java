@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Gripper actions.
  */
 public class GRIPPER_ACTIONS {

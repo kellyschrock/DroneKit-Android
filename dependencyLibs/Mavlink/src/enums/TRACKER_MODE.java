@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * A mapping of antenna tracker flight modes for custom_mode field of heartbeat.
  */
 public class TRACKER_MODE {

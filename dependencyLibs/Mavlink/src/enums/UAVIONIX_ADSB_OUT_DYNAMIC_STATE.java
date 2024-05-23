@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * State flags for ADS-B transponder dynamic report
  */
 public class UAVIONIX_ADSB_OUT_DYNAMIC_STATE {

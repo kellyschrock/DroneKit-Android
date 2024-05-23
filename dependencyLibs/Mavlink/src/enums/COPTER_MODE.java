@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * A mapping of copter flight modes for custom_mode field of heartbeat.
  */
 public class COPTER_MODE {
@@ -29,6 +29,12 @@ public class COPTER_MODE {
    public static final int COPTER_MODE_AVOID_ADSB = 19; /*  | */
    public static final int COPTER_MODE_GUIDED_NOGPS = 20; /*  | */
    public static final int COPTER_MODE_SMART_RTL = 21; /*  | */
-   public static final int COPTER_MODE_ENUM_END = 22; /*  | */
+   public static final int COPTER_MODE_FLOWHOLD = 22; /*  | */
+   public static final int COPTER_MODE_FOLLOW = 23; /*  | */
+   public static final int COPTER_MODE_ZIGZAG = 24; /*  | */
+   public static final int COPTER_MODE_SYSTEMID = 25; /*  | */
+   public static final int COPTER_MODE_AUTOROTATE = 26; /*  | */
+   public static final int COPTER_MODE_AUTO_RTL = 27; /*  | */
+   public static final int COPTER_MODE_ENUM_END = 28; /*  | */
 }
             

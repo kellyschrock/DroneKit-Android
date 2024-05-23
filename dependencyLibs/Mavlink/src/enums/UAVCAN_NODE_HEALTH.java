@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Generalized UAVCAN node health
  */
 public class UAVCAN_NODE_HEALTH {

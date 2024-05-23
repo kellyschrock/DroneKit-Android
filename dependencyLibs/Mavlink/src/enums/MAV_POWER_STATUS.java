@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Power supply status flags (bitmask)
  */
 public class MAV_POWER_STATUS {

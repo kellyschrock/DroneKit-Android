@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Special ACK block numbers control activation of dataflash log streaming.
  */
 public class MAV_REMOTE_LOG_DATA_BLOCK_COMMANDS {

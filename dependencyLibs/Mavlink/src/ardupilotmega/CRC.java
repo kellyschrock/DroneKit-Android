@@ -10,9 +10,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * X.25 CRC calculation for MAVlink messages. The checksum must be initialized,
- * updated with witch field of the message, and then finished with the message
- * id.
+ * CRC-16/MCRF4XX calculation for MAVlink messages. The checksum must be
+ * initialized, updated with which field of the message, and then finished with
+ * the message id.
+ *
  */
 public class CRC {
     private static final Map<Integer, Integer> MAVLINK_MESSAGE_CRCS;
@@ -187,13 +188,14 @@ public class CRC {
         MAVLINK_MESSAGE_CRCS.put(217, 202);
         MAVLINK_MESSAGE_CRCS.put(218, 17);
         MAVLINK_MESSAGE_CRCS.put(219, 162);
-        MAVLINK_MESSAGE_CRCS.put(225, 142);
+        MAVLINK_MESSAGE_CRCS.put(225, 208);
         MAVLINK_MESSAGE_CRCS.put(226, 207);
         MAVLINK_MESSAGE_CRCS.put(230, 163);
         MAVLINK_MESSAGE_CRCS.put(231, 105);
         MAVLINK_MESSAGE_CRCS.put(232, 151);
         MAVLINK_MESSAGE_CRCS.put(233, 35);
         MAVLINK_MESSAGE_CRCS.put(234, 150);
+        MAVLINK_MESSAGE_CRCS.put(235, 179);
         MAVLINK_MESSAGE_CRCS.put(241, 90);
         MAVLINK_MESSAGE_CRCS.put(242, 104);
         MAVLINK_MESSAGE_CRCS.put(243, 85);
@@ -221,35 +223,78 @@ public class CRC {
         MAVLINK_MESSAGE_CRCS.put(266, 193);
         MAVLINK_MESSAGE_CRCS.put(267, 35);
         MAVLINK_MESSAGE_CRCS.put(268, 14);
-        MAVLINK_MESSAGE_CRCS.put(269, 58);
-        MAVLINK_MESSAGE_CRCS.put(270, 232);
+        MAVLINK_MESSAGE_CRCS.put(269, 109);
+        MAVLINK_MESSAGE_CRCS.put(270, 59);
+        MAVLINK_MESSAGE_CRCS.put(271, 22);
+        MAVLINK_MESSAGE_CRCS.put(275, 126);
+        MAVLINK_MESSAGE_CRCS.put(276, 18);
+        MAVLINK_MESSAGE_CRCS.put(280, 70);
+        MAVLINK_MESSAGE_CRCS.put(281, 48);
+        MAVLINK_MESSAGE_CRCS.put(282, 123);
+        MAVLINK_MESSAGE_CRCS.put(283, 74);
+        MAVLINK_MESSAGE_CRCS.put(284, 99);
+        MAVLINK_MESSAGE_CRCS.put(285, 137);
+        MAVLINK_MESSAGE_CRCS.put(286, 210);
+        MAVLINK_MESSAGE_CRCS.put(287, 1);
+        MAVLINK_MESSAGE_CRCS.put(288, 20);
         MAVLINK_MESSAGE_CRCS.put(299, 19);
+        MAVLINK_MESSAGE_CRCS.put(301, 243);
         MAVLINK_MESSAGE_CRCS.put(310, 28);
         MAVLINK_MESSAGE_CRCS.put(311, 95);
+        MAVLINK_MESSAGE_CRCS.put(320, 243);
+        MAVLINK_MESSAGE_CRCS.put(321, 88);
+        MAVLINK_MESSAGE_CRCS.put(322, 243);
+        MAVLINK_MESSAGE_CRCS.put(323, 78);
+        MAVLINK_MESSAGE_CRCS.put(324, 132);
         MAVLINK_MESSAGE_CRCS.put(330, 23);
         MAVLINK_MESSAGE_CRCS.put(331, 91);
         MAVLINK_MESSAGE_CRCS.put(335, 225);
+        MAVLINK_MESSAGE_CRCS.put(339, 199);
+        MAVLINK_MESSAGE_CRCS.put(340, 99);
         MAVLINK_MESSAGE_CRCS.put(350, 232);
-        MAVLINK_MESSAGE_CRCS.put(365, 36);
+        MAVLINK_MESSAGE_CRCS.put(370, 75);
+        MAVLINK_MESSAGE_CRCS.put(373, 117);
         MAVLINK_MESSAGE_CRCS.put(375, 251);
+        MAVLINK_MESSAGE_CRCS.put(376, 199);
+        MAVLINK_MESSAGE_CRCS.put(385, 147);
+        MAVLINK_MESSAGE_CRCS.put(386, 132);
+        MAVLINK_MESSAGE_CRCS.put(387, 4);
+        MAVLINK_MESSAGE_CRCS.put(388, 8);
         MAVLINK_MESSAGE_CRCS.put(9000, 113);
+        MAVLINK_MESSAGE_CRCS.put(9005, 117);
         MAVLINK_MESSAGE_CRCS.put(10001, 209);
         MAVLINK_MESSAGE_CRCS.put(10002, 186);
         MAVLINK_MESSAGE_CRCS.put(10003, 4);
+        MAVLINK_MESSAGE_CRCS.put(10004, 133);
+        MAVLINK_MESSAGE_CRCS.put(10005, 103);
+        MAVLINK_MESSAGE_CRCS.put(10006, 193);
+        MAVLINK_MESSAGE_CRCS.put(10007, 71);
+        MAVLINK_MESSAGE_CRCS.put(10008, 240);
+        MAVLINK_MESSAGE_CRCS.put(10151, 195);
         MAVLINK_MESSAGE_CRCS.put(11000, 134);
         MAVLINK_MESSAGE_CRCS.put(11001, 15);
         MAVLINK_MESSAGE_CRCS.put(11002, 234);
         MAVLINK_MESSAGE_CRCS.put(11003, 64);
+        MAVLINK_MESSAGE_CRCS.put(11004, 11);
+        MAVLINK_MESSAGE_CRCS.put(11005, 93);
         MAVLINK_MESSAGE_CRCS.put(11010, 46);
         MAVLINK_MESSAGE_CRCS.put(11011, 106);
         MAVLINK_MESSAGE_CRCS.put(11020, 205);
         MAVLINK_MESSAGE_CRCS.put(11030, 144);
         MAVLINK_MESSAGE_CRCS.put(11031, 133);
         MAVLINK_MESSAGE_CRCS.put(11032, 85);
-        MAVLINK_MESSAGE_CRCS.put(42000, 227);
-        MAVLINK_MESSAGE_CRCS.put(42001, 239);
-
-        // remoteid
+        MAVLINK_MESSAGE_CRCS.put(11033, 195);
+        MAVLINK_MESSAGE_CRCS.put(11034, 79);
+        MAVLINK_MESSAGE_CRCS.put(11035, 128);
+        MAVLINK_MESSAGE_CRCS.put(11036, 177);
+        MAVLINK_MESSAGE_CRCS.put(11037, 130);
+        MAVLINK_MESSAGE_CRCS.put(11038, 47);
+        MAVLINK_MESSAGE_CRCS.put(11039, 142);
+        MAVLINK_MESSAGE_CRCS.put(11040, 132);
+        MAVLINK_MESSAGE_CRCS.put(11041, 208);
+        MAVLINK_MESSAGE_CRCS.put(11042, 201);
+        MAVLINK_MESSAGE_CRCS.put(11043, 193);
+        MAVLINK_MESSAGE_CRCS.put(11044, 189);
         MAVLINK_MESSAGE_CRCS.put(12900, 114);
         MAVLINK_MESSAGE_CRCS.put(12901, 254);
         MAVLINK_MESSAGE_CRCS.put(12902, 140);
@@ -260,11 +305,20 @@ public class CRC {
         MAVLINK_MESSAGE_CRCS.put(12918, 139);
         MAVLINK_MESSAGE_CRCS.put(12919, 7);
         MAVLINK_MESSAGE_CRCS.put(12920, 20);
-
+        MAVLINK_MESSAGE_CRCS.put(42000, 227);
+        MAVLINK_MESSAGE_CRCS.put(42001, 239);
+        MAVLINK_MESSAGE_CRCS.put(50001, 246);
+        MAVLINK_MESSAGE_CRCS.put(50002, 181);
+        MAVLINK_MESSAGE_CRCS.put(50003, 62);
+        MAVLINK_MESSAGE_CRCS.put(50004, 240);
+        MAVLINK_MESSAGE_CRCS.put(50005, 152);
+        MAVLINK_MESSAGE_CRCS.put(52000, 13);
+        MAVLINK_MESSAGE_CRCS.put(52001, 239);
+        
     }
 
     /**
-     * Accumulate the X.25 CRC by adding one char at a time.
+     * Accumulate the CRC by adding one char at a time.
      *
      * The checksum function adds the hash of one char at a time to the 16 bit
      * checksum (uint16_t).
@@ -283,14 +337,18 @@ public class CRC {
      * Magic Byte.
      *
      * @param msgid The message id number
+     * @return boolean True if the checksum was successfully finished. Otherwise false
      */
-    public void finish_checksum(int msgid) {
-        if(MAVLINK_MESSAGE_CRCS.containsKey(msgid))
+    public boolean finish_checksum(int msgid) {
+        if (MAVLINK_MESSAGE_CRCS.containsKey(msgid)) {
             update_checksum(MAVLINK_MESSAGE_CRCS.get(msgid));
+            return true;
+        }
+        return false;
     }
 
     /**
-     * Initialize the buffer for the X.25 CRC
+     * Initialize the buffer for the CRC16/MCRF4XX
      */
     public void start_checksum() {
         crcValue = CRC_INIT_VALUE;
@@ -309,3 +367,4 @@ public class CRC {
     }
 
 }
+        

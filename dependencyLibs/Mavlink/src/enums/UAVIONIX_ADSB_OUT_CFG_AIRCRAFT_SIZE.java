@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Definitions for aircraft size
  */
 public class UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE {

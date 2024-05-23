@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * SERIAL_CONTROL flags (bitmask)
  */
 public class SERIAL_CONTROL_FLAG {

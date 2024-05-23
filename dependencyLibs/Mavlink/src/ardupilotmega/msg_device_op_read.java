@@ -9,97 +9,117 @@ package com.MAVLink.ardupilotmega;
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
-        
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
+
 /**
  * Read registers for a device.
  */
 public class msg_device_op_read extends MAVLinkMessage {
 
     public static final int MAVLINK_MSG_ID_DEVICE_OP_READ = 11000;
-    public static final int MAVLINK_MSG_LENGTH = 51;
+    public static final int MAVLINK_MSG_LENGTH = 52;
     private static final long serialVersionUID = MAVLINK_MSG_ID_DEVICE_OP_READ;
 
-
-      
+    
     /**
      * Request ID - copied to reply.
      */
+    @Description("Request ID - copied to reply.")
+    @Units("")
     public long request_id;
-      
+    
     /**
      * System ID.
      */
+    @Description("System ID.")
+    @Units("")
     public short target_system;
-      
+    
     /**
      * Component ID.
      */
+    @Description("Component ID.")
+    @Units("")
     public short target_component;
-      
+    
     /**
      * The bus type.
      */
+    @Description("The bus type.")
+    @Units("")
     public short bustype;
-      
+    
     /**
      * Bus number.
      */
+    @Description("Bus number.")
+    @Units("")
     public short bus;
-      
+    
     /**
      * Bus address.
      */
+    @Description("Bus address.")
+    @Units("")
     public short address;
-      
+    
     /**
      * Name of device on bus (for SPI).
      */
+    @Description("Name of device on bus (for SPI).")
+    @Units("")
     public byte busname[] = new byte[40];
-      
+    
     /**
      * First register to read.
      */
+    @Description("First register to read.")
+    @Units("")
     public short regstart;
-      
+    
     /**
      * Count of registers to read.
      */
+    @Description("Count of registers to read.")
+    @Units("")
     public short count;
+    
+    /**
+     * Bank number.
+     */
+    @Description("Bank number.")
+    @Units("")
+    public short bank;
     
 
     /**
      * Generates the payload for a mavlink message for a message of this type
      * @return
      */
+    @Override
     public MAVLinkPacket pack() {
         MAVLinkPacket packet = new MAVLinkPacket(MAVLINK_MSG_LENGTH,isMavlink2);
-        packet.sysid = 255;
-        packet.compid = 190;
+        packet.sysid = sysid;
+        packet.compid = compid;
         packet.msgid = MAVLINK_MSG_ID_DEVICE_OP_READ;
-        
+
         packet.payload.putUnsignedInt(request_id);
-        
         packet.payload.putUnsignedByte(target_system);
-        
         packet.payload.putUnsignedByte(target_component);
-        
         packet.payload.putUnsignedByte(bustype);
-        
         packet.payload.putUnsignedByte(bus);
-        
         packet.payload.putUnsignedByte(address);
-        
         
         for (int i = 0; i < busname.length; i++) {
             packet.payload.putByte(busname[i]);
         }
                     
-        
         packet.payload.putUnsignedByte(regstart);
-        
         packet.payload.putUnsignedByte(count);
         
-        if(isMavlink2) {
+        if (isMavlink2) {
+             packet.payload.putUnsignedByte(bank);
             
         }
         return packet;
@@ -110,32 +130,26 @@ public class msg_device_op_read extends MAVLinkMessage {
      *
      * @param payload The message to decode
      */
+    @Override
     public void unpack(MAVLinkPayload payload) {
         payload.resetIndex();
-        
+
         this.request_id = payload.getUnsignedInt();
-        
         this.target_system = payload.getUnsignedByte();
-        
         this.target_component = payload.getUnsignedByte();
-        
         this.bustype = payload.getUnsignedByte();
-        
         this.bus = payload.getUnsignedByte();
-        
         this.address = payload.getUnsignedByte();
         
-         
         for (int i = 0; i < this.busname.length; i++) {
             this.busname[i] = payload.getByte();
         }
                 
-        
         this.regstart = payload.getUnsignedByte();
-        
         this.count = payload.getUnsignedByte();
         
-        if(isMavlink2) {
+        if (isMavlink2) {
+             this.bank = payload.getUnsignedByte();
             
         }
     }
@@ -144,7 +158,48 @@ public class msg_device_op_read extends MAVLinkMessage {
      * Constructor for a new message, just initializes the msgid
      */
     public msg_device_op_read() {
-        msgid = MAVLINK_MSG_ID_DEVICE_OP_READ;
+        this.msgid = MAVLINK_MSG_ID_DEVICE_OP_READ;
+    }
+
+    /**
+     * Constructor for a new message, initializes msgid and all payload variables
+     */
+    public msg_device_op_read( long request_id, short target_system, short target_component, short bustype, short bus, short address, byte[] busname, short regstart, short count, short bank) {
+        this.msgid = MAVLINK_MSG_ID_DEVICE_OP_READ;
+
+        this.request_id = request_id;
+        this.target_system = target_system;
+        this.target_component = target_component;
+        this.bustype = bustype;
+        this.bus = bus;
+        this.address = address;
+        this.busname = busname;
+        this.regstart = regstart;
+        this.count = count;
+        this.bank = bank;
+        
+    }
+
+    /**
+     * Constructor for a new message, initializes everything
+     */
+    public msg_device_op_read( long request_id, short target_system, short target_component, short bustype, short bus, short address, byte[] busname, short regstart, short count, short bank, int sysid, int compid, boolean isMavlink2) {
+        this.msgid = MAVLINK_MSG_ID_DEVICE_OP_READ;
+        this.sysid = sysid;
+        this.compid = compid;
+        this.isMavlink2 = isMavlink2;
+
+        this.request_id = request_id;
+        this.target_system = target_system;
+        this.target_component = target_component;
+        this.bustype = bustype;
+        this.bus = bus;
+        this.address = address;
+        this.busname = busname;
+        this.regstart = regstart;
+        this.count = count;
+        this.bank = bank;
+        
     }
 
     /**
@@ -153,11 +208,12 @@ public class msg_device_op_read extends MAVLinkMessage {
      *
      */
     public msg_device_op_read(MAVLinkPacket mavLinkPacket) {
+        this.msgid = MAVLINK_MSG_ID_DEVICE_OP_READ;
+
         this.sysid = mavLinkPacket.sysid;
         this.compid = mavLinkPacket.compid;
-        this.msgid = MAVLINK_MSG_ID_DEVICE_OP_READ;
         this.isMavlink2 = mavLinkPacket.isMavlink2;
-        unpack(mavLinkPacket.payload);        
+        unpack(mavLinkPacket.payload);
     }
 
                  
@@ -176,7 +232,7 @@ public class msg_device_op_read extends MAVLinkMessage {
     }
 
     /**
-    * Gets the message, formated as a string
+    * Gets the message, formatted as a string
     */
     public String getBusname() {
         StringBuffer buf = new StringBuffer();
@@ -189,12 +245,21 @@ public class msg_device_op_read extends MAVLinkMessage {
         return buf.toString();
 
     }
-                             
+                               
     /**
      * Returns a string with the MSG name and data
      */
+    @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_DEVICE_OP_READ - sysid:"+sysid+" compid:"+compid+" request_id:"+request_id+" target_system:"+target_system+" target_component:"+target_component+" bustype:"+bustype+" bus:"+bus+" address:"+address+" busname:"+busname+" regstart:"+regstart+" count:"+count+"";
+        return "MAVLINK_MSG_ID_DEVICE_OP_READ - sysid:"+sysid+" compid:"+compid+" request_id:"+request_id+" target_system:"+target_system+" target_component:"+target_component+" bustype:"+bustype+" bus:"+bus+" address:"+address+" busname:"+busname+" regstart:"+regstart+" count:"+count+" bank:"+bank+"";
+    }
+
+    /**
+     * Returns a human-readable string of the name of the message
+     */
+    @Override
+    public String name() {
+        return "MAVLINK_MSG_ID_DEVICE_OP_READ";
     }
 }
         

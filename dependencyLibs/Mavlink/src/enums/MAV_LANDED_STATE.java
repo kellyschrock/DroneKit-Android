@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Enumeration of landed detector states
  */
 public class MAV_LANDED_STATE {

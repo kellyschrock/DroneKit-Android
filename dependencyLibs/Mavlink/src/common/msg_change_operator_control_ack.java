@@ -9,7 +9,9 @@ package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.Messages.MAVLinkPayload;
-        
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
+
 /**
  * Accept / deny control of this MAV
  */
@@ -19,21 +21,26 @@ public class msg_change_operator_control_ack extends MAVLinkMessage {
     public static final int MAVLINK_MSG_LENGTH = 3;
     private static final long serialVersionUID = MAVLINK_MSG_ID_CHANGE_OPERATOR_CONTROL_ACK;
 
-
-      
+    
     /**
      * ID of the GCS this message 
      */
+    @Description("ID of the GCS this message ")
+    @Units("")
     public short gcs_system_id;
-      
+    
     /**
      * 0: request control of this MAV, 1: Release control of this MAV
      */
+    @Description("0: request control of this MAV, 1: Release control of this MAV")
+    @Units("")
     public short control_request;
-      
+    
     /**
      * 0: ACK, 1: NACK: Wrong passkey, 2: NACK: Unsupported passkey encryption method, 3: NACK: Already under control
      */
+    @Description("0: ACK, 1: NACK: Wrong passkey, 2: NACK: Unsupported passkey encryption method, 3: NACK: Already under control")
+    @Units("")
     public short ack;
     
 
@@ -41,19 +48,18 @@ public class msg_change_operator_control_ack extends MAVLinkMessage {
      * Generates the payload for a mavlink message for a message of this type
      * @return
      */
+    @Override
     public MAVLinkPacket pack() {
         MAVLinkPacket packet = new MAVLinkPacket(MAVLINK_MSG_LENGTH,isMavlink2);
-        packet.sysid = 255;
-        packet.compid = 190;
+        packet.sysid = sysid;
+        packet.compid = compid;
         packet.msgid = MAVLINK_MSG_ID_CHANGE_OPERATOR_CONTROL_ACK;
-        
+
         packet.payload.putUnsignedByte(gcs_system_id);
-        
         packet.payload.putUnsignedByte(control_request);
-        
         packet.payload.putUnsignedByte(ack);
         
-        if(isMavlink2) {
+        if (isMavlink2) {
             
         }
         return packet;
@@ -64,16 +70,15 @@ public class msg_change_operator_control_ack extends MAVLinkMessage {
      *
      * @param payload The message to decode
      */
+    @Override
     public void unpack(MAVLinkPayload payload) {
         payload.resetIndex();
-        
+
         this.gcs_system_id = payload.getUnsignedByte();
-        
         this.control_request = payload.getUnsignedByte();
-        
         this.ack = payload.getUnsignedByte();
         
-        if(isMavlink2) {
+        if (isMavlink2) {
             
         }
     }
@@ -82,7 +87,34 @@ public class msg_change_operator_control_ack extends MAVLinkMessage {
      * Constructor for a new message, just initializes the msgid
      */
     public msg_change_operator_control_ack() {
-        msgid = MAVLINK_MSG_ID_CHANGE_OPERATOR_CONTROL_ACK;
+        this.msgid = MAVLINK_MSG_ID_CHANGE_OPERATOR_CONTROL_ACK;
+    }
+
+    /**
+     * Constructor for a new message, initializes msgid and all payload variables
+     */
+    public msg_change_operator_control_ack( short gcs_system_id, short control_request, short ack) {
+        this.msgid = MAVLINK_MSG_ID_CHANGE_OPERATOR_CONTROL_ACK;
+
+        this.gcs_system_id = gcs_system_id;
+        this.control_request = control_request;
+        this.ack = ack;
+        
+    }
+
+    /**
+     * Constructor for a new message, initializes everything
+     */
+    public msg_change_operator_control_ack( short gcs_system_id, short control_request, short ack, int sysid, int compid, boolean isMavlink2) {
+        this.msgid = MAVLINK_MSG_ID_CHANGE_OPERATOR_CONTROL_ACK;
+        this.sysid = sysid;
+        this.compid = compid;
+        this.isMavlink2 = isMavlink2;
+
+        this.gcs_system_id = gcs_system_id;
+        this.control_request = control_request;
+        this.ack = ack;
+        
     }
 
     /**
@@ -91,19 +123,29 @@ public class msg_change_operator_control_ack extends MAVLinkMessage {
      *
      */
     public msg_change_operator_control_ack(MAVLinkPacket mavLinkPacket) {
+        this.msgid = MAVLINK_MSG_ID_CHANGE_OPERATOR_CONTROL_ACK;
+
         this.sysid = mavLinkPacket.sysid;
         this.compid = mavLinkPacket.compid;
-        this.msgid = MAVLINK_MSG_ID_CHANGE_OPERATOR_CONTROL_ACK;
         this.isMavlink2 = mavLinkPacket.isMavlink2;
-        unpack(mavLinkPacket.payload);        
+        unpack(mavLinkPacket.payload);
     }
 
           
     /**
      * Returns a string with the MSG name and data
      */
+    @Override
     public String toString() {
         return "MAVLINK_MSG_ID_CHANGE_OPERATOR_CONTROL_ACK - sysid:"+sysid+" compid:"+compid+" gcs_system_id:"+gcs_system_id+" control_request:"+control_request+" ack:"+ack+"";
+    }
+
+    /**
+     * Returns a human-readable string of the name of the message
+     */
+    @Override
+    public String name() {
+        return "MAVLINK_MSG_ID_CHANGE_OPERATOR_CONTROL_ACK";
     }
 }
         

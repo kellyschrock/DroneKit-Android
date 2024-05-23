@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Flags to indicate the status of camera storage.
  */
 public class STORAGE_STATUS {

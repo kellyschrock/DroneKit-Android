@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Direction of VTOL transition
  */
 public class VTOL_TRANSITION_HEADING {

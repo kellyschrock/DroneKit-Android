@@ -6,7 +6,7 @@
 
 package com.MAVLink.enums;
 
-/** 
+/**
  * Flags in EKF_STATUS message.
  */
 public class EKF_STATUS_FLAGS {
@@ -20,6 +20,7 @@ public class EKF_STATUS_FLAGS {
    public static final int EKF_CONST_POS_MODE = 128; /* EKF is in constant position mode and does not know it's absolute or relative position. | */
    public static final int EKF_PRED_POS_HORIZ_REL = 256; /* Set if EKF's predicted horizontal position (relative) estimate is good. | */
    public static final int EKF_PRED_POS_HORIZ_ABS = 512; /* Set if EKF's predicted horizontal position (absolute) estimate is good. | */
-   public static final int EKF_STATUS_FLAGS_ENUM_END = 513; /*  | */
+   public static final int EKF_UNINITIALIZED = 1024; /* Set if EKF has never been healthy. | */
+   public static final int EKF_STATUS_FLAGS_ENUM_END = 1025; /*  | */
 }
             
