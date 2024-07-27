@@ -2,7 +2,6 @@ package com.o3dr.android.client;
 
 import android.content.Context;
 import android.os.RemoteException;
-
 import com.o3dr.services.android.lib.drone.connection.ConnectionResult;
 import com.o3dr.services.android.lib.model.IApiListener;
 import com.o3dr.services.android.lib.util.version.VersionUtils;
@@ -23,7 +22,8 @@ public class DroneApiListener extends IApiListener.Stub {
 
     @Override
     public int getClientVersionCode() throws RemoteException {
-        return BuildConfig.VERSION_CODE;
+        return 123456;
+//        return BuildConfig.VERSION_CODE;
     }
 
     @Override

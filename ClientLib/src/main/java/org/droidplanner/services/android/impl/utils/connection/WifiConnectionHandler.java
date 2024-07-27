@@ -24,6 +24,7 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 
 import org.droidplanner.services.android.impl.utils.NetworkUtils;
@@ -238,7 +239,9 @@ public class WifiConnectionHandler {
      * It will start listening for wifi connectivity updates, and will handle them as needed.
      */
     public void start() {
-        this.context.registerReceiver(broadcastReceiver, intentFilter);
+//        ContextCompat.registerReceiver(this.context, broadcastReceiver, intentFilter, ContextCompat.RECEIVER_EXPORTED);
+//        ContextCompat.registerReceiver(this.context, broadcastReceiver, intentFilter, ContextCompat.RECEIVER_EXPORTED);
+        ContextCompat.registerReceiver(context, broadcastReceiver, intentFilter, ContextCompat.RECEIVER_EXPORTED);
     }
 
     /**

@@ -10,6 +10,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
@@ -18,6 +19,7 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.core.app.ServiceCompat;
 import com.o3dr.android.client.R;
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
 import com.o3dr.services.android.lib.drone.mission.item.complex.CameraDetail;
@@ -253,7 +255,12 @@ public class DroidPlannerService extends Service {
             }
 
             final Notification notification = notifBuilder.build();
-            startForeground(FOREGROUND_ID, notification);
+            ServiceCompat.startForeground(
+                this,
+                FOREGROUND_ID,
+                notification,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE
+            );
         } else {
             Log.v(TAG, "Using old-style notifications");
             //Put the service in the foreground
@@ -274,9 +281,13 @@ public class DroidPlannerService extends Service {
             }
 
             final Notification notification = notifBuilder.build();
-            startForeground(FOREGROUND_ID, notification);
+            ServiceCompat.startForeground(
+                this,
+                FOREGROUND_ID,
+                notification,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE
+            );
         }
-
     }
 
     @TargetApi(Build.VERSION_CODES.O)

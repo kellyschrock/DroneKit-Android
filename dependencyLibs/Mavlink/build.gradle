@@ -28,7 +28,8 @@ sourceSets {
 }
 
 jar {
-    destinationDir (new File("${rootDir}/ClientLib/libs"))
+//    destinationDir(new File("${rootDir}/ClientLib/libs"))
+//    destinationDir("${rootDir}/ClientLib/libs")
 }
 
 dependencies {

@@ -1,5 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.o3dr.android.client">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -13,6 +12,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- New permissions for service-type bullshit -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
 
     <!-- Support devices without Bluetooth since there are other connection types -->
     <uses-feature
@@ -57,6 +58,7 @@
         <service
             android:name="org.droidplanner.services.android.impl.api.DroidPlannerService"
             android:enabled="true"
+            android:foregroundServiceType="connectedDevice"
             android:exported="true">
 
             <!-- Filter and meta data for the Tower lib runtime -->

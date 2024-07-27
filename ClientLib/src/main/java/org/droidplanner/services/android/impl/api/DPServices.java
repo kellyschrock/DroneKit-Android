@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
 
-import com.o3dr.android.client.BuildConfig;
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
 import com.o3dr.services.android.lib.gcs.event.GCSEvent;
 import com.o3dr.services.android.lib.model.IApiListener;
@@ -36,7 +35,8 @@ final class DPServices extends IDroidPlannerService.Stub {
 
     @Override
     public int getServiceVersionCode() throws RemoteException {
-        return BuildConfig.VERSION_CODE;
+//        return BuildConfig.VERSION_CODE;
+        return 696969;
     }
 
     @Override
