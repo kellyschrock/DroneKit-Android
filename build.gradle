@@ -107,6 +107,7 @@ subprojects {
 allprojects {
     repositories {
         google()
+        jcenter()
         mavenCentral()
         gradlePluginPortal()
     }
