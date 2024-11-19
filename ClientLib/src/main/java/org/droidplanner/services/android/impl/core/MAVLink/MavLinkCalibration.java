@@ -16,6 +16,14 @@ public class MavLinkCalibration {
 		drone.getMavClient().sendMessage(msg, null);
 	}
 
+	public static void sendVehiclePos(MavLinkDrone drone, int pos) {
+		msg_command_long msg = new msg_command_long();
+		msg.command = MAV_CMD.MAV_CMD_ACCELCAL_VEHICLE_POS;
+		msg.param1 = pos;
+		msg.param5 = 1; // accel calibration
+		drone.getMavClient().sendMessage(msg, null);
+	}
+
 	public static void startAccelerometerCalibration(MavLinkDrone drone, ICommandListener listener) {
 		msg_command_long msg = new msg_command_long();
 		msg.target_system = drone.getSysid();
