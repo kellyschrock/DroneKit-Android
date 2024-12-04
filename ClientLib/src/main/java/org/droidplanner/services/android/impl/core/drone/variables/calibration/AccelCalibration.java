@@ -3,11 +3,13 @@ package org.droidplanner.services.android.impl.core.drone.variables.calibration;
 import android.os.Handler;
 import android.os.RemoteException;
 
+import android.util.Log;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.common.msg_command_long;
 import com.MAVLink.common.msg_statustext;
 
 import com.MAVLink.enums.ACCELCAL_VEHICLE_POS;
+import com.MAVLink.enums.MAV_CMD;
 import org.droidplanner.services.android.impl.core.MAVLink.MavLinkCalibration;
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces;
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces.DroneEventsType;
@@ -21,6 +23,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import timber.log.Timber;
 
 public class AccelCalibration extends DroneVariable implements DroneInterfaces.OnDroneListener<MavLinkDrone> {
+    private static final String TAG = "AccelCalibration";
 
     private final Runnable onCalibrationStart = new Runnable() {
         @Override
@@ -112,8 +115,10 @@ public class AccelCalibration extends DroneVariable implements DroneInterfaces.O
     public void sendAck(int step) {
         if (calibrating) {
             if(usingVehiclePos) {
+                Log.v(TAG, "sendAck(): Send vehicle pos: " + step);
                 MavLinkCalibration.sendVehiclePos(myDrone, step);
             } else {
+                Log.v(TAG, "sendAck(): Send ack message");
                 MavLinkCalibration.sendCalibrationAckMessage(myDrone, step);
             }
         }
@@ -143,54 +148,56 @@ public class AccelCalibration extends DroneVariable implements DroneInterfaces.O
 
             case msg_command_long.MAVLINK_MSG_ID_COMMAND_LONG: {
                 msg_command_long cmd = (msg_command_long)msg;
-                final int vehiclePos = Math.round(cmd.param1);
 
-                usingVehiclePos = (
-                    vehiclePos >= ACCELCAL_VEHICLE_POS.ACCELCAL_VEHICLE_POS_LEVEL &&
-                    vehiclePos < ACCELCAL_VEHICLE_POS.ACCELCAL_VEHICLE_POS_BACK
-                );
+                switch(cmd.command) {
+                    case MAV_CMD.MAV_CMD_ACCELCAL_VEHICLE_POS: {
+                        final int vehiclePos = Math.round(cmd.param1);
+                        usingVehiclePos = true;
 
-                if(vehiclePos == currVehiclePos) return;
+                        if(vehiclePos == currVehiclePos) return;
 
-                switch(vehiclePos) {
-                    case ACCELCAL_VEHICLE_POS.ACCELCAL_VEHICLE_POS_LEVEL: {
-                        mavMsg = "Place the vehicle level and press Next.";
-                        break;
-                    }
+                        switch(vehiclePos) {
+                            case ACCELCAL_VEHICLE_POS.ACCELCAL_VEHICLE_POS_LEVEL: {
+                                mavMsg = "Place the vehicle level and press Next.";
+                                break;
+                            }
 
-                    case ACCELCAL_VEHICLE_POS.ACCELCAL_VEHICLE_POS_LEFT: {
-                        mavMsg = "Place the vehicle on its left side and press Next.";
-                        break;
-                    }
+                            case ACCELCAL_VEHICLE_POS.ACCELCAL_VEHICLE_POS_LEFT: {
+                                mavMsg = "Place the vehicle on its LEFT side and press Next.";
+                                break;
+                            }
 
-                    case ACCELCAL_VEHICLE_POS.ACCELCAL_VEHICLE_POS_RIGHT: {
-                        mavMsg = "Place the vehicle on its right side and press Next.";
-                        break;
-                    }
+                            case ACCELCAL_VEHICLE_POS.ACCELCAL_VEHICLE_POS_RIGHT: {
+                                mavMsg = "Place the vehicle on its RIGHT side and press Next.";
+                                break;
+                            }
 
-                    case ACCELCAL_VEHICLE_POS.ACCELCAL_VEHICLE_POS_NOSEDOWN: {
-                        mavMsg = "Place the vehicle nose down and press Next.";
-                        break;
-                    }
+                            case ACCELCAL_VEHICLE_POS.ACCELCAL_VEHICLE_POS_NOSEDOWN: {
+                                mavMsg = "Place the vehicle nose DOWN and press Next.";
+                                break;
+                            }
 
-                    case ACCELCAL_VEHICLE_POS.ACCELCAL_VEHICLE_POS_NOSEUP: {
-                        mavMsg = "Place the vehicle nose up and press Next.";
-                        break;
-                    }
+                            case ACCELCAL_VEHICLE_POS.ACCELCAL_VEHICLE_POS_NOSEUP: {
+                                mavMsg = "Place the vehicle nose UP and press Next.";
+                                break;
+                            }
 
-                    case ACCELCAL_VEHICLE_POS.ACCELCAL_VEHICLE_POS_BACK: {
-                        mavMsg = "Place the vehicle on its back and press Next.";
-                        break;
-                    }
+                            case ACCELCAL_VEHICLE_POS.ACCELCAL_VEHICLE_POS_BACK: {
+                                mavMsg = "Place the vehicle on its BACK and press Next.";
+                                break;
+                            }
 
-                    default: {
-                        calibrating = false;
+                            default: {
+                                calibrating = false;
+                                break;
+                            }
+                        }
+
+                        myDrone.notifyDroneEvent(DroneEventsType.CALIBRATION_IMU);
+                        currVehiclePos = vehiclePos;
                         break;
                     }
                 }
-
-                myDrone.notifyDroneEvent(DroneEventsType.CALIBRATION_IMU);
-                currVehiclePos = vehiclePos;
 
                 break;
             }
